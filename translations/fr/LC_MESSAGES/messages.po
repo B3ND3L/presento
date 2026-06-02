@@ -1,0 +1,67 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Language: fr\n"
+
+msgid "emoji_language"
+msgstr "🇫🇷"
+
+msgid "language"
+msgstr "Langue"
+
+msgid "title"
+msgstr "Présentation de diapositives pour tous."
+
+msgid "slogan"
+msgstr "Créer, présenter, inspirer."
+
+msgid "add_slide"
+msgstr "➕ Nouvelle présentation"
+
+msgid "slides_access"
+msgstr "Accéder à une présentation"
+
+msgid "id_access"
+msgstr "🔑 Accès par ID"
+
+msgid "online_desc"
+msgstr "Retrouvez une présentation existante en saisissant son identifiant et son mot de passe (si protégée)."
+
+msgid "id_placeholder"
+msgstr "Identifiant (ex : a1b2c3d4)"
+
+msgid "password_placeholder"
+msgstr "Mot de passe (facultatif)"
+
+msgid "access"
+msgstr "Accéder →"
+
+msgid "import_json"
+msgstr "📂 Importer un fichier JSON"
+
+msgid "load_offline"
+msgstr "Chargez une présentation exportée en mode hors-ligne. Un nouvel identifiant lui sera attribué."
+
+msgid "import_edit"
+msgstr "💼 Importer et éditer"
+
+msgid "my_slides"
+msgstr "Mes présentations"
+
+msgid "view_slide"
+msgstr "Voir"
+
+msgid "edit"
+msgstr "Éditer"
+
+msgid "pdf"
+msgstr "PDF"
+
+msgid "confirm_delete"
+msgstr "Supprimer cette présentation ?"
+
+msgid "delete"
+msgstr "Supprimer"
+
+msgid "no_slide"
+msgstr "Aucune présentation pour le moment."

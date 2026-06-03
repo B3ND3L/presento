@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Presento</title>
+        <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
+
+<style>
+:root {
+    --bg: #0b1020;
+    --surface: #151b31;
+    --surface-hover: #1c2440;
+    --border: rgba(255,255,255,.08);
+
+    --primary: #8b7cf6;
+    --primary-hover: #7a6bea;
+
+    --secondary: #6074a6;
+
+    --text: #f5f7fa;
+    --text-muted: #a4adc2;
+
+    --success: #35c98b;
+    --danger: #f56565;
+    --warning: rgba(236,201,75,.15);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(
+        180deg,
+        #0b1020 0%,
+        #11182c 100%
+    );
+
+    color: var(--text);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        sans-serif;
+
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 60px 24px;
+}
+
+.hero {
+    margin-bottom: 50px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0 0 12px 0;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    max-width: 650px;
+    line-height: 1.6;
+}
+
+.section-title {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+.card {
+    background: rgba(255,255,255,.03);
+
+    backdrop-filter: blur(8px);
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    padding: 20px;
+    margin-bottom: 16px;
+
+    transition: .2s ease;
+}
+
+.card:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.meta {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.flex {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    padding: 11px 18px;
+
+    border-radius: 12px;
+    border: 1px solid transparent;
+
+    font-weight: 600;
+
+    transition: .2s ease;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,.05);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,.08);
+}
+
+.btn-success {
+    background: rgba(53,201,139,.15);
+    color: var(--success);
+    border-color: rgba(53,201,139,.25);
+}
+
+.btn-danger {
+    background: rgba(245,101,101,.15);
+    color: var(--danger);
+    border-color: rgba(245,101,101,.25);
+}
+
+.empty {
+    color: var(--text-muted);
+    padding: 30px;
+    text-align: center;
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+}
+
+/* ── Access / Import cards ── */
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 0;
+}
+@media(max-width: 640px) {
+    .action-grid { grid-template-columns: 1fr; }
+}
+
+.action-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.action-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.action-card p {
+    margin: 0 0 16px 0;
+    color: var(--text-muted);
+    font-size: .875rem;
+    line-height: 1.5;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.form-input {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+    color: var(--text);
+    font-size: .9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .2s;
+    width: 100%;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.alert {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: .875rem;
+    margin-bottom: 12px;
+}
+
+.alert-error {
+    background: rgba(245,101,101,.12);
+    color: #fca5a5;
+    border: 1px solid rgba(245,101,101,.25);
+}
+
+/* hero actions */
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.nav { display: inline-block;}
+
+.lang-dropdown { position: relative; display: inline-block; }
+.lang-trigger {
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 14px; border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.05);
+  color: var(--text); font-size: .9rem;
+  font-family: inherit; cursor: pointer;
+  transition: .2s ease;
+}
+.lang-trigger:hover { background: rgba(255,255,255,.08); }
+.lang-trigger .chevron { font-size: 12px; color: var(--text-muted); transition: transform .2s; }
+.lang-trigger.open .chevron { transform: rotate(180deg); }
+.lang-menu {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  min-width: 160px; z-index: 999;
+  box-shadow: 0 16px 40px rgba(0,0,0,.4);
+}
+.lang-menu.open { display: block; }
+.lang-opt {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 16px;
+  background: transparent; border: none;
+  color: var(--text-muted); font-size: .9rem;
+  font-family: inherit; cursor: pointer; text-align: left;
+  transition: .15s;
+}
+.lang-opt:hover { background: var(--surface-hover); color: var(--text); }
+.lang-opt.active { color: var(--primary); font-weight: 600; }
+
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px;
+  background: rgba(11,16,32,.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-logo-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.topbar-logo-mark img {
+  width: 100%;
+  height: 100%;
+}
+
+.topbar-logo-text {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 100px 24px 60px;
+}
+
+
+</style>
+</head>
+
+<body>
+    <header class="topbar">
+      <div class="topbar-logo">
+        <div class="topbar-logo-mark">
+          <img src="{{ url_for('assets', path='presento_logo.png') }}" alt="Presento">
+        </div>
+        <span class="topbar-logo-text">PRESENTO</span>
+      </div>
+
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-trigger" id="langTrigger" onclick="toggleLangMenu()">
+          <span id="langFlag">{{ _("emoji_language") }}</span>
+          <span id="langLabel">{{ _("language")}}</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button class="lang-opt {% if current_lang == 'fr' %}active{% endif %}" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</button>
+          <button class="lang-opt {% if current_lang == 'en' %}active{% endif %}" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</button>
+        </div>
+      </div>
+    </header>
+<div class="container">
+    <div class="hero">
+        <h1>{{ _("title") }}</h1>
+        <p class="subtitle">
+            {{ _("slogan") }}
+        </p>
+
+        <div class="hero-actions">
+            <form action="/pres/new" method="post">
+                <button type="submit" class="btn btn-primary">
+                    {{ _("add_slide")}}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="section-title">{{ _("slides_access") }}</h2>
+    <div class="action-grid">
+
+        <!-- Accéder par ID + mot de passe -->
+        <div class="action-card">
+            <h4>{{ _("id_access") }}</h4>
+            <p>{{ _("online_desc") }}</p>
+
+            {% if access_error %}
+            <div class="alert alert-error">{{ access_error }}</div>
+            {% endif %}
+
+            <form action="/pres/access" method="post">
+                <div class="form-row">
+                    <input class="form-input" type="text" name="pres_id"
+                           placeholder='{{ _("id_placeholder") }}'
+                           value="{{ access_pres_id or '' }}"
+                           required>
+                </div>
+                <div class="form-row">
+                    <input class="form-input" type="password" name="password"
+                           placeholder='{{ _("password_placeholder") }}'>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                    {{ _("access") }}
+                </button>
+            </form>
+        </div>
+
+        <div class="action-card">
+            <h4>{{ _("import_json") }}</h4>
+            <p>{{ _("load_offline") }}</p>
+
+            <div id="import-error" class="alert alert-error" style="display:none;"></div>
+
+            <div class="form-row">
+                <input class="form-input" type="file" id="import-file" accept=".json,application/json"
+                       style="padding:6px 10px; cursor:pointer;">
+            </div>
+            <button type="button" class="btn btn-secondary" style="width:100%;" onclick="importJson()">
+                {{ _("import_edit") }}
+            </button>
+        </div>
+    </div>
+
+    <h2 class="section-title">{{ _("my_slides") }}</h2>
+
+    {% if presentations %}
+        {% for p in presentations %}
+        <div class="card">
+            <h3>
+                {{ p.meta.title }}
+                {% if p.has_password %}
+                <span title="Protégée par mot de passe" style="font-size:.75rem; color:var(--text-muted); margin-left:8px;">🔒</span>
+                {% endif %}
+            </h3>
+
+            <div class="meta">
+                {{ p.meta.theme }} • <code style="font-size:.85rem; background:rgba(255,255,255,.06); padding:1px 6px; border-radius:5px;">{{ p.id }}</code>
+            </div>
+
+            <div class="flex">
+                <a href="/p/{{ p.id }}"
+                   target="_blank"
+                   class="btn btn-success">
+                    {{ _("view_slide") }}
+                </a>
+
+                <a href="/p/{{ p.id }}/edit"
+                   class="btn btn-secondary">
+                    {{ _("edit") }}
+                </a>
+
+                <a href="/p/{{ p.id }}?print-pdf"
+                   target="_blank"
+                   class="btn btn-secondary">
+                    {{ _("pdf") }}
+                </a>
+
+                <form action="/pres/{{ p.id }}/delete" method="post" style="margin:0;"
+                      onsubmit="return confirm('{{ _("confirm_delete") }}')">
+                    <button type="submit" class="btn btn-danger">{{ _("delete") }}</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">
+            {{_("no_slide")}}
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+async function importJson() {
+    const file = document.getElementById('import-file').files[0];
+    const errEl = document.getElementById('import-error');
+    errEl.style.display = 'none';
+
+    if (!file) {
+        errEl.textContent = 'Veuillez sélectionner un fichier JSON.';
+        errEl.style.display = 'block';
+        return;
+    }
+    let data;
+    try {
+        const text = await file.text();
+        data = JSON.parse(text);
+    } catch {
+        errEl.textContent = 'Fichier JSON invalide.';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (!data.title || !Array.isArray(data.slides)) {
+        errEl.textContent = 'Format de fichier non reconnu (title et slides requis).';
+        errEl.style.display = 'block';
+        return;
+    }
+    try {
+        const res = await fetch('/api/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title:      data.title,
+                theme:      data.theme || 'white',
+                transition: data.transition || 'slide',
+                slides:     data.slides
+            })
+        });
+        if (!res.ok) throw new Error();
+        const { id } = await res.json();
+        window.location.href = `/p/${id}/edit`;
+    } catch {
+        errEl.textContent = "Erreur lors de l'import. Veuillez réessayer.";
+        errEl.style.display = 'block';
+    }
+}
+
+function toggleLangMenu() {
+  const trigger = document.getElementById('langTrigger');
+  const menu = document.getElementById('langMenu');
+  trigger.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+
+function setLang(code, flag, label) {
+  document.getElementById('langFlag').textContent = flag;
+  document.getElementById('langLabel').textContent = label;
+  toggleLangMenu();
+  fetch('/set-lang/' + code, { method: 'POST' }).then(() => location.reload());
+}
+
+// Ferme au clic extérieur
+document.addEventListener('click', e => {
+  if (!e.target.closest('#langDropdown')) {
+    document.getElementById('langTrigger').classList.remove('open');
+    document.getElementById('langMenu').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

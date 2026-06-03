@@ -1,0 +1,67 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Language: en\n"
+
+msgid "emoji_language"
+msgstr "🇬🇧"
+
+msgid "language"
+msgstr "Language"
+
+msgid "title"
+msgstr "Slide presentation for everyone."
+
+msgid "slogan"
+msgstr "Create, present, inspire."
+
+msgid "add_slide"
+msgstr "➕ New Presentation"
+
+msgid "slides_access"
+msgstr "Access a presentation"
+
+msgid "id_access"
+msgstr "🔑 Access by ID"
+
+msgid "online_desc"
+msgstr "Open an existing presentation by entering its identifier and password (if protected)."
+
+msgid "id_placeholder"
+msgstr "Identifier (e.g. a1b2c3d4)"
+
+msgid "password_placeholder"
+msgstr "Password (optional)"
+
+msgid "access"
+msgstr "Access →"
+
+msgid "import_json"
+msgstr "📂 Import JSON File"
+
+msgid "load_offline"
+msgstr "Upload a presentation exported in offline mode. A new identifier will be assigned."
+
+msgid "import_edit"
+msgstr "💼 Import and Edit"
+
+msgid "my_slides"
+msgstr "My Presentations"
+
+msgid "view_slide"
+msgstr "View"
+
+msgid "edit"
+msgstr "Edit"
+
+msgid "pdf"
+msgstr "PDF"
+
+msgid "confirm_delete"
+msgstr "Delete this presentation?"
+
+msgid "delete"
+msgstr "Delete"
+
+msgid "no_slide"
+msgstr "No presentations yet."

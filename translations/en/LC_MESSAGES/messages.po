@@ -1,67 +1,312 @@
+
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=utf-8\n"
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-06-03 21:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
 
-msgid "emoji_language"
-msgstr "🇬🇧"
+#: src/templates/edit.html:496
+msgid "save_status"
+msgstr "All changes saved"
 
-msgid "language"
-msgstr "Language"
+#: src/templates/edit.html:499 src/templates/edit.html:648
+msgid "theme"
+msgstr "Theme"
 
-msgid "title"
-msgstr "Slide presentation for everyone."
+#: src/templates/edit.html:509
+msgid "slide_parameters"
+msgstr "Slide settings"
 
-msgid "slogan"
-msgstr "Create, present, inspire."
+#: src/templates/edit.html:510
+msgid "share"
+msgstr "Share"
 
-msgid "add_slide"
-msgstr "➕ New Presentation"
-
-msgid "slides_access"
-msgstr "Access a presentation"
-
-msgid "id_access"
-msgstr "🔑 Access by ID"
-
-msgid "online_desc"
-msgstr "Open an existing presentation by entering its identifier and password (if protected)."
-
-msgid "id_placeholder"
-msgstr "Identifier (e.g. a1b2c3d4)"
-
-msgid "password_placeholder"
-msgstr "Password (optional)"
-
-msgid "access"
-msgstr "Access →"
-
-msgid "import_json"
-msgstr "📂 Import JSON File"
-
-msgid "load_offline"
-msgstr "Upload a presentation exported in offline mode. A new identifier will be assigned."
-
-msgid "import_edit"
-msgstr "💼 Import and Edit"
-
-msgid "my_slides"
-msgstr "My Presentations"
-
-msgid "view_slide"
-msgstr "View"
-
-msgid "edit"
-msgstr "Edit"
-
+#: src/templates/edit.html:511 src/templates/index.html:441
 msgid "pdf"
 msgstr "PDF"
 
+#: src/templates/edit.html:512
+msgid "run"
+msgstr "Present"
+
+#: src/templates/edit.html:513 src/templates/edit.html:687
+msgid "save"
+msgstr "Save"
+
+#: src/templates/edit.html:524
+msgid "font"
+msgstr "Font"
+
+#: src/templates/edit.html:532
+msgid "size"
+msgstr "Size"
+
+#: src/templates/edit.html:540
+msgid "bold"
+msgstr "Bold"
+
+#: src/templates/edit.html:541
+msgid "italic"
+msgstr "Italic"
+
+#: src/templates/edit.html:542
+msgid "underline"
+msgstr "Underline"
+
+#: src/templates/edit.html:543
+msgid "crossed"
+msgstr "Strikethrough"
+
+#: src/templates/edit.html:545
+msgid "align_left"
+msgstr "Align left"
+
+#: src/templates/edit.html:546
+msgid "center"
+msgstr "Center"
+
+#: src/templates/edit.html:547
+msgid "align_right"
+msgstr "Align right"
+
+#: src/templates/edit.html:549
+msgid "text_color"
+msgstr "Text color"
+
+#: src/templates/edit.html:553
+msgid "element_background_color"
+msgstr "Element background color"
+
+#: src/templates/edit.html:560
+msgid "background"
+msgstr "Background"
+
+#: src/templates/edit.html:561
+msgid "background_color"
+msgstr "Background color"
+
+#: src/templates/edit.html:567
+msgid "forward"
+msgstr "Bring forward"
+
+#: src/templates/edit.html:568
+msgid "backward"
+msgstr "Send backward"
+
+#: src/templates/edit.html:571
+msgid "progressive"
+msgstr "Progressive"
+
+#: src/templates/edit.html:573
+msgid "iframe_url"
+msgstr "iFrame URL"
+
+#: src/templates/edit.html:575
+msgid "delete_element"
+msgstr "Delete element"
+
+#: src/templates/edit.html:587 src/templates/index.html:359
+msgid "add_slide"
+msgstr "➕ New Slide"
+
+#: src/templates/edit.html:599
+msgid "slide_placeholder"
+msgstr "Slide name"
+
+#: src/templates/edit.html:609
+msgid "title"
+msgstr "Title"
+
+#: src/templates/index.html:351
+msgid "site_title"
+msgstr "Slide presentation for everyone."
+
+#: src/templates/edit.html:610
+msgid "text"
+msgstr "Text"
+
+#: src/templates/edit.html:611
+msgid "list"
+msgstr "List"
+
+#: src/templates/edit.html:612
+msgid "url_image"
+msgstr "Image from URL"
+
+#: src/templates/edit.html:613
+msgid "file_image"
+msgstr "Image from file"
+
+#: src/templates/edit.html:614
+msgid "iframe"
+msgstr "iFrame"
+
+#: src/templates/edit.html:615
+msgid "rectangle"
+msgstr "Rectangle"
+
+#: src/templates/edit.html:616
+msgid "circle"
+msgstr "Circle"
+
+#: src/templates/edit.html:617
+msgid "triangle"
+msgstr "Triangle"
+
+#: src/templates/edit.html:618
+msgid "line"
+msgstr "Line"
+
+#: src/templates/edit.html:639
+msgid "slide"
+msgstr "Slide"
+
+#: src/templates/edit.html:640
+msgid "fade"
+msgstr "Fade"
+
+#: src/templates/edit.html:641
+msgid "zoom"
+msgstr "Zoom"
+
+#: src/templates/edit.html:642
+msgid "convex"
+msgstr "Convex"
+
+#: src/templates/edit.html:643
+msgid "concave"
+msgstr "Concave"
+
+#: src/templates/edit.html:644
+msgid "none"
+msgstr "None"
+
+#: src/templates/edit.html:657
+msgid "insert_image"
+msgstr "Insert image"
+
+#: src/templates/edit.html:659
+msgid "image_url"
+msgstr "Image URL"
+
+#: src/templates/edit.html:663 src/templates/edit.html:678
+msgid "cancel"
+msgstr "Cancel"
+
+#: src/templates/edit.html:664 src/templates/edit.html:679
+msgid "ok"
+msgstr "OK"
+
+#: src/templates/edit.html:672
+msgid "insert_iframe"
+msgstr "Insert iFrame"
+
+#: src/templates/edit.html:674
+msgid "url_to_display"
+msgstr "URL to display"
+
+#: src/templates/edit.html:690
+msgid "online"
+msgstr "Online"
+
+#: src/templates/edit.html:691
+msgid "offline"
+msgstr "Offline"
+
+#: src/templates/edit.html:1214
+msgid "slide_title_placeholder"
+msgstr "Slide title"
+
+#: src/templates/edit.html:1216
+msgid "slide_text_placeholder"
+msgstr "Your text here"
+
+#: src/templates/edit.html:1218
+msgid "slide_list_placeholder"
+msgstr "Item 1"
+
+#: src/templates/index.html:339
+msgid "emoji_language"
+msgstr "🇬🇧"
+
+#: src/templates/index.html:340
+msgid "language"
+msgstr "English"
+
+#: src/templates/index.html:353
+msgid "slogan"
+msgstr "Create, present, inspire."
+
+#: src/templates/index.html:365
+msgid "slides_access"
+msgstr "Access a presentation"
+
+#: src/templates/index.html:370
+msgid "id_access"
+msgstr "🔑 Access by ID"
+
+#: src/templates/index.html:371
+msgid "online_desc"
+msgstr ""
+"Open an existing presentation by entering its identifier and password (if"
+" protected)."
+
+#: src/templates/index.html:380
+msgid "id_placeholder"
+msgstr "Identifier (e.g. a1b2c3d4)"
+
+#: src/templates/index.html:386
+msgid "password_placeholder"
+msgstr "Password (optional)"
+
+#: src/templates/index.html:389
+msgid "access"
+msgstr "Access →"
+
+#: src/templates/index.html:395
+msgid "import_json"
+msgstr "📂 Import JSON File"
+
+#: src/templates/index.html:396
+msgid "load_offline"
+msgstr ""
+"Upload a presentation exported in offline mode. A new identifier will be "
+"assigned."
+
+#: src/templates/index.html:405
+msgid "import_edit"
+msgstr "💼 Import and Edit"
+
+#: src/templates/index.html:410
+msgid "my_slides"
+msgstr "My Presentations"
+
+#: src/templates/index.html:430
+msgid "view_slide"
+msgstr "View"
+
+#: src/templates/index.html:435
+msgid "edit"
+msgstr "Edit"
+
+#: src/templates/index.html:445
 msgid "confirm_delete"
 msgstr "Delete this presentation?"
 
+#: src/templates/index.html:446
 msgid "delete"
 msgstr "Delete"
 
+#: src/templates/index.html:453
 msgid "no_slide"
 msgstr "No presentations yet."
+

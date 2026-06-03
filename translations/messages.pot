@@ -1,4 +1,9 @@
-
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
@@ -6,9 +11,7 @@ msgstr ""
 "POT-Creation-Date: 2026-06-03 21:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: fr\n"
-"Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,297 +19,293 @@ msgstr ""
 
 #: src/templates/edit.html:496
 msgid "save_status"
-msgstr "Modifications enregistrées"
+msgstr ""
 
 #: src/templates/edit.html:499 src/templates/edit.html:648
 msgid "theme"
-msgstr "Thème"
+msgstr ""
 
 #: src/templates/edit.html:509
 msgid "slide_parameters"
-msgstr "Paramètres de la diapositive"
+msgstr ""
 
 #: src/templates/edit.html:510
 msgid "share"
-msgstr "Partager"
+msgstr ""
 
 #: src/templates/edit.html:511 src/templates/index.html:441
 msgid "pdf"
-msgstr "PDF"
+msgstr ""
 
 #: src/templates/edit.html:512
 msgid "run"
-msgstr "Présenter"
+msgstr ""
 
 #: src/templates/edit.html:513 src/templates/edit.html:687
 msgid "save"
-msgstr "Enregistrer"
+msgstr ""
 
 #: src/templates/edit.html:524
 msgid "font"
-msgstr "Police"
+msgstr ""
 
 #: src/templates/edit.html:532
 msgid "size"
-msgstr "Taille"
+msgstr ""
 
 #: src/templates/edit.html:540
 msgid "bold"
-msgstr "Gras"
+msgstr ""
 
 #: src/templates/edit.html:541
 msgid "italic"
-msgstr "Italique"
+msgstr ""
 
 #: src/templates/edit.html:542
 msgid "underline"
-msgstr "Souligné"
+msgstr ""
 
 #: src/templates/edit.html:543
 msgid "crossed"
-msgstr "Barré"
+msgstr ""
 
 #: src/templates/edit.html:545
 msgid "align_left"
-msgstr "Aligner à gauche"
+msgstr ""
 
 #: src/templates/edit.html:546
 msgid "center"
-msgstr "Centrer"
+msgstr ""
 
 #: src/templates/edit.html:547
 msgid "align_right"
-msgstr "Aligner à droite"
+msgstr ""
 
 #: src/templates/edit.html:549
 msgid "text_color"
-msgstr "Couleur du texte"
+msgstr ""
 
 #: src/templates/edit.html:553
 msgid "element_background_color"
-msgstr "Couleur de fond de l'élément"
+msgstr ""
 
 #: src/templates/edit.html:560
 msgid "background"
-msgstr "Arrière-plan"
+msgstr ""
 
 #: src/templates/edit.html:561
 msgid "background_color"
-msgstr "Couleur d'arrière-plan"
+msgstr ""
 
 #: src/templates/edit.html:567
 msgid "forward"
-msgstr "Avancer"
+msgstr ""
 
 #: src/templates/edit.html:568
 msgid "backward"
-msgstr "Reculer"
+msgstr ""
 
 #: src/templates/edit.html:571
 msgid "progressive"
-msgstr "Progressif"
+msgstr ""
 
 #: src/templates/edit.html:573
 msgid "iframe_url"
-msgstr "URL de l'iframe"
+msgstr ""
 
 #: src/templates/edit.html:575
 msgid "delete_element"
-msgstr "Supprimer l'élément"
+msgstr ""
 
 #: src/templates/edit.html:587 src/templates/index.html:359
 msgid "add_slide"
-msgstr "➕ Nouvelle diapositive"
+msgstr ""
 
 #: src/templates/edit.html:599
 msgid "slide_placeholder"
-msgstr "Nom de la diapositive"
-
-#: src/templates/edit.html:609
-msgid "title"
-msgstr "Titre"
+msgstr ""
 
 #: src/templates/index.html:351
 msgid "site_title"
-msgstr "Présentation de diapositives pour tous."
+msgstr ""
+
+#: src/templates/edit.html:609
+msgid "title"
+msgstr ""
 
 #: src/templates/edit.html:610
 msgid "text"
-msgstr "Texte"
+msgstr ""
 
 #: src/templates/edit.html:611
 msgid "list"
-msgstr "Liste"
+msgstr ""
 
 #: src/templates/edit.html:612
 msgid "url_image"
-msgstr "Image depuis une URL"
+msgstr ""
 
 #: src/templates/edit.html:613
 msgid "file_image"
-msgstr "Image depuis un fichier"
+msgstr ""
 
 #: src/templates/edit.html:614
 msgid "iframe"
-msgstr "iFrame"
+msgstr ""
 
 #: src/templates/edit.html:615
 msgid "rectangle"
-msgstr "Rectangle"
+msgstr ""
 
 #: src/templates/edit.html:616
 msgid "circle"
-msgstr "Cercle"
+msgstr ""
 
 #: src/templates/edit.html:617
 msgid "triangle"
-msgstr "Triangle"
+msgstr ""
 
 #: src/templates/edit.html:618
 msgid "line"
-msgstr "Ligne"
+msgstr ""
 
 #: src/templates/edit.html:639
 msgid "slide"
-msgstr "Glissement"
+msgstr ""
 
 #: src/templates/edit.html:640
 msgid "fade"
-msgstr "Fondu"
+msgstr ""
 
 #: src/templates/edit.html:641
 msgid "zoom"
-msgstr "Zoom"
+msgstr ""
 
 #: src/templates/edit.html:642
 msgid "convex"
-msgstr "Convexe"
+msgstr ""
 
 #: src/templates/edit.html:643
 msgid "concave"
-msgstr "Concave"
+msgstr ""
 
 #: src/templates/edit.html:644
 msgid "none"
-msgstr "Aucune"
+msgstr ""
 
 #: src/templates/edit.html:657
 msgid "insert_image"
-msgstr "Insérer une image"
+msgstr ""
 
 #: src/templates/edit.html:659
 msgid "image_url"
-msgstr "URL de l'image"
+msgstr ""
 
 #: src/templates/edit.html:663 src/templates/edit.html:678
 msgid "cancel"
-msgstr "Annuler"
+msgstr ""
 
 #: src/templates/edit.html:664 src/templates/edit.html:679
 msgid "ok"
-msgstr "OK"
+msgstr ""
 
 #: src/templates/edit.html:672
 msgid "insert_iframe"
-msgstr "Insérer une iframe"
+msgstr ""
 
 #: src/templates/edit.html:674
 msgid "url_to_display"
-msgstr "URL à afficher"
+msgstr ""
 
 #: src/templates/edit.html:690
 msgid "online"
-msgstr "En ligne"
+msgstr ""
 
 #: src/templates/edit.html:691
 msgid "offline"
-msgstr "Hors ligne"
+msgstr ""
 
 #: src/templates/edit.html:1214
 msgid "slide_title_placeholder"
-msgstr "Titre de la diapositive"
+msgstr ""
 
 #: src/templates/edit.html:1216
 msgid "slide_text_placeholder"
-msgstr "Votre texte ici"
+msgstr ""
 
 #: src/templates/edit.html:1218
 msgid "slide_list_placeholder"
-msgstr "Élément 1"
+msgstr ""
 
 #: src/templates/index.html:339
 msgid "emoji_language"
-msgstr "🇫🇷"
+msgstr ""
 
 #: src/templates/index.html:340
 msgid "language"
-msgstr "Français"
+msgstr ""
 
 #: src/templates/index.html:353
 msgid "slogan"
-msgstr "Créer, présenter, inspirer."
+msgstr ""
 
 #: src/templates/index.html:365
 msgid "slides_access"
-msgstr "Accéder à une présentation"
+msgstr ""
 
 #: src/templates/index.html:370
 msgid "id_access"
-msgstr "🔑 Accès par ID"
+msgstr ""
 
 #: src/templates/index.html:371
 msgid "online_desc"
 msgstr ""
-"Retrouvez une présentation existante en saisissant son identifiant et son"
-" mot de passe (si protégée)."
 
 #: src/templates/index.html:380
 msgid "id_placeholder"
-msgstr "Identifiant (ex : a1b2c3d4)"
+msgstr ""
 
 #: src/templates/index.html:386
 msgid "password_placeholder"
-msgstr "Mot de passe (facultatif)"
+msgstr ""
 
 #: src/templates/index.html:389
 msgid "access"
-msgstr "Accéder →"
+msgstr ""
 
 #: src/templates/index.html:395
 msgid "import_json"
-msgstr "📂 Importer un fichier JSON"
+msgstr ""
 
 #: src/templates/index.html:396
 msgid "load_offline"
 msgstr ""
-"Chargez une présentation exportée en mode hors-ligne. Un nouvel "
-"identifiant lui sera attribué."
 
 #: src/templates/index.html:405
 msgid "import_edit"
-msgstr "💼 Importer et éditer"
+msgstr ""
 
 #: src/templates/index.html:410
 msgid "my_slides"
-msgstr "Mes présentations"
+msgstr ""
 
 #: src/templates/index.html:430
 msgid "view_slide"
-msgstr "Voir"
+msgstr ""
 
 #: src/templates/index.html:435
 msgid "edit"
-msgstr "Éditer"
+msgstr ""
 
 #: src/templates/index.html:445
 msgid "confirm_delete"
-msgstr "Supprimer cette présentation ?"
+msgstr ""
 
 #: src/templates/index.html:446
 msgid "delete"
-msgstr "Supprimer"
+msgstr ""
 
 #: src/templates/index.html:453
 msgid "no_slide"
-msgstr "Aucune présentation pour le moment."
+msgstr ""
 

@@ -493,10 +493,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
   <div class="tb-left">
     <a href="/" class="btn btn-ghost" style="font-size:18px; padding:4px 8px;">←</a>
     <input id="pres-title" type="text" value="{{ pres.meta.title }}" spellcheck="false">
-    <span id="save-status">● Sauvegardé</span>
+    <span id="save-status">{{ _("save_status") }}</span>
   </div>
   <div class="tb-right">
-    <select class="ft-select" id="theme-select" title="Thème Reveal.js" onchange="onThemeChange(this.value)" style="font-size:12px;">
+    <select class="ft-select" id="theme-select" title="{{ _("theme") }}" onchange="onThemeChange(this.value)" style="font-size:12px;">
       <option value="white">White</option>
       <option value="black">Black</option>
       <option value="beige">Beige</option>
@@ -506,11 +506,11 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
       <option value="league">League</option>
       <option value="serif">Serif</option>
     </select>
-    <button class="btn btn-ghost" onclick="togglePropPanel()" title="Paramètres de la slide">⚙</button>
-    <button class="btn btn-stroke" onclick="copyShareLink()">🔗 Partager</button>
-    <a href="/p/{{ pres.id }}?print-pdf" target="_blank" class="btn btn-stroke">📄 PDF</a>
-    <a href="/p/{{ pres.id }}" target="_blank" class="btn btn-stroke">▶ Voir</a>
-    <button class="btn btn-accent" onclick="openSaveModal()">💾 Sauvegarder</button>
+    <button class="btn btn-ghost" onclick="togglePropPanel()" title="{{ _("slide_parameters")}}"></button>
+    <button class="btn btn-stroke" onclick="copyShareLink()">{{ _("share") }}</button>
+    <a href="/p/{{ pres.id }}?print-pdf" target="_blank" class="btn btn-stroke">{{ _("pdf") }}</a>
+    <a href="/p/{{ pres.id }}" target="_blank" class="btn btn-stroke">{{ _("run") }}</a>
+    <button class="btn btn-accent" onclick="openSaveModal()">{{ _("save") }}</button>
   </div>
 </div>
 
@@ -521,7 +521,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
   <!-- Text section -->
   <div class="ft-section" data-ctx="text">
     <select class="ft-select" id="font-family" onchange="applyStyle('fontFamily', this.value)" style="width:110px;">
-      <option value="inherit">— Police —</option>
+      <option value="inherit">— {{ _("font") }} —</option>
       <option value="Georgia, serif">Georgia</option>
       <option value="'DM Sans', sans-serif">DM Sans</option>
       <option value="'Courier New', monospace">Courier New</option>
@@ -529,7 +529,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
       <option value="'Times New Roman', serif">Times New Roman</option>
     </select>
     <select class="ft-select" id="font-size" onchange="applyStyle('fontSize', this.value + 'px')" style="width:62px;">
-      <option value="">Taille</option>
+      <option value="">{{ _("size") }}</option>
       <option value="12">12</option><option value="14">14</option><option value="16">16</option>
       <option value="18">18</option><option value="20">20</option><option value="24">24</option>
       <option value="28">28</option><option value="32">32</option><option value="36">36</option>
@@ -537,42 +537,42 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
       <option value="96">96</option>
     </select>
     <div class="ft-sep"></div>
-    <button class="ft-btn" id="btn-bold"   onclick="execCmd('bold')"          title="Gras (Ctrl+B)"><b>B</b></button>
-    <button class="ft-btn" id="btn-italic" onclick="execCmd('italic')"        title="Italique (Ctrl+I)"><i>I</i></button>
-    <button class="ft-btn" id="btn-under"  onclick="execCmd('underline')"     title="Souligné (Ctrl+U)"><u>U</u></button>
-    <button class="ft-btn" id="btn-strike" onclick="execCmd('strikeThrough')" title="Barré"><s>S</s></button>
+    <button class="ft-btn" id="btn-bold"   onclick="execCmd('bold')"          title="{{ _("bold") }} (Ctrl+B)"><b>B</b></button>
+    <button class="ft-btn" id="btn-italic" onclick="execCmd('italic')"        title="{{ _("italic") }} (Ctrl+I)"><i>I</i></button>
+    <button class="ft-btn" id="btn-under"  onclick="execCmd('underline')"     title="{{ _("underline") }} (Ctrl+U)"><u>U</u></button>
+    <button class="ft-btn" id="btn-strike" onclick="execCmd('strikeThrough')" title="{{ _("crossed") }}"><s>S</s></button>
     <div class="ft-sep"></div>
-    <button class="ft-btn" onclick="execCmd('justifyLeft')"   title="Aligner à gauche">⬅</button>
-    <button class="ft-btn" onclick="execCmd('justifyCenter')" title="Centrer">☰</button>
-    <button class="ft-btn" onclick="execCmd('justifyRight')"  title="Aligner à droite">➡</button>
+    <button class="ft-btn" onclick="execCmd('justifyLeft')"   title="{{ _("align_left") }}">⬅</button>
+    <button class="ft-btn" onclick="execCmd('justifyCenter')" title="{{ _("center") }}">☰</button>
+    <button class="ft-btn" onclick="execCmd('justifyRight')"  title="{{ _("align_right") }}">➡</button>
     <div class="ft-sep"></div>
-    <div class="ft-color-btn" title="Couleur du texte">
+    <div class="ft-color-btn" title="{{ _("text_color") }}">
       <div class="ft-color-preview" id="color-preview" style="background:#000000;"></div>
       <input type="color" id="text-color" value="#000000" oninput="applyTextColor(this.value)">
     </div>
-    <div class="ft-color-btn" title="Couleur de fond de l'élément">
+    <div class="ft-color-btn" title="{{ _("element_background_color") }}">
       <div class="ft-color-preview" id="bg-color-preview" style="background:transparent; border-style:dashed;"></div>
       <input type="color" id="bg-color" value="#ffffff" oninput="applyBgColor(this.value)">
     </div>
   </div>
   <div class="ft-sep"></div>
   <!-- Slide background -->
-  <span style="font-size:11px; color:var(--text-3); white-space:nowrap;">Fond slide :</span>
-  <div class="ft-color-btn" title="Couleur de fond de la slide">
+  <span style="font-size:11px; color:var(--text-3); white-space:nowrap;">{{ _("background") }}</span>
+  <div class="ft-color-btn" title="{{ _("background_color") }}">
     <div class="ft-color-preview" id="slide-bg-preview" style="background:#ffffff;"></div>
     <input type="color" id="slide-bg-color" value="#ffffff" oninput="applySlideBackground(this.value)">
   </div>
   <div class="ft-sep"></div>
   <!-- Z-order -->
-  <button class="ft-btn" onclick="bringForward()"  title="Avancer">⬆</button>
-  <button class="ft-btn" onclick="sendBackward()"  title="Reculer">⬇</button>
+  <button class="ft-btn" onclick="bringForward()"  title="{{ _("forward") }}">⬆</button>
+  <button class="ft-btn" onclick="sendBackward()"  title="{{ _("backward") }}">⬇</button>
   <div class="ft-sep"></div>
-  <!-- Fragment (affichage progressif) -->
-  <button class="ft-btn" id="btn-fragment" onclick="toggleFragment()" title="Affichage progressif (fragment Reveal.js)">◑</button>
-  <!-- Éditer URL iframe -->
-  <button class="ft-btn" id="btn-edit-iframe" onclick="openIframeModal(true)" title="Modifier l'URL de l'iframe" style="display:none;">🌐</button>
+
+  <button class="ft-btn" id="btn-fragment" onclick="toggleFragment()" title="{{ _("progressive") }}Affichage progressif (fragment Reveal.js)"></button>
+
+  <button class="ft-btn" id="btn-edit-iframe" onclick="openIframeModal(true)" title="{{ _("iframe_url") }}Modifier l'URL de l'iframe" style="display:none;"></button>
   <div class="ft-sep"></div>
-  <button class="ft-btn" id="btn-delete-el" onclick="deleteSelected()" title="Supprimer l'élément" style="color:var(--red);">🗑</button>
+  <button class="ft-btn" id="btn-delete-el" onclick="deleteSelected()" title="{{ _("delete_element") }}" style="color:var(--red);"></button>
   <div style="flex:1;"></div>
   <div id="zoom-label">100%</div>
   <input type="range" id="zoom-range" min="40" max="150" value="100" oninput="setZoom(this.value)" style="width:90px; accent-color: var(--accent);">
@@ -584,7 +584,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
 <div id="slide-panel">
   <div class="sp-header">
     <span>Slides</span>
-    <button class="sp-add-btn" onclick="addSlide()" title="Ajouter une slide">+</button>
+    <button class="sp-add-btn" onclick="addSlide()" title="{{ _("add_slide") }}">+</button>
   </div>
   <div id="slide-list"></div>
 </div>
@@ -596,7 +596,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
   <div id="slide-canvas" onclick="onCanvasClick(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)">
     <div id="empty-hint">
       <div class="hint-icon">✦</div>
-      <p>Cliquez sur + pour ajouter<br>du contenu à cette slide</p>
+      <p>{{ _("slide_placeholder") }}</p>
     </div>
   </div>
 </div>
@@ -606,16 +606,16 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
 ══════════════════════════════════════════════ -->
 <button id="insert-fab" onclick="toggleInsertMenu()" title="Insérer">+</button>
 <div id="insert-menu">
-  <button class="im-item" onclick="insertText('heading');    closeInsertMenu()"><span class="im-icon">T</span> Titre</button>
-  <button class="im-item" onclick="insertText('body');       closeInsertMenu()"><span class="im-icon">¶</span> Texte</button>
-  <button class="im-item" onclick="insertText('bullet');     closeInsertMenu()"><span class="im-icon">•</span> Liste à puces</button>
-  <button class="im-item" onclick="openImageModal();        closeInsertMenu()"><span class="im-icon">🖼</span> Image (URL)</button>
-  <button class="im-item" onclick="triggerImageUpload();    closeInsertMenu()"><span class="im-icon">📁</span> Image (fichier)</button>
-  <button class="im-item" onclick="openIframeModal(false);  closeInsertMenu()"><span class="im-icon">🌐</span> Iframe (URL)</button>
-  <button class="im-item" onclick="insertShape('rect');     closeInsertMenu()"><span class="im-icon">▬</span> Rectangle</button>
-  <button class="im-item" onclick="insertShape('circle');   closeInsertMenu()"><span class="im-icon">●</span> Cercle</button>
-  <button class="im-item" onclick="insertShape('triangle'); closeInsertMenu()"><span class="im-icon">▲</span> Triangle</button>
-  <button class="im-item" onclick="insertDivider();         closeInsertMenu()"><span class="im-icon">━</span> Séparateur</button>
+  <button class="im-item" onclick="insertText('heading');    closeInsertMenu()"><span class="im-icon">T</span> {{ _("title") }}</button>
+  <button class="im-item" onclick="insertText('body');       closeInsertMenu()"><span class="im-icon">¶</span> {{ _("text") }}</button>
+  <button class="im-item" onclick="insertText('bullet');     closeInsertMenu()"><span class="im-icon">•</span> {{ _("list") }}</button>
+  <button class="im-item" onclick="openImageModal();        closeInsertMenu()"><span class="im-icon">🖼</span> {{ _("url_image") }}</button>
+  <button class="im-item" onclick="triggerImageUpload();    closeInsertMenu()"><span class="im-icon">📁</span> {{ _("file_image") }}</button>
+  <button class="im-item" onclick="openIframeModal(false);  closeInsertMenu()"><span class="im-icon">🌐</span> {{ _("iframe") }}</button>
+  <button class="im-item" onclick="insertShape('rect');     closeInsertMenu()"><span class="im-icon">▬</span> {{ _("rectangle") }}</button>
+  <button class="im-item" onclick="insertShape('circle');   closeInsertMenu()"><span class="im-icon">●</span> {{ _("circle") }}</button>
+  <button class="im-item" onclick="insertShape('triangle'); closeInsertMenu()"><span class="im-icon">▲</span> {{ _("triangle") }}</button>
+  <button class="im-item" onclick="insertDivider();         closeInsertMenu()"><span class="im-icon">━</span> {{ _("line") }}</button>
 </div>
 <input type="file" id="image-upload" accept="image/*" style="display:none" onchange="handleImageFile(event)">
 
@@ -636,16 +636,16 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
     <div class="pp-group">
       <label>Transition</label>
       <select class="pp-input" id="pp-transition" onchange="onTransitionChange(this.value)">
-        <option value="slide">Slide</option>
-        <option value="fade">Fade</option>
-        <option value="zoom">Zoom</option>
-        <option value="convex">Convex</option>
-        <option value="concave">Concave</option>
-        <option value="none">Aucune</option>
+        <option value="slide">{{ _("slide") }}</option>
+        <option value="fade">{{ _("fade") }}</option>
+        <option value="zoom">{{ _("zoom") }}</option>
+        <option value="convex">{{ _("convex") }}</option>
+        <option value="concave">{{ _("concave") }}</option>
+        <option value="none">{{ _("none") }}</option>
       </select>
     </div>
     <div class="pp-group">
-      <label>Thème Reveal.js</label>
+      <label>{{ _("theme") }}</label>
       <div class="theme-grid" id="pp-themes"></div>
     </div>
   </div>
@@ -654,14 +654,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
 <!-- MODAL — Image URL -->
 <div class="modal-overlay" id="modal-image">
   <div class="modal">
-    <h3>Insérer une image</h3>
+    <h3>{{ _("insert_image") }}</h3>
     <div class="modal-field">
-      <label>URL de l'image</label>
+      <label>{{ _("image_url") }}</label>
       <input type="text" id="img-url-input" placeholder="https://...">
     </div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('image')">Annuler</button>
-      <button class="btn btn-accent" onclick="insertImageFromUrl()">Insérer</button>
+      <button class="btn btn-ghost" onclick="closeModal('image')">{{ _("cancel") }}</button>
+      <button class="btn btn-accent" onclick="insertImageFromUrl()">{{ _("ok") }}</button>
     </div>
   </div>
 </div>
@@ -669,14 +669,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
 <!-- MODAL — Iframe URL -->
 <div class="modal-overlay" id="modal-iframe">
   <div class="modal">
-    <h3 id="iframe-modal-title">Insérer un iframe</h3>
+    <h3 id="iframe-modal-title">{{ _("insert_iframe") }}</h3>
     <div class="modal-field">
-      <label>URL de la page à intégrer</label>
+      <label>{{ _("url_to_display") }}</label>
       <input type="text" id="iframe-url-input" placeholder="https://...">
     </div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('iframe')">Annuler</button>
-      <button class="btn btn-accent" onclick="confirmIframeModal()">Confirmer</button>
+      <button class="btn btn-ghost" onclick="closeModal('iframe')">{{ _("cancel") }}</button>
+      <button class="btn btn-accent" onclick="confirmIframeModal()">{{ _("ok") }}</button>
     </div>
   </div>
 </div>
@@ -684,11 +684,11 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-app); color: v
 <!-- MODAL — Sauvegarder (Online / Offline) -->
 <div class="modal-overlay" id="modal-save">
   <div class="modal">
-    <h3>💾 Sauvegarder</h3>
+    <h3>{{ _("save") }}</h3>
 
     <div class="save-tabs">
-      <button class="save-tab active" onclick="switchSaveTab('online')">🌐 En ligne</button>
-      <button class="save-tab"       onclick="switchSaveTab('offline')">📦 Hors-ligne</button>
+      <button class="save-tab active" onclick="switchSaveTab('online')">{{ _("online") }}</button>
+      <button class="save-tab"       onclick="switchSaveTab('offline')">{{ _("offline") }}</button>
     </div>
 
     <!-- Online pane -->
@@ -1211,11 +1211,11 @@ function insertText(kind) {
 
   let el;
   if (kind === 'heading') {
-    el = makeTextEl({ text:'Titre de la slide', x:80, y:80, w:800, fontSize:48, fontWeight:'bold' });
+    el = makeTextEl({ text:'{{ _("slide_title_placeholder") }}', x:80, y:80, w:800, fontSize:48, fontWeight:'bold' });
   } else if (kind === 'body') {
-    el = makeTextEl({ text:'Votre texte ici', x:80, y:200, w:800, fontSize:22 });
+    el = makeTextEl({ text:'{{ _("slide_text_placeholder") }}', x:80, y:200, w:800, fontSize:22 });
   } else if (kind === 'bullet') {
-    el = makeTextEl({ text:'• Premier point\n• Deuxième point\n• Troisième point', x:100, y:160, w:760, fontSize:22 });
+    el = makeTextEl({ text:'{{ _("slide_list_placeholder") }}', x:100, y:160, w:760, fontSize:22 });
   }
   slide.elements.push(el);
   const node = createDomElement(el);

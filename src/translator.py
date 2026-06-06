@@ -29,6 +29,9 @@ class TranslationWrapper:
 async def set_locale(request: Request, lang: str = "en"):
     translation_wrapper = TranslationWrapper()
 
+    if "," in lang:
+        lang = lang.split(",")[0]
+
     locales_dir = Path(__file__).parent.parent / "translations"
     print(f"Setting language to: {lang}")
     translation_wrapper.translations = gettext.translation(

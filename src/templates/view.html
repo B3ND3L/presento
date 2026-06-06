@@ -1,127 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>{{ pres.meta.title }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/{{ pres.meta.theme }}.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/monokai.min.css">
-  <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
-  <style>
-    /* Conteneur de coordonnées à l'intérieur de chaque section Reveal.js */
-    .slide-root {
-      position: relative;
-      width: 960px;
-      height: 540px;
-      overflow: hidden;
-    }
-    .slide-el {
-      position: absolute;
-      box-sizing: border-box;
-      line-height: 1.4;
-      padding: 4px 6px;
-    }
-    .slide-el img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .slide-el svg { width: 100%; height: 100%; display: block; }
-  </style>
+    <meta charset="utf-8">
+    <title>{{ pres.meta.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/{{ pres.meta.theme }}.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/monokai.min.css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='styles.css') }}" type="text/css">
 </head>
 <body>
+
 <div class="reveal">
-  <div class="slides">
-    {% for slide in pres.slides %}
-    <section {% if slide.get('bg') %}data-background-color="{{ slide.bg }}"{% endif %}>
-      <div class="slide-root">
+    <div class="slides">
+        {% for slide in pres.slides %}
+        <section {% if slide.get('bg') %}data-background-color="{{ slide.bg }}"{% endif %}>
+            <div class="slide-root">
 
-        {% for el in slide.get('elements', []) %}
+                {% for el in slide.get('elements', []) %}
 
-        {% if el.type == 'text' %}
-        <div class="slide-el{% if el.get('fragment') %} fragment{% endif %}"
-          {% if el.get('fragment') and el.get('fragmentIndex') is not none %}data-fragment-index="{{ el.fragmentIndex }}"{% endif %}
-          style="
-          left:{{ el.x }}px; top:{{ el.y }}px;
-          width:{{ el.w }}px; height:{{ el.h }}px;
-          font-size:{{ el.fontSize }}px;
-          font-weight:{{ el.fontWeight }};
-          font-family:{{ el.fontFamily }};
-          {% if el.get('color') %}color:{{ el.color }};{% endif %}
-          text-align:{{ el.align }};
-          {% if el.get('bg') and el.bg != 'transparent' %}background:{{ el.bg }};{% endif %}
-          z-index:{{ el.zIndex }};
-        ">{{ el.get('html', el.text) | safe }}</div>
+                {% set fragment_attrs %}{% if el.get('fragment') %} fragment{% endif %}{% endset %}
+                {% set fragment_index %}{% if el.get('fragment') and el.get('fragmentIndex') is not none %}data-fragment-index="{{ el.fragmentIndex }}"{% endif %}{% endset %}
 
-        {% elif el.type == 'image' %}
-        <div class="slide-el{% if el.get('fragment') %} fragment{% endif %}"
-          {% if el.get('fragment') and el.get('fragmentIndex') is not none %}data-fragment-index="{{ el.fragmentIndex }}"{% endif %}
-          style="
-          left:{{ el.x }}px; top:{{ el.y }}px;
-          width:{{ el.w }}px; height:{{ el.h }}px;
-          overflow:hidden; z-index:{{ el.zIndex }};
-        "><img src="{{ el.src }}" alt=""></div>
+                {% if el.type == 'text' %}
+                <div class="slide-el{{ fragment_attrs }}" {{ fragment_index }}
+                     style="left:{{ el.x }}px; top:{{ el.y }}px; width:{{ el.w }}px; height:{{ el.h }}px;
+                            font-size:{{ el.fontSize }}px; font-weight:{{ el.fontWeight }};
+                            font-family:{{ el.fontFamily }}; text-align:{{ el.align }};
+                            z-index:{{ el.zIndex }};
+                            {% if el.get('color') %}color:{{ el.color }};{% endif %}
+                            {% if el.get('bg') and el.bg != 'transparent' %}background:{{ el.bg }};{% endif %}">
+                    {{ el.get('html', el.text) | safe }}
+                </div>
 
-        {% elif el.type == 'shape' %}
-        <div class="slide-el{% if el.get('fragment') %} fragment{% endif %}"
-          {% if el.get('fragment') and el.get('fragmentIndex') is not none %}data-fragment-index="{{ el.fragmentIndex }}"{% endif %}
-          style="
-          left:{{ el.x }}px; top:{{ el.y }}px;
-          width:{{ el.w }}px; height:{{ el.h }}px;
-          z-index:{{ el.zIndex }};
-        ">
-          {% if el.shape == 'rect' %}
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <rect x="2" y="2" width="96" height="96" rx="4"
-              fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
-          </svg>
-          {% elif el.shape == 'circle' %}
-          <svg viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="48"
-              fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
-          </svg>
-          {% elif el.shape == 'triangle' %}
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <polygon points="50,4 98,96 2,96"
-              fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
-          </svg>
-          {% endif %}
-        </div>
+                {% elif el.type == 'image' %}
+                <div class="slide-el{{ fragment_attrs }}" {{ fragment_index }}
+                     style="left:{{ el.x }}px; top:{{ el.y }}px; width:{{ el.w }}px; height:{{ el.h }}px;
+                            overflow:hidden; z-index:{{ el.zIndex }};">
+                    <img src="{{ el.src }}" alt="">
+                </div>
 
-        {% elif el.type == 'iframe' %}
-        <div class="slide-el{% if el.get('fragment') %} fragment{% endif %}"
-          {% if el.get('fragment') and el.get('fragmentIndex') is not none %}data-fragment-index="{{ el.fragmentIndex }}"{% endif %}
-          style="
-          left:{{ el.x }}px; top:{{ el.y }}px;
-          width:{{ el.w }}px; height:{{ el.h }}px;
-          z-index:{{ el.zIndex }}; overflow:hidden;
-        ">
-          <iframe src="{{ el.src }}"
-            style="width:100%;height:100%;border:none;display:block;"
-            allowfullscreen
-            allow="autoplay; fullscreen; picture-in-picture"
-            loading="lazy">
-          </iframe>
-        </div>
+                {% elif el.type == 'shape' %}
+                <div class="slide-el{{ fragment_attrs }}" {{ fragment_index }}
+                     style="left:{{ el.x }}px; top:{{ el.y }}px; width:{{ el.w }}px; height:{{ el.h }}px;
+                            z-index:{{ el.zIndex }};">
+                    {% if el.shape == 'rect' %}
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <rect x="2" y="2" width="96" height="96" rx="4"
+                              fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
+                    </svg>
+                    {% elif el.shape == 'circle' %}
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="48"
+                                fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
+                    </svg>
+                    {% elif el.shape == 'triangle' %}
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <polygon points="50,4 98,96 2,96"
+                                 fill="{{ el.fill }}" stroke="{{ el.stroke }}" stroke-width="2"/>
+                    </svg>
+                    {% endif %}
+                </div>
 
-        {% endif %}
-      {% endfor %}
+                {% elif el.type == 'iframe' %}
+                <div class="slide-el{{ fragment_attrs }}" {{ fragment_index }}
+                     style="left:{{ el.x }}px; top:{{ el.y }}px; width:{{ el.w }}px; height:{{ el.h }}px;
+                            z-index:{{ el.zIndex }}; overflow:hidden;">
+                    <iframe src="{{ el.src }}"
+                            allowfullscreen
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            loading="lazy">
+                    </iframe>
+                </div>
 
-      </div>
-    </section>
-    {% endfor %}
-  </div>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </section>
+        {% endfor %}
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.js"></script>
 <script>
-  Reveal.initialize({
-    hash: true,
-    width: 960, height: 540,
-    margin: 0.04,
-    transition: '{{ pres.meta.transition }}',
-    plugins: [RevealHighlight, RevealNotes]
-  });
+    Reveal.initialize({
+        hash:       true,
+        width:      960,
+        height:     540,
+        margin:     0.04,
+        transition: '{{ pres.meta.transition }}',
+        plugins:    [RevealHighlight, RevealNotes]
+    });
 </script>
 </body>
 </html>

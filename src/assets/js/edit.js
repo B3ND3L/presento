@@ -701,7 +701,7 @@ function switchSaveTab(tab) {
 }
 
 function copyPresId() {
-    navigator.clipboard.writeText(PRES_ID).then(() => showToast('🔑 ID copié !'));
+    navigator.clipboard.writeText(state.id).then(() => showToast('🔑 ID copié !'));
 }
 
 async function saveOnline() {
@@ -736,7 +736,7 @@ async function savePresentation(newPassword = undefined) {
     const body = { title: state.title, theme: state.theme, transition: state.transition, slides: state.slides };
     if (newPassword !== undefined) body.password = newPassword;
     try {
-        const res = await fetch(`/api/p/${PRES_ID}`, {
+        const res = await fetch(`/api/p/${state.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
@@ -775,7 +775,7 @@ document.querySelectorAll('.modal-overlay').forEach(el =>
 );
 
 function copyShareLink() {
-    navigator.clipboard.writeText(window.location.origin + '/p/' + PRES_ID)
+    navigator.clipboard.writeText(window.location.origin + '/p/' + state.id)
         .then(() => showToast('🔗 Lien copié !'));
 }
 

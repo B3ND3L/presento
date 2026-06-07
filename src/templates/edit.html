@@ -281,6 +281,7 @@ let   _probeIframe = null;
 ═════════════════════════════════════════════════════ */
 (function boot() {
     const INITIAL_SLIDES = {{ pres.slides | tojson }};
+    state.id = "{{ pres.id }}"
     state.title      = {{ pres.meta.title      | tojson }};
     state.theme      = {{ pres.meta.theme      | tojson }};
     state.transition = {{ pres.meta.transition | tojson }};

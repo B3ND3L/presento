@@ -1,5 +1,13 @@
 services:
 
+  presento:
+    image: ghcr.io/b3nd3l/presento:latest
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      - MONGO_URI=mongo-database:27017
+
   mongo-database:
     image: mongo:8.3.2
     container_name: mongodb

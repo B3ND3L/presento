@@ -1,17 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ lang }}">
 <head>
     <meta charset="utf-8">
     <title>{{ pres.meta.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/{{ pres.meta.theme }}.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/monokai.min.css">
-    <link rel="stylesheet" href="{{ url_for('assets', path='styles.css') }}" type="text/css">
+
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/tokens.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/view.css') }}" type="text/css">
+
+    <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
 </head>
 <body>
+
+<!-- Écran de chargement (charte Presento) -->
+<div id="presento-loader">
+    <div class="presento-loader-mark">
+        <img src="{{ url_for('assets', path='presento_logo.png') }}" alt="Presento">
+    </div>
+    <div class="presento-loader-spinner"></div>
+</div>
 
 <div class="reveal">
     <div class="slides">
@@ -84,18 +101,17 @@
     </div>
 </div>
 
+<!-- Configuration Reveal exposée au JavaScript -->
+<script id="presento-view-config" type="application/json">
+{
+    "transition": {{ pres.meta.transition | tojson }}
+}
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.js"></script>
-<script>
-    Reveal.initialize({
-        hash:       true,
-        width:      960,
-        height:     540,
-        margin:     0.04,
-        transition: '{{ pres.meta.transition }}',
-        plugins:    [RevealHighlight, RevealNotes]
-    });
-</script>
+<script src="{{ url_for('assets', path='js/view.js') }}"></script>
 </body>
 </html>
+

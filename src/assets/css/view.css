@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════
+   PRESENTO — VUE PRÉSENTATION (Reveal.js)
+   La charte s'applique aux éléments hors-slides (loader, fonts).
+   Les slides eux-mêmes restent gérés par le thème Reveal.js choisi.
+═══════════════════════════════════════════════════════════ */
+
+/* ── Layout des slides (positionnement absolu des éléments) ── */
+.slide-root {
+    position: relative;
+    width: 960px;
+    height: 540px;
+    overflow: hidden;
+}
+
+.reveal .slide-el {
+    position: absolute;
+    box-sizing: border-box;
+    line-height: 1.4;
+    padding: 4px 6px;
+    cursor: default;
+    user-select: text;
+}
+.reveal .slide-el img    { width: 100%; height: 100%; object-fit: cover; display: block; }
+.reveal .slide-el svg    { width: 100%; height: 100%; display: block; }
+.reveal .slide-el iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* ═══════════════════════════════════════════════════════════
+   ÉCRAN DE CHARGEMENT (charte Presento)
+═══════════════════════════════════════════════════════════ */
+#presento-loader {
+    position: fixed; inset: 0; z-index: 10000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    background: var(--bg-app, #0c0c14);
+    background-image: radial-gradient(circle at 50% 35%, rgba(124,92,252,.18) 0%, transparent 60%);
+    font-family: var(--font-sans, system-ui, sans-serif);
+    transition: opacity .4s ease;
+}
+#presento-loader.hidden { opacity: 0; pointer-events: none; }
+
+.presento-loader-mark {
+    width: 56px; height: 56px; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(124,92,252,.4), 0 10px 40px rgba(124,92,252,.4);
+    animation: loader-pulse 1.4s ease-in-out infinite;
+}
+.presento-loader-mark img { width: 100%; height: 100%; display: block; }
+
+.presento-loader-spinner {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 3px solid rgba(124,92,252,.25);
+    border-top-color: #7c5cfc;
+    animation: loader-spin .8s linear infinite;
+}
+
+@keyframes loader-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes loader-spin  { to { transform: rotate(360deg); } }
+

@@ -1,10 +1,73 @@
+/* ── Traductions (injectées par le template) ── */
+const I18N = (() => {
+    try { return JSON.parse(document.getElementById('presento-i18n').textContent); }
+    catch (_) { return {}; }
+})();
+const t = (key) => I18N[key] || key;
+
+/* ── Import JSON : dropzone + glisser-déposer ── */
+let selectedFile = null;
+
+function setSelectedFile(file) {
+    selectedFile = file || null;
+    const zone   = document.getElementById('import-dropzone');
+    const textEl = document.getElementById('dropzone-text');
+    if (!zone || !textEl) return;
+    if (selectedFile) {
+        zone.classList.add('dropzone--has-file');
+        textEl.textContent = selectedFile.name;
+    } else {
+        zone.classList.remove('dropzone--has-file');
+        textEl.textContent = t('dropzone_hint');
+    }
+}
+
+function initImportDropzone() {
+    const zone  = document.getElementById('import-dropzone');
+    const input = document.getElementById('import-file');
+    if (!zone || !input) return;
+
+    // Clic / clavier : ouvre le sélecteur de fichier
+    zone.addEventListener('click', e => {
+        if (e.target === input) return;   // évite la récursion du click programmatique
+        input.click();
+    });
+    zone.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+    });
+
+    input.addEventListener('change', () => setSelectedFile(input.files[0] || null));
+
+    // Empêche le navigateur d'ouvrir le fichier déposé n'importe où sur la page
+    // (indispensable pour que l'événement "drop" soit délivré de façon fiable).
+    ['dragover', 'drop'].forEach(ev =>
+        window.addEventListener(ev, e => e.preventDefault()));
+
+    ['dragenter', 'dragover'].forEach(ev =>
+        zone.addEventListener(ev, e => {
+            e.preventDefault();
+            zone.classList.add('dropzone--over');
+        }));
+    ['dragleave', 'dragend'].forEach(ev =>
+        zone.addEventListener(ev, () => zone.classList.remove('dropzone--over')));
+
+    zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('dropzone--over');
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) setSelectedFile(file);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initImportDropzone);
+
 async function importJson() {
-    const file  = document.getElementById('import-file').files[0];
+    const file  = selectedFile;
     const errEl = document.getElementById('import-error');
     errEl.classList.add('alert--hidden');
 
     if (!file) {
-        errEl.textContent = 'Veuillez sélectionner un fichier JSON.';
+        errEl.textContent = t('select_json_file');
         errEl.classList.remove('alert--hidden');
         return;
     }
@@ -12,12 +75,12 @@ async function importJson() {
     try {
         data = JSON.parse(await file.text());
     } catch {
-        errEl.textContent = 'Fichier JSON invalide.';
+        errEl.textContent = t('invalid_json');
         errEl.classList.remove('alert--hidden');
         return;
     }
     if (!data.title || !Array.isArray(data.slides)) {
-        errEl.textContent = 'Format de fichier non reconnu (title et slides requis).';
+        errEl.textContent = t('unrecognized_format');
         errEl.classList.remove('alert--hidden');
         return;
     }
@@ -36,7 +99,7 @@ async function importJson() {
         const { id } = await res.json();
         window.location.href = `/p/${id}/edit`;
     } catch {
-        errEl.textContent = "Erreur lors de l'import. Veuillez réessayer.";
+        errEl.textContent = t('import_error');
         errEl.classList.remove('alert--hidden');
     }
 }

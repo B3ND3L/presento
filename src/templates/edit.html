@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="fr" class="editor">
+<html lang="{{ lang }}" class="editor">
 <head>
     <meta charset="utf-8">
-    <title>Éditer — {{ pres.meta.title }}</title>
+    <title>{{ _("editing") }} — {{ pres.meta.title }}</title>
     <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('assets', path='styles.css') }}" type="text/css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/tokens.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/base.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/editor.css') }}" type="text/css">
+
+    <!-- Applique le thème avant le rendu (évite tout flash) -->
+    <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
 </head>
 <body class="editor">
 
@@ -20,6 +28,9 @@
         <span id="save-status">{{ _("save_status") }}</span>
     </div>
     <div class="tb-right">
+        <button class="theme-toggle" onclick="toggleTheme()" title="{{ _('toggle_theme') }}" aria-label="{{ _('toggle_theme') }}">
+            <span class="icon-moon">🌙</span><span class="icon-sun">☀️</span>
+        </button>
         <select class="ft-select ft-select--theme" id="theme-select"
                 title="{{ _('theme') }}" onchange="onThemeChange(this.value)">
             <option value="white">White</option>
@@ -48,7 +59,7 @@
                 onchange="applyStyle('fontFamily', this.value)">
             <option value="inherit">— {{ _("font") }} —</option>
             <option value="Georgia, serif">Georgia</option>
-            <option value="'DM Sans', sans-serif">DM Sans</option>
+            <option value="'Inter', sans-serif">Inter</option>
             <option value="'Courier New', monospace">Courier New</option>
             <option value="Impact, sans-serif">Impact</option>
             <option value="'Times New Roman', serif">Times New Roman</option>
@@ -110,7 +121,7 @@
 ══════════════════════════════════════════════ -->
 <div id="slide-panel">
     <div class="sp-header">
-        <span>Slides</span>
+        <span>{{ _("slides") }}</span>
         <button class="sp-add-btn" onclick="addSlide()" title="{{ _('add_slide') }}">+</button>
     </div>
     <div id="slide-list"></div>
@@ -132,21 +143,57 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     INSERT FAB
+     INSERT DOCK (barre latérale droite)
 ══════════════════════════════════════════════ -->
-<button id="insert-fab" onclick="toggleInsertMenu()" title="{{ _('insert') }}">+</button>
-<div id="insert-menu">
-    <button class="im-item" onclick="insertText('heading');    closeInsertMenu()"><span class="im-icon">T</span> {{ _("title") }}</button>
-    <button class="im-item" onclick="insertText('body');       closeInsertMenu()"><span class="im-icon">¶</span> {{ _("text") }}</button>
-    <button class="im-item" onclick="insertText('bullet');     closeInsertMenu()"><span class="im-icon">•</span> {{ _("list") }}</button>
-    <button class="im-item" onclick="openImageModal();         closeInsertMenu()"><span class="im-icon">🖼</span> {{ _("url_image") }}</button>
-    <button class="im-item" onclick="triggerImageUpload();     closeInsertMenu()"><span class="im-icon">📁</span> {{ _("file_image") }}</button>
-    <button class="im-item" onclick="openIframeModal(false);   closeInsertMenu()"><span class="im-icon">🌐</span> {{ _("iframe") }}</button>
-    <button class="im-item" onclick="insertShape('rect');      closeInsertMenu()"><span class="im-icon">▬</span> {{ _("rectangle") }}</button>
-    <button class="im-item" onclick="insertShape('circle');    closeInsertMenu()"><span class="im-icon">●</span> {{ _("circle") }}</button>
-    <button class="im-item" onclick="insertShape('triangle');  closeInsertMenu()"><span class="im-icon">▲</span> {{ _("triangle") }}</button>
-    <button class="im-item" onclick="insertDivider();          closeInsertMenu()"><span class="im-icon">━</span> {{ _("line") }}</button>
-</div>
+<aside id="insert-dock" aria-label="{{ _('insert') }}">
+    <div class="dock-header">
+        <span class="dock-header-icon" aria-hidden="true">＋</span>
+        <span>{{ _("insert") }}</span>
+    </div>
+    <div class="dock-scroll">
+        <div class="dock-group" role="group" aria-label="{{ _('ins_group_text') }}">
+            <div class="dock-group-label">{{ _("ins_group_text") }}</div>
+            <button class="dock-item" type="button" onclick="insertText('heading')" aria-label="{{ _('title') }}">
+                <span class="dock-icon" aria-hidden="true">T</span><span class="dock-label">{{ _("title") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="insertText('body')" aria-label="{{ _('text') }}">
+                <span class="dock-icon" aria-hidden="true">¶</span><span class="dock-label">{{ _("text") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="insertText('bullet')" aria-label="{{ _('list') }}">
+                <span class="dock-icon" aria-hidden="true">•</span><span class="dock-label">{{ _("list") }}</span>
+            </button>
+        </div>
+
+        <div class="dock-group" role="group" aria-label="{{ _('ins_group_media') }}">
+            <div class="dock-group-label">{{ _("ins_group_media") }}</div>
+            <button class="dock-item" type="button" onclick="openImageModal()" aria-label="{{ _('url_image') }}">
+                <span class="dock-icon" aria-hidden="true">🖼</span><span class="dock-label">{{ _("url_image") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="triggerImageUpload()" aria-label="{{ _('file_image') }}">
+                <span class="dock-icon" aria-hidden="true">📁</span><span class="dock-label">{{ _("file_image") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="openIframeModal(false)" aria-label="{{ _('iframe') }}">
+                <span class="dock-icon" aria-hidden="true">🌐</span><span class="dock-label">{{ _("iframe") }}</span>
+            </button>
+        </div>
+
+        <div class="dock-group" role="group" aria-label="{{ _('ins_group_shapes') }}">
+            <div class="dock-group-label">{{ _("ins_group_shapes") }}</div>
+            <button class="dock-item" type="button" onclick="insertShape('rect')" aria-label="{{ _('rectangle') }}">
+                <span class="dock-icon" aria-hidden="true">▬</span><span class="dock-label">{{ _("rectangle") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="insertShape('circle')" aria-label="{{ _('circle') }}">
+                <span class="dock-icon" aria-hidden="true">●</span><span class="dock-label">{{ _("circle") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="insertShape('triangle')" aria-label="{{ _('triangle') }}">
+                <span class="dock-icon" aria-hidden="true">▲</span><span class="dock-label">{{ _("triangle") }}</span>
+            </button>
+            <button class="dock-item" type="button" onclick="insertDivider()" aria-label="{{ _('line') }}">
+                <span class="dock-icon" aria-hidden="true">━</span><span class="dock-label">{{ _("line") }}</span>
+            </button>
+        </div>
+    </div>
+</aside>
 <input type="file" id="image-upload" accept="image/*" class="input-hidden" onchange="handleImageFile(event)">
 
 <!-- ══════════════════════════════════════════════
@@ -261,51 +308,44 @@
 <div id="toast"></div>
 
 <!-- ══════════════════════════════════════════════
+     DATA ISLANDS (consommées par edit.js)
+══════════════════════════════════════════════ -->
+<script id="presento-data" type="application/json">
+{
+    "id":         {{ pres.id              | tojson }},
+    "title":      {{ pres.meta.title      | tojson }},
+    "theme":      {{ pres.meta.theme      | tojson }},
+    "transition": {{ pres.meta.transition | tojson }},
+    "slides":     {{ pres.slides          | tojson }}
+}
+</script>
+
+<script id="presento-i18n" type="application/json">
+{
+    "click_to_edit":            {{ _("click_to_edit")            | tojson }},
+    "slide_title_placeholder":  {{ _("slide_title_placeholder")  | tojson }},
+    "slide_text_placeholder":   {{ _("slide_text_placeholder")   | tojson }},
+    "slide_list_placeholder":   {{ _("slide_list_placeholder")   | tojson }},
+    "url_undefined":            {{ _("url_undefined")            | tojson }},
+    "cannot_delete_last_slide": {{ _("cannot_delete_last_slide") | tojson }},
+    "insert_iframe":            {{ _("insert_iframe")            | tojson }},
+    "iframe_modal_edit":        {{ _("iframe_modal_edit")        | tojson }},
+    "unsaved":                  {{ _("unsaved")                  | tojson }},
+    "saving":                   {{ _("saving")                   | tojson }},
+    "saved":                    {{ _("saved")                    | tojson }},
+    "network_error":            {{ _("network_error")            | tojson }},
+    "deck_saved":               {{ _("deck_saved")               | tojson }},
+    "json_downloaded":          {{ _("json_downloaded")          | tojson }},
+    "id_copied":                {{ _("id_copied")                | tojson }},
+    "link_copied":              {{ _("link_copied")              | tojson }},
+    "passwords_no_match":       {{ _("passwords_no_match")       | tojson }}
+}
+</script>
+
+<!-- ══════════════════════════════════════════════
      SCRIPTS
 ══════════════════════════════════════════════ -->
 <script src="{{ url_for('assets', path='js/edit.js') }}"></script>
-<script>
-  /* ═════════════════════════════════════════════════════
-   STATE
-═════════════════════════════════════════════════════ */
-
-const SLIDE_W    = 960;
-const SLIDE_H    = 540;
-const REVEAL_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0';
-
-const _themeCache = {};
-let   _probeIframe = null;
-
-/* ═════════════════════════════════════════════════════
-   BOOT
-═════════════════════════════════════════════════════ */
-(function boot() {
-    const INITIAL_SLIDES = {{ pres.slides | tojson }};
-    state.id = "{{ pres.id }}"
-    state.title      = {{ pres.meta.title      | tojson }};
-    state.theme      = {{ pres.meta.theme      | tojson }};
-    state.transition = {{ pres.meta.transition | tojson }};
-    state.slides     = INITIAL_SLIDES.length ? INITIAL_SLIDES : [emptySlide()];
-
-    state.slides.forEach(s => s.elements.forEach(e => {
-        const num = parseInt(e.id.replace('el_',''));
-        if (!isNaN(num) && num > elCounter) elCounter = num;
-    }));
-
-    document.getElementById('pres-title').value  = state.title;
-    document.getElementById('theme-select').value = state.theme;
-    document.getElementById('pp-transition').value = state.transition;
-
-    buildPropPanel();
-    renderSlideList();
-    renderCurrentSlide();
-
-    const availW  = window.innerWidth  - 220 - 80;
-    const availH  = window.innerHeight -  52 - 44 - 80;
-    const fitZoom = Math.min(availW / SLIDE_W, availH / SLIDE_H, 1) * 100;
-    document.getElementById('zoom-range').value = Math.round(fitZoom);
-    setZoom(Math.round(fitZoom));
-})();
-</script>
 </body>
 </html>
+

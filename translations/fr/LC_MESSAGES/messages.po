@@ -310,3 +310,119 @@ msgstr "Supprimer"
 msgid "no_slide"
 msgstr "Aucune présentation pour le moment."
 
+# ── Clés ajoutées (UI éditeur, modale d'enregistrement) ──
+msgid "transition"
+msgstr "Transition"
+
+msgid "insert"
+msgstr "Insérer"
+
+msgid "copy_id"
+msgstr "Copier l'identifiant"
+
+msgid "password_optional"
+msgstr "Mot de passe (facultatif)"
+
+msgid "password_leave_empty"
+msgstr "Laisser vide pour aucun mot de passe"
+
+msgid "confirm_password"
+msgstr "Confirmer le mot de passe"
+
+msgid "save_online"
+msgstr "Enregistrer en ligne"
+
+msgid "save_online_hint"
+msgstr ""
+"Votre présentation est enregistrée sur le serveur et reste accessible via "
+"son identifiant."
+
+msgid "save_offline_desc"
+msgstr ""
+"Téléchargez votre présentation au format JSON pour la conserver ou la "
+"partager hors-ligne."
+
+msgid "download_json"
+msgstr "Télécharger le JSON"
+
+# ── Charte / interface ──
+msgid "toggle_theme"
+msgstr "Changer de thème (clair / sombre)"
+
+msgid "password_protected"
+msgstr "Protégée par mot de passe"
+
+msgid "editing"
+msgstr "Éditer"
+
+msgid "slides"
+msgstr "Diapositives"
+
+msgid "ins_group_text"
+msgstr "Texte"
+
+msgid "ins_group_media"
+msgstr "Média"
+
+msgid "ins_group_shapes"
+msgstr "Formes"
+
+# ── Messages JavaScript (index) ──
+msgid "select_json_file"
+msgstr "Veuillez sélectionner un fichier JSON."
+
+msgid "invalid_json"
+msgstr "Fichier JSON invalide."
+
+msgid "unrecognized_format"
+msgstr "Format de fichier non reconnu (title et slides requis)."
+
+msgid "import_error"
+msgstr "Erreur lors de l'import. Veuillez réessayer."
+
+msgid "dropzone_hint"
+msgstr "Glissez-déposez un fichier JSON ici"
+
+msgid "browse"
+msgstr "Parcourir"
+
+# ── Messages JavaScript (éditeur) ──
+msgid "click_to_edit"
+msgstr "Cliquez pour éditer…"
+
+msgid "url_undefined"
+msgstr "URL non définie"
+
+msgid "cannot_delete_last_slide"
+msgstr "Impossible de supprimer la dernière diapositive."
+
+msgid "iframe_modal_edit"
+msgstr "Modifier l'URL de l'iframe"
+
+msgid "unsaved"
+msgstr "Non sauvegardé"
+
+msgid "saving"
+msgstr "Enregistrement…"
+
+msgid "saved"
+msgstr "Enregistré"
+
+msgid "network_error"
+msgstr "Erreur réseau"
+
+msgid "deck_saved"
+msgstr "✓ Présentation enregistrée"
+
+msgid "json_downloaded"
+msgstr "✓ JSON téléchargé"
+
+msgid "id_copied"
+msgstr "Identifiant copié !"
+
+msgid "link_copied"
+msgstr "Lien copié !"
+
+msgid "passwords_no_match"
+msgstr "Les mots de passe ne correspondent pas."
+

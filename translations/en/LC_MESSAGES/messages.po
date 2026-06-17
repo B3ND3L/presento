@@ -310,3 +310,118 @@ msgstr "Delete"
 msgid "no_slide"
 msgstr "No presentations yet."
 
+# ── Added keys (editor UI, save modal) ──
+msgid "transition"
+msgstr "Transition"
+
+msgid "insert"
+msgstr "Insert"
+
+msgid "copy_id"
+msgstr "Copy ID"
+
+msgid "password_optional"
+msgstr "Password (optional)"
+
+msgid "password_leave_empty"
+msgstr "Leave empty for no password"
+
+msgid "confirm_password"
+msgstr "Confirm password"
+
+msgid "save_online"
+msgstr "Save online"
+
+msgid "save_online_hint"
+msgstr ""
+"Your presentation is stored on the server and remains accessible via its "
+"identifier."
+
+msgid "save_offline_desc"
+msgstr ""
+"Download your presentation as JSON to keep it or share it offline."
+
+msgid "download_json"
+msgstr "Download JSON"
+
+# ── Charter / interface ──
+msgid "toggle_theme"
+msgstr "Toggle theme (light / dark)"
+
+msgid "password_protected"
+msgstr "Password protected"
+
+msgid "editing"
+msgstr "Editing"
+
+msgid "slides"
+msgstr "Slides"
+
+msgid "ins_group_text"
+msgstr "Text"
+
+msgid "ins_group_media"
+msgstr "Media"
+
+msgid "ins_group_shapes"
+msgstr "Shapes"
+
+# ── JavaScript messages (index) ──
+msgid "select_json_file"
+msgstr "Please select a JSON file."
+
+msgid "invalid_json"
+msgstr "Invalid JSON file."
+
+msgid "unrecognized_format"
+msgstr "Unrecognized file format (title and slides required)."
+
+msgid "import_error"
+msgstr "Import failed. Please try again."
+
+msgid "dropzone_hint"
+msgstr "Drag & drop a JSON file here"
+
+msgid "browse"
+msgstr "Browse"
+
+# ── JavaScript messages (editor) ──
+msgid "click_to_edit"
+msgstr "Click to edit…"
+
+msgid "url_undefined"
+msgstr "URL not set"
+
+msgid "cannot_delete_last_slide"
+msgstr "Cannot delete the last slide."
+
+msgid "iframe_modal_edit"
+msgstr "Edit iframe URL"
+
+msgid "unsaved"
+msgstr "Unsaved"
+
+msgid "saving"
+msgstr "Saving…"
+
+msgid "saved"
+msgstr "Saved"
+
+msgid "network_error"
+msgstr "Network error"
+
+msgid "deck_saved"
+msgstr "✓ Presentation saved"
+
+msgid "json_downloaded"
+msgstr "✓ JSON downloaded"
+
+msgid "id_copied"
+msgstr "ID copied!"
+
+msgid "link_copied"
+msgstr "Link copied!"
+
+msgid "passwords_no_match"
+msgstr "Passwords do not match."
+

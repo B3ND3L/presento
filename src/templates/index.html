@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ lang }}">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presento</title>
     <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('assets', path='styles.css') }}" type="text/css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/tokens.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/base.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/index.css') }}" type="text/css">
+
+    <!-- Applique le thème avant le rendu (évite tout flash) -->
+    <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
 </head>
 <body>
 
@@ -13,18 +24,25 @@
         <div class="topbar-logo-mark">
             <img src="{{ url_for('assets', path='presento_logo.png') }}" alt="Presento">
         </div>
-        <span class="topbar-logo-text">PRESENTO</span><span class="topbar-logo-text" style="color:#FF0000;font-style: italic;">&#945;lpha v0.0.1</span>
+        <span class="topbar-logo-text">PRESENTO</span>
+        <span class="topbar-logo-badge">&#945;lpha v0.0.1</span>
     </div>
 
-    <div class="lang-dropdown" id="langDropdown">
-        <button class="lang-trigger" id="langTrigger" onclick="toggleLangMenu()">
-            <span id="langFlag">{{ _("emoji_language") }}</span>
-            <span id="langLabel">{{ _("language") }}</span>
-            <span class="chevron">▾</span>
+    <div class="topbar-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" title="{{ _('toggle_theme') }}" aria-label="{{ _('toggle_theme') }}">
+            <span class="icon-moon">🌙</span><span class="icon-sun">☀️</span>
         </button>
-        <div class="lang-menu" id="langMenu">
-            <button class="lang-opt {% if current_lang == 'fr' %}active{% endif %}" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</button>
-            <button class="lang-opt {% if current_lang == 'en' %}active{% endif %}" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</button>
+
+        <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-trigger" id="langTrigger" onclick="toggleLangMenu()">
+                <span id="langFlag">{{ _("emoji_language") }}</span>
+                <span id="langLabel">{{ _("language") }}</span>
+                <span class="chevron">▾</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <button class="lang-opt {% if lang == 'fr' %}active{% endif %}" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</button>
+                <button class="lang-opt {% if lang == 'en' %}active{% endif %}" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</button>
+            </div>
         </div>
     </div>
 </header>
@@ -74,11 +92,16 @@
 
             <div id="import-error" class="alert alert-error alert--hidden"></div>
 
-            <div class="form-row">
-                <input class="form-input form-input-file" type="file"
-                       id="import-file" accept=".json,application/json">
+            <div id="import-dropzone" class="dropzone" tabindex="0"
+                 role="button" aria-label="{{ _('dropzone_hint') }}">
+                <input type="file" id="import-file" class="input-hidden"
+                       accept=".json,application/json">
+                <span class="dropzone-icon" aria-hidden="true">📥</span>
+                <span class="dropzone-text" id="dropzone-text">{{ _("dropzone_hint") }}</span>
+                <span class="dropzone-browse">{{ _("browse") }}</span>
             </div>
-            <button type="button" class="btn btn-secondary action-btn-full" onclick="importJson()">
+
+            <button type="button" class="btn btn-primary action-btn-full" onclick="importJson()">
                 {{ _("import_edit") }}
             </button>
         </div>
@@ -93,7 +116,7 @@
             <h3>
                 {{ p.meta.title }}
                 {% if p.has_password %}
-                <span class="card-lock" title="Protégée par mot de passe">🔒</span>
+                <span class="card-lock" title="{{ _('password_protected') }}">🔒</span>
                 {% endif %}
             </h3>
             <div class="card-meta">
@@ -110,7 +133,7 @@
                     {{ _("pdf") }}
                 </a>
                 <form class="card-delete-form" action="/pres/{{ p.id }}/delete" method="post"
-                      onsubmit="return confirm('{{ _("confirm_delete") }}')">
+                      onsubmit="return confirm('{{ _('confirm_delete') }}')">
                     <button type="submit" class="btn btn-danger">{{ _("delete") }}</button>
                 </form>
             </div>
@@ -121,6 +144,18 @@
     {% endif %}
 </div>
 
+<!-- Traductions exposées au JavaScript -->
+<script id="presento-i18n" type="application/json">
+{
+    "select_json_file":    {{ _("select_json_file")    | tojson }},
+    "invalid_json":        {{ _("invalid_json")        | tojson }},
+    "unrecognized_format": {{ _("unrecognized_format") | tojson }},
+    "import_error":        {{ _("import_error")        | tojson }},
+    "dropzone_hint":       {{ _("dropzone_hint")       | tojson }}
+}
+</script>
+
 <script src="{{ url_for('assets', path='js/index.js') }}"></script>
 </body>
 </html>
+

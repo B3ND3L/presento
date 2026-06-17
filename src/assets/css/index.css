@@ -1,0 +1,156 @@
+/* ═══════════════════════════════════════════════════════════
+   PRESENTO — PAGE D'ACCUEIL (index)
+═══════════════════════════════════════════════════════════ */
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 110px 24px 70px;
+}
+
+/* ── Hero ── */
+.hero { margin-bottom: 50px; }
+
+.hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.1rem);
+    margin: 0 0 14px;
+    background: linear-gradient(120deg, var(--text) 30%, var(--accent) 130%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    max-width: 650px;
+    line-height: 1.6;
+}
+
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+
+.section-title {
+    margin-top: 54px; margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+/* ── Cartes présentations ── */
+.card {
+    background: var(--surface-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hi);
+    box-shadow: var(--shadow-md);
+}
+.card h3 { margin: 0 0 10px; }
+
+.card-meta { color: var(--text-muted); margin-bottom: 16px; }
+.card-lock { font-size: .75rem; color: var(--text-muted); margin-left: 8px; }
+
+.card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.card-delete-form { margin: 0; }
+
+/* ── Grille d'actions ── */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));   /* colonnes strictement égales */
+    gap: 16px;
+}
+@media (max-width: 640px) { .action-grid { grid-template-columns: 1fr; } }
+
+.action-card {
+    background: var(--surface-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    /* Colonne flex : permet d'aligner les boutons d'action en bas */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;   /* autorise le rétrécissement dans la grille (ellipse du texte) */
+}
+.action-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 700; }
+.action-card p {
+    margin: 0 0 16px; color: var(--text-muted);
+    font-size: .875rem; line-height: 1.5;
+    min-height: 2.6em;   /* réserve ~2 lignes pour équilibrer les descriptions */
+}
+
+/* Le formulaire (carte « Accès par ID ») occupe l'espace disponible */
+.action-card > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Zone centrale extensible (dropzone) puis bouton ancré en bas */
+.action-card .dropzone    { flex: 1; }
+.action-btn-full { width: 100%; margin-top: auto; }
+
+/* ── Dropzone (import JSON) ── */
+.dropzone {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center;
+    padding: 26px 18px; margin-bottom: 12px;
+    border: 1.5px dashed var(--border-hi);
+    border-radius: var(--radius-lg);
+    background: var(--bg-input);
+    cursor: pointer;
+    transition: border-color .18s ease, background .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.dropzone:hover {
+    border-color: var(--accent);
+    background: var(--bg-input-hover);
+}
+.dropzone:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+/* Survol pendant un glisser-déposer */
+.dropzone--over {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--accent-soft);
+    transform: scale(1.01);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+/* Un fichier est sélectionné */
+.dropzone--has-file {
+    border-style: solid;
+    border-color: var(--success-border);
+    background: var(--success-bg);
+}
+
+.dropzone-icon { font-size: 30px; line-height: 1; pointer-events: none; }
+.dropzone-text {
+    font-size: .9rem; color: var(--text-muted); pointer-events: none;
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dropzone--has-file .dropzone-text { color: var(--success); font-weight: 600; }
+
+.dropzone-browse {
+    display: inline-flex; align-items: center;
+    padding: 6px 14px; border-radius: var(--radius-pill);
+    background: var(--bg-surface); border: 1px solid var(--border-hi);
+    color: var(--text-1); font-size: .8rem; font-weight: 600;
+    pointer-events: none;
+}
+.dropzone:hover .dropzone-browse { border-color: var(--accent); color: var(--accent); }
+
+/* ── État vide ── */
+.empty {
+    color: var(--text-muted);
+    padding: 34px; text-align: center;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+}
+

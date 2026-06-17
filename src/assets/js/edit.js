@@ -1,3 +1,26 @@
+/* ═════════════════════════════════════════════════════
+   CONSTANTES & DONNÉES INJECTÉES
+═════════════════════════════════════════════════════ */
+const SLIDE_W    = 960;
+const SLIDE_H    = 540;
+const REVEAL_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0';
+
+const _themeCache = {};
+let   _probeIframe = null;
+
+/* ── Traductions (injectées par le template) ── */
+const I18N = (() => {
+    try { return JSON.parse(document.getElementById('presento-i18n').textContent); }
+    catch (_) { return {}; }
+})();
+const t = (key) => I18N[key] || key;
+
+/* ── Données de la présentation (injectées par le template) ── */
+const PRESENTO_DATA = (() => {
+    try { return JSON.parse(document.getElementById('presento-data').textContent); }
+    catch (_) { return { id: '', title: '', theme: 'white', transition: 'slide', slides: [] }; }
+})();
+
 function probeThemeColors(theme, callback) {
     if (_themeCache[theme]) { callback(_themeCache[theme]); return; }
     if (!_probeIframe) {
@@ -26,9 +49,10 @@ function probeThemeColors(theme, callback) {
 }
 
 let state = {
-    title:      "{{ pres.meta.title }}",
-    theme:      "{{ pres.meta.theme }}",
-    transition: "{{ pres.meta.transition }}",
+    id:         '',
+    title:      '',
+    theme:      'white',
+    transition: 'slide',
     slides: []
 };
 
@@ -111,7 +135,7 @@ function createDomElement(elData) {
     if (elData.type === 'text') {
         node.classList.add('el-text');
         node.contentEditable  = 'false';
-        node.dataset.placeholder = 'Cliquez pour éditer…';
+        node.dataset.placeholder = t('click_to_edit');
         applyTextStyles(node, elData);
         node.innerHTML = elData.html || escapeToHtml(elData.text || '');
         node.addEventListener('dblclick', () => startEditing(node));
@@ -133,7 +157,7 @@ function createDomElement(elData) {
         node.classList.add('el-iframe');
         const ph = document.createElement('div');
         ph.className = 'el-iframe-placeholder';
-        ph.innerHTML = `<div class="if-icon">🌐</div><div class="if-url">${elData.src || 'URL non définie'}</div>`;
+        ph.innerHTML = `<div class="if-icon">🌐</div><div class="if-url">${elData.src || t('url_undefined')}</div>`;
         node.appendChild(ph);
     }
 
@@ -195,13 +219,14 @@ function deselectAll() {
     updateFormToolbar();
 }
 
-function startEditing(node) {
+function startEditing(node, selectAll = false) {
     if (node.contentEditable === 'true') return;
     node.contentEditable = 'true';
     node.classList.add('editing');
     node.focus();
     const range = document.createRange();
-    range.selectNodeContents(node); range.collapse(false);
+    range.selectNodeContents(node);
+    if (!selectAll) range.collapse(false);   // curseur en fin de texte
     const sel = window.getSelection();
     sel.removeAllRanges(); sel.addRange(range);
 }
@@ -280,7 +305,18 @@ function onCanvasClick(e) {
    FORMAT TOOLBAR
 ═════════════════════════════════════════════════════ */
 function execCmd(cmd, value) {
-    if (selectedEl && selectedEl.contentEditable !== 'true') startEditing(selectedEl);
+    if (!selectedEl || selectedEl.dataset.id === undefined) return;
+    const elData = getElData(selectedEl.dataset.id);
+    if (!elData || elData.type !== 'text') return;
+
+    if (selectedEl.contentEditable !== 'true') {
+        // Pas en édition : on entre en édition et on sélectionne tout le texte
+        // afin que la commande s'applique à l'ensemble de la zone.
+        startEditing(selectedEl, true);
+    } else {
+        // Déjà en édition : on garde le focus pour préserver la sélection.
+        selectedEl.focus();
+    }
     document.execCommand(cmd, false, value || null);
     syncElDataFromDom(selectedEl);
     updateFormToolbar();
@@ -378,7 +414,79 @@ function updateFormToolbar() {
         document.getElementById('btn-fragment').classList.remove('active');
         document.getElementById('btn-edit-iframe').style.display = 'none';
     }
+    refreshTextFormatButtons();
 }
+
+/* Reflète l'état B / I / U / S des boutons.
+   - En édition : on lit l'état de la sélection courante (queryCommandState).
+   - Boîte simplement sélectionnée : on inspecte le contenu pour savoir si
+     l'intégralité du texte porte le style. */
+function refreshTextFormatButtons() {
+    const map = { 'btn-bold': 'bold', 'btn-italic': 'italic', 'btn-under': 'underline', 'btn-strike': 'strikeThrough' };
+    const editing = selectedEl && selectedEl.contentEditable === 'true';
+    const elData  = selectedEl ? getElData(selectedEl.dataset.id) : null;
+    const isText  = !!(elData && elData.type === 'text');
+
+    let states = null;
+    if (editing) {
+        states = {};
+        for (const cmd of Object.values(map)) {
+            try { states[cmd] = document.queryCommandState(cmd); } catch (_) { states[cmd] = false; }
+        }
+    } else if (isText) {
+        states = detectFormatStates(selectedEl);
+    }
+
+    for (const [id, cmd] of Object.entries(map)) {
+        const btn = document.getElementById(id);
+        if (!btn) continue;
+        btn.classList.toggle('active', !!(states && states[cmd]));
+    }
+}
+
+/* Vrai si un ancêtre (jusqu'à root inclus) applique la décoration demandée. */
+function ancestorHasDecoration(el, kind, root) {
+    let cur = el;
+    while (cur) {
+        const cs = getComputedStyle(cur);
+        const deco = (cs.textDecorationLine && cs.textDecorationLine !== 'none')
+            ? cs.textDecorationLine : (cs.textDecoration || '');
+        if (deco.includes(kind)) return true;
+        if (cur === root) break;
+        cur = cur.parentElement;
+    }
+    return false;
+}
+
+/* Détermine si TOUT le texte de la boîte porte chaque style. */
+function detectFormatStates(node) {
+    const all = { bold: true, italic: true, underline: true, strikeThrough: true };
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
+    let any = false, tn;
+    while ((tn = walker.nextNode())) {
+        if (!tn.textContent.replace(/\s/g, '')) continue;   // ignore le texte vide
+        any = true;
+        const el = tn.parentElement;
+        const cs = getComputedStyle(el);
+        const w  = cs.fontWeight;
+        if (!(w === 'bold' || w === 'bolder' || parseInt(w, 10) >= 600)) all.bold = false;
+        if (!(cs.fontStyle === 'italic' || cs.fontStyle === 'oblique'))   all.italic = false;
+        if (!ancestorHasDecoration(el, 'underline',    node)) all.underline = false;
+        if (!ancestorHasDecoration(el, 'line-through', node)) all.strikeThrough = false;
+    }
+    return any ? all : { bold: false, italic: false, underline: false, strikeThrough: false };
+}
+
+/* Empêche les boutons de mise en forme de voler le focus et donc de
+   détruire la sélection de texte en cours d'édition. */
+document.getElementById('format-toolbar').addEventListener('mousedown', e => {
+    if (e.target.closest('.ft-btn')) e.preventDefault();
+});
+
+/* Met à jour l'état des boutons quand la sélection change dans la zone éditée */
+document.addEventListener('selectionchange', () => {
+    if (selectedEl && selectedEl.contentEditable === 'true') refreshTextFormatButtons();
+});
 
 /* ═════════════════════════════════════════════════════
    KEYBOARD
@@ -407,9 +515,9 @@ function insertText(kind) {
     const slide = state.slides[currentSlideIdx];
     document.getElementById('empty-hint').style.display = 'none';
     let el;
-    if      (kind === 'heading') el = makeTextEl({ text: '{{ _("slide_title_placeholder") }}', x:80, y:80,  w:800, fontSize:48, fontWeight:'bold' });
-    else if (kind === 'body')    el = makeTextEl({ text: '{{ _("slide_text_placeholder") }}',  x:80, y:200, w:800, fontSize:22 });
-    else if (kind === 'bullet')  el = makeTextEl({ text: '{{ _("slide_list_placeholder") }}',  x:100,y:160, w:760, fontSize:22 });
+    if      (kind === 'heading') el = makeTextEl({ text: t('slide_title_placeholder'), x:80, y:80,  w:800, fontSize:48, fontWeight:'bold' });
+    else if (kind === 'body')    el = makeTextEl({ text: t('slide_text_placeholder'),  x:80, y:200, w:800, fontSize:22 });
+    else if (kind === 'bullet')  el = makeTextEl({ text: t('slide_list_placeholder'),  x:100,y:160, w:760, fontSize:22 });
     slide.elements.push(el);
     const node = createDomElement(el);
     document.getElementById('slide-canvas').appendChild(node);
@@ -491,7 +599,7 @@ function addSlide() {
 }
 
 function deleteSlide(idx) {
-    if (state.slides.length === 1) { showToast('Impossible de supprimer la dernière slide.'); return; }
+    if (state.slides.length === 1) { showToast(t('cannot_delete_last_slide')); return; }
     state.slides.splice(idx, 1);
     if (currentSlideIdx >= state.slides.length) currentSlideIdx = state.slides.length - 1;
     renderCurrentSlide(); renderSlideList(); markDirty();
@@ -604,7 +712,7 @@ let _iframeEditMode = false;
 function openIframeModal(editMode) {
     _iframeEditMode = editMode;
     document.getElementById('iframe-modal-title').textContent =
-        editMode ? "Modifier l'URL de l'iframe" : "Insérer un iframe";
+        editMode ? t('iframe_modal_edit') : t('insert_iframe');
     const input = document.getElementById('iframe-url-input');
     input.value = (editMode && selectedEl) ? (getElData(selectedEl.dataset.id)?.src || '') : '';
     document.getElementById('modal-iframe').classList.add('open');
@@ -681,7 +789,7 @@ function markDirty() {
     isDirty = true;
     const s = document.getElementById('save-status');
     s.className   = 'unsaved';
-    s.textContent = '● Non sauvegardé';
+    s.textContent = '● ' + t('unsaved');
 }
 
 function openSaveModal() {
@@ -701,7 +809,7 @@ function switchSaveTab(tab) {
 }
 
 function copyPresId() {
-    navigator.clipboard.writeText(state.id).then(() => showToast('🔑 ID copié !'));
+    navigator.clipboard.writeText(state.id).then(() => showToast('🔑 ' + t('id_copied')));
 }
 
 async function saveOnline() {
@@ -710,7 +818,7 @@ async function saveOnline() {
     const errEl = document.getElementById('save-online-error');
     errEl.style.display = 'none';
     if (pw && pw !== pw2) {
-        errEl.textContent   = 'Les mots de passe ne correspondent pas.';
+        errEl.textContent   = t('passwords_no_match');
         errEl.style.display = 'block';
         return;
     }
@@ -726,13 +834,13 @@ function saveOffline() {
     a.click();
     URL.revokeObjectURL(url);
     closeModal('save');
-    showToast('{{ _("json_downloaded") }}');
+    showToast(t('json_downloaded'));
 }
 
 async function savePresentation(newPassword = undefined) {
     state.title = document.getElementById('pres-title').value || state.title;
     const s = document.getElementById('save-status');
-    s.className = 'saving'; s.textContent = '{{ _("saving") }}';
+    s.className = 'saving'; s.textContent = t('saving');
     const body = { title: state.title, theme: state.theme, transition: state.transition, slides: state.slides };
     if (newPassword !== undefined) body.password = newPassword;
     try {
@@ -743,30 +851,19 @@ async function savePresentation(newPassword = undefined) {
         });
         if (!res.ok) throw new Error();
         isDirty = false;
-        s.className = 'saved'; s.textContent = '{{ _("saved") }}';
-        setTimeout(() => { s.className = ''; s.textContent = '{{ _("saved") }}'; }, 2500);
-        showToast('{{ _("deck_saved") }}');
+        s.className = 'saved'; s.textContent = t('saved');
+        setTimeout(() => { s.className = ''; s.textContent = t('saved'); }, 2500);
+        showToast(t('deck_saved'));
     } catch {
-        s.className = 'unsaved'; s.textContent = '{{ _("network_error") }}';
+        s.className = 'unsaved'; s.textContent = t('network_error');
     }
 }
 
 setInterval(() => { if (isDirty) savePresentation(); }, 45000);
 
 /* ═════════════════════════════════════════════════════
-   INSERT MENU / MODALS / SHARE / TOAST
+   MODALS / SHARE / TOAST
 ═════════════════════════════════════════════════════ */
-function toggleInsertMenu() {
-    document.getElementById('insert-fab').classList.toggle('open');
-    document.getElementById('insert-menu').classList.toggle('open');
-}
-function closeInsertMenu() {
-    document.getElementById('insert-fab').classList.remove('open');
-    document.getElementById('insert-menu').classList.remove('open');
-}
-document.addEventListener('click', e => {
-    if (!e.target.closest('#insert-menu') && !e.target.closest('#insert-fab')) closeInsertMenu();
-});
 
 function openImageModal() { document.getElementById('modal-image').classList.add('open'); }
 function closeModal(name) { document.getElementById('modal-' + name).classList.remove('open'); }
@@ -776,7 +873,7 @@ document.querySelectorAll('.modal-overlay').forEach(el =>
 
 function copyShareLink() {
     navigator.clipboard.writeText(window.location.origin + '/p/' + state.id)
-        .then(() => showToast('🔗 Lien copié !'));
+        .then(() => showToast('🔗 ' + t('link_copied')));
 }
 
 let toastTimer;
@@ -790,3 +887,37 @@ function showToast(msg) {
 document.getElementById('pres-title').addEventListener('input', e => {
     state.title = e.target.value; markDirty();
 });
+
+/* ═════════════════════════════════════════════════════
+   BOOT
+═════════════════════════════════════════════════════ */
+(function boot() {
+    const INITIAL_SLIDES = PRESENTO_DATA.slides || [];
+    state.id         = PRESENTO_DATA.id || '';
+    state.title      = PRESENTO_DATA.title || '';
+    state.theme      = PRESENTO_DATA.theme || 'white';
+    state.transition = PRESENTO_DATA.transition || 'slide';
+    state.slides     = INITIAL_SLIDES.length ? INITIAL_SLIDES : [emptySlide()];
+
+    state.slides.forEach(s => s.elements.forEach(e => {
+        const num = parseInt(e.id.replace('el_', ''));
+        if (!isNaN(num) && num > elCounter) elCounter = num;
+    }));
+
+    document.getElementById('pres-title').value    = state.title;
+    document.getElementById('theme-select').value  = state.theme;
+    document.getElementById('pp-transition').value = state.transition;
+
+    buildPropPanel();
+    renderSlideList();
+    renderCurrentSlide();
+
+    const dockW   = parseInt(getComputedStyle(document.documentElement)
+                        .getPropertyValue('--dock-w'), 10) || 184;
+    const availW  = window.innerWidth  - 220 - dockW - 80;
+    const availH  = window.innerHeight -  52 - 44 - 80;
+    const fitZoom = Math.min(availW / SLIDE_W, availH / SLIDE_H, 1) * 100;
+    document.getElementById('zoom-range').value = Math.round(fitZoom);
+    setZoom(Math.round(fitZoom));
+})();
+

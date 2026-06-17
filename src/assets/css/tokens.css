@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════════════════
+   PRESENTO — DESIGN TOKENS / CHARTE GRAPHIQUE
+   Thème : Violet + Noir/Blanc · Moderne & vibrant
+   Supporte les modes clair & sombre via [data-theme]
+═══════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Typographie ── */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    /* ── Rayons (arrondis modérés) ── */
+    --radius-xs:   6px;
+    --radius-sm:   8px;
+    --radius:      10px;
+    --radius-md:   12px;
+    --radius-lg:   16px;
+    --radius-xl:   20px;
+    --radius-pill: 999px;
+
+    /* ── Accent / Marque (commun aux 2 thèmes) ── */
+    --primary:        #7c5cfc;
+    --primary-hover:  #6b4ce8;
+    --accent:         #7c5cfc;
+    --accent-light:   #a892ff;
+    --accent-glow:    rgba(124, 92, 252, .30);
+
+    /* ── Couleurs sémantiques (communes) ── */
+    --success:        #22c58b;
+    --success-bg:     rgba(34, 197, 139, .15);
+    --success-border: rgba(34, 197, 139, .30);
+
+    --danger:         #f5566a;
+    --danger-bg:      rgba(245, 86, 106, .15);
+    --danger-border:  rgba(245, 86, 106, .30);
+    --danger-text:    #ff8a98;
+
+    --warning:        #f0b429;
+    --warning-bg:     rgba(240, 180, 41, .14);
+
+    --green:          var(--success);
+    --red:            var(--danger);
+    --yellow:         var(--warning);
+
+    /* ── Layout éditeur ── */
+    --panel-left: 220px;
+    --dock-w:     184px;
+    --topbar-h:   56px;
+    --toolbar-h:  46px;
+    --slide-w:    960px;
+    --slide-h:    540px;
+
+    font-family: var(--font-sans);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODE SOMBRE (défaut)
+═══════════════════════════════════════════════════════════ */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg:             radial-gradient(circle at 18% -10%, #1d1436 0%, #0c0c14 55%);
+    --bg-app:         #0c0c14;
+    --bg-canvas:      #07070d;
+    --bg-panel:       #131320;
+    --bg-surface:     #16161f;
+    --bg-hover:       #20202e;
+    --bg-active:      #2a2a3c;
+    --bg-input:       rgba(255, 255, 255, .05);
+    --bg-input-hover: rgba(255, 255, 255, .09);
+
+    --surface:        #16161f;
+    --surface-hover:  #20202e;
+    --surface-card:   rgba(255, 255, 255, .035);
+    --surface-glass:  rgba(19, 19, 32, .72);
+
+    --border:         rgba(255, 255, 255, .09);
+    --border-hi:      rgba(255, 255, 255, .16);
+    --border-input:   rgba(255, 255, 255, .14);
+    --border-focus:   var(--accent);
+
+    --text:           #f4f4f8;
+    --text-1:         #ececf2;
+    --text-2:         #9b9bb0;
+    --text-3:         #5e5e72;
+    --text-muted:     #9b9bb0;
+    --text-code:      var(--accent-light);
+
+    --accent-soft:    #241d44;
+
+    --shadow-sm:      0 4px 14px rgba(0, 0, 0, .35);
+    --shadow-md:      0 16px 40px rgba(0, 0, 0, .45);
+    --shadow-lg:      0 30px 100px rgba(0, 0, 0, .6);
+    --code-bg:        rgba(255, 255, 255, .07);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODE CLAIR
+═══════════════════════════════════════════════════════════ */
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg:             radial-gradient(circle at 18% -10%, #efe9ff 0%, #f5f5fb 55%);
+    --bg-app:         #f5f5fb;
+    --bg-canvas:      #e7e7f0;
+    --bg-panel:       #ffffff;
+    --bg-surface:     #ffffff;
+    --bg-hover:       #f0f0f7;
+    --bg-active:      #e7e7f2;
+    --bg-input:       rgba(15, 15, 30, .04);
+    --bg-input-hover: rgba(15, 15, 30, .07);
+
+    --surface:        #ffffff;
+    --surface-hover:  #f4f4fa;
+    --surface-card:   rgba(255, 255, 255, .75);
+    --surface-glass:  rgba(255, 255, 255, .72);
+
+    --border:         rgba(15, 15, 30, .10);
+    --border-hi:      rgba(15, 15, 30, .17);
+    --border-input:   rgba(15, 15, 30, .15);
+    --border-focus:   var(--accent);
+
+    --text:           #15151f;
+    --text-1:         #20202c;
+    --text-2:         #5a5a6c;
+    --text-3:         #9a9aac;
+    --text-muted:     #5a5a6c;
+    --text-code:      #6b4ce8;
+
+    --accent-soft:    #ece8ff;
+
+    --shadow-sm:      0 4px 14px rgba(70, 60, 120, .12);
+    --shadow-md:      0 16px 40px rgba(70, 60, 120, .15);
+    --shadow-lg:      0 30px 90px rgba(70, 60, 120, .22);
+    --code-bg:        rgba(15, 15, 30, .06);
+}
+
+/* Transition douce lors du switch de thème */
+:root.theme-anim,
+:root.theme-anim * {
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+}
+

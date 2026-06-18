@@ -11,8 +11,8 @@ from starlette.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
-from .config import Config
-from .languageMiddleware import LanguageMiddleware
+from src.config import Config
+from src.languageMiddleware import LanguageMiddleware
 
 from src.models import (
     load_presentation, save_presentation,

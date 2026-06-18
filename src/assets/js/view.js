@@ -24,7 +24,8 @@
         hash:       true,
         width:      960,
         height:     540,
-        margin:     0.04,
+        margin:     0,        // pas de marge : mappe 960×540 exactement comme le canvas éditeur
+        center:     false,    // pas de centrage vertical : origine en haut-à-gauche, comme le WYSIWYG
         transition: cfg.transition || 'slide',
         plugins:    [RevealHighlight, RevealNotes]
     }).then(hideLoader);

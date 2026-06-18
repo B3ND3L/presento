@@ -182,12 +182,15 @@ body.editor {
 #slide-canvas.drag-over { box-shadow: 0 0 0 3px var(--accent), var(--shadow-lg); }
 
 /* ── Éléments de slide ── */
-.slide-el { position: absolute; cursor: move; user-select: none; outline: none; }
+/* box-sizing: border-box pour que la taille (w×h) corresponde exactement
+   à celle de la vue présentation et des miniatures (qui utilisent border-box).
+   Sans cela, le padding s'ajoute à la largeur → décalage du WYSIWYG. */
+.slide-el { position: absolute; box-sizing: border-box; cursor: move; user-select: none; outline: none; }
 .slide-el.selected { outline: 2px solid var(--accent); outline-offset: 1px; }
 .slide-el.editing  { cursor: text; outline: 2px solid var(--accent-light); outline-offset: 1px; }
 
 .el-text {
-    min-width: 80px; min-height: 24px; padding: 4px 6px;
+    padding: 4px 6px;
     word-break: break-word; line-height: 1.4;
 }
 .el-text[contenteditable="true"] { cursor: text; }
@@ -196,6 +199,13 @@ body.editor {
 .el-image { overflow: hidden; }
 .el-image img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 .el-shape svg { width: 100%; height: 100%; display: block; }
+
+/* Aperçu live d'iframe (via le proxy). pointer-events:none pour que la boîte
+   reste déplaçable/sélectionnable dans l'éditeur. */
+.el-iframe-live {
+    width: 100%; height: 100%; border: none; display: block;
+    background: #fff; pointer-events: none;
+}
 
 .resize-handle {
     position: absolute; right: -5px; bottom: -5px;

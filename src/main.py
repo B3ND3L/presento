@@ -3,6 +3,12 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
+import re
+import ipaddress
+import socket
+from urllib.parse import urlparse
+
+import httpx
 
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
@@ -70,6 +76,92 @@ async def edit_page(request: Request, pres_id: str):
     if not pres:
         raise HTTPException(404, "Présentation introuvable")
     return templates.TemplateResponse(request, "edit.html", {"pres": pres})
+
+# ── Proxy d'iframe (prévisualisation de sites cross-domain) ─
+
+# En-têtes envoyés par le site cible qui empêchent l'embarquement en iframe :
+# on les retire pour pouvoir afficher la prévisualisation depuis notre origine.
+_FRAME_BLOCKING_HEADERS = {
+    "x-frame-options",
+    "content-security-policy",
+    "content-security-policy-report-only",
+    "cross-origin-opener-policy",
+    "cross-origin-embedder-policy",
+    "cross-origin-resource-policy",
+}
+# En-têtes « hop-by-hop » ou de transport à ne pas réémettre tels quels.
+_SKIP_HEADERS = {
+    "content-encoding", "content-length", "transfer-encoding",
+    "connection", "keep-alive", "set-cookie", "strict-transport-security",
+}
+_PROXY_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+)
+
+
+def _is_blocked_host(host: str) -> bool:
+    """Empêche le SSRF : refuse les hôtes résolvant vers une IP privée/locale."""
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except OSError:
+        return True
+    for info in infos:
+        ip = ipaddress.ip_address(info[4][0])
+        if (ip.is_private or ip.is_loopback or ip.is_link_local
+                or ip.is_multicast or ip.is_reserved or ip.is_unspecified):
+            return True
+    return False
+
+
+@app.get("/proxy")
+async def proxy(url: str):
+    """Récupère une page distante et la ressert depuis notre origine en
+    retirant les en-têtes qui interdisent l'embarquement en iframe.
+
+    Permet une prévisualisation de sites qui bloquent normalement le
+    cross-domain (X-Frame-Options / CSP frame-ancestors)."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        raise HTTPException(400, "URL invalide")
+    if _is_blocked_host(parsed.hostname):
+        raise HTTPException(403, "Hôte non autorisé")
+
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=15.0) as client:
+            upstream = await client.get(
+                url,
+                headers={
+                    "User-Agent": _PROXY_UA,
+                    "Accept": "*/*",
+                    "Accept-Language": "fr,en;q=0.8",
+                },
+            )
+    except httpx.HTTPError:
+        raise HTTPException(502, "Impossible de récupérer la page distante")
+
+    content_type = upstream.headers.get("content-type", "application/octet-stream")
+    content = upstream.content
+
+    # Injecte une balise <base> pour que les ressources relatives se résolvent
+    # par rapport à l'URL d'origine (et non par rapport à /proxy).
+    if "text/html" in content_type.lower():
+        base_tag = f'<base href="{url}">'
+        text = content.decode(upstream.encoding or "utf-8", errors="replace")
+        if re.search(r"<head[^>]*>", text, flags=re.IGNORECASE):
+            text = re.sub(r"(<head[^>]*>)", r"\1" + base_tag, text,
+                          count=1, flags=re.IGNORECASE)
+        else:
+            text = base_tag + text
+        content = text.encode("utf-8")
+        content_type = "text/html; charset=utf-8"
+
+    headers = {
+        k: v for k, v in upstream.headers.items()
+        if k.lower() not in _FRAME_BLOCKING_HEADERS
+        and k.lower() not in _SKIP_HEADERS
+    }
+    return Response(content=content, media_type=content_type, headers=headers)
 
 # ── API JSON (présentations stockées côté client) ──────────
 

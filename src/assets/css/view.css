@@ -17,6 +17,7 @@
     box-sizing: border-box;
     line-height: 1.4;
     padding: 4px 6px;
+    word-break: break-word;   /* même rupture de mots que le WYSIWYG */
     cursor: default;
     user-select: text;
 }

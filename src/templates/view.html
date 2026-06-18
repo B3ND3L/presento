@@ -85,7 +85,8 @@
                 <div class="slide-el{{ fragment_attrs }}" {{ fragment_index }}
                      style="left:{{ el.x }}px; top:{{ el.y }}px; width:{{ el.w }}px; height:{{ el.h }}px;
                             z-index:{{ el.zIndex }}; overflow:hidden;">
-                    <iframe src="{{ el.src }}"
+                    <iframe src="/proxy?url={{ el.src | urlencode }}"
+                            referrerpolicy="no-referrer"
                             allowfullscreen
                             allow="autoplay; fullscreen; picture-in-picture"
                             loading="lazy">

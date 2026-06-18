@@ -40,12 +40,13 @@ function probeThemeColors(theme, callback) {
         const result = {
             bg:    cs.getPropertyValue('--r-background-color').trim() || '#ffffff',
             color: cs.getPropertyValue('--r-main-color').trim()       || '#000000',
+            font:  cs.getPropertyValue('--r-main-font').trim()        || 'sans-serif',
         };
         _themeCache[theme] = result;
         callback(result);
     };
     link.onload  = done;
-    link.onerror = () => { _themeCache[theme] = { bg: '#ffffff', color: '#000000' }; callback(_themeCache[theme]); };
+    link.onerror = () => { _themeCache[theme] = { bg: '#ffffff', color: '#000000', font: 'sans-serif' }; callback(_themeCache[theme]); };
 }
 
 let state = {
@@ -98,10 +99,12 @@ function renderCurrentSlide() {
 
     canvas.querySelectorAll('.slide-el').forEach(n => n.remove());
 
-    const applyTheme = ({ bg, color }) => {
+    const applyTheme = ({ bg, color, font }) => {
         const effectiveBg = slide.bg || bg;
         canvas.style.background = effectiveBg;
         canvas.style.color      = color;
+        // Aligne la police de l'éditeur sur celle du thème Reveal (vue + miniatures)
+        if (font) canvas.style.fontFamily = font;
         document.getElementById('slide-bg-color').value   = effectiveBg;
         document.getElementById('pp-slide-bg').value      = effectiveBg;
         document.getElementById('slide-bg-preview').style.background = effectiveBg;
@@ -155,10 +158,21 @@ function createDomElement(elData) {
     }
     if (elData.type === 'iframe') {
         node.classList.add('el-iframe');
-        const ph = document.createElement('div');
-        ph.className = 'el-iframe-placeholder';
-        ph.innerHTML = `<div class="if-icon">🌐</div><div class="if-url">${elData.src || t('url_undefined')}</div>`;
-        node.appendChild(ph);
+        if (elData.src) {
+            // Prévisualisation live via le proxy serveur (contourne le blocage
+            // cross-domain X-Frame-Options / CSP des sites cibles).
+            const frame = document.createElement('iframe');
+            frame.className = 'el-iframe-live';
+            frame.src = '/proxy?url=' + encodeURIComponent(elData.src);
+            frame.setAttribute('referrerpolicy', 'no-referrer');
+            frame.loading = 'lazy';
+            node.appendChild(frame);
+        } else {
+            const ph = document.createElement('div');
+            ph.className = 'el-iframe-placeholder';
+            ph.innerHTML = `<div class="if-icon">🌐</div><div class="if-url">${t('url_undefined')}</div>`;
+            node.appendChild(ph);
+        }
     }
 
     refreshFragmentBadge(node, elData);
@@ -727,8 +741,10 @@ function confirmIframeModal() {
         const elData = getElData(selectedEl.dataset.id);
         if (elData) {
             elData.src = src;
-            const ph = selectedEl.querySelector('.el-iframe-placeholder .if-url');
-            if (ph) ph.textContent = src;
+            // Reconstruit l'élément pour afficher la prévisualisation live
+            const newNode = createDomElement(elData);
+            selectedEl.replaceWith(newNode);
+            selectEl(newNode);
             markDirty(); renderThumb(currentSlideIdx);
         }
     } else {
@@ -751,11 +767,12 @@ function onThemeChange(val) {
     document.querySelectorAll('#pp-themes .theme-btn').forEach(b =>
         b.classList.toggle('active', b.dataset.val === val)
     );
-    probeThemeColors(val, ({ bg, color }) => {
+    probeThemeColors(val, ({ bg, color, font }) => {
         const canvas = document.getElementById('slide-canvas');
         const slide  = state.slides[currentSlideIdx];
         if (!slide.bg) canvas.style.background = bg;
         canvas.style.color = color;
+        if (font) canvas.style.fontFamily = font;
         renderSlideList();
     });
     markDirty();
@@ -790,6 +807,16 @@ function markDirty() {
     const s = document.getElementById('save-status');
     s.className   = 'unsaved';
     s.textContent = '● ' + t('unsaved');
+    // Reflète chaque modification dans la vignette de la slide courante
+    scheduleThumbRefresh();
+}
+
+/* Rafraîchit la vignette de la slide courante, débouncé pour éviter de
+   reconstruire l'iframe à chaque micro-modification (déplacement, frappe…). */
+let _thumbRefreshTimer = null;
+function scheduleThumbRefresh() {
+    clearTimeout(_thumbRefreshTimer);
+    _thumbRefreshTimer = setTimeout(() => renderThumb(currentSlideIdx), 150);
 }
 
 function openSaveModal() {

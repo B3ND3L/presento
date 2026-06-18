@@ -254,3 +254,24 @@ document.addEventListener('click', e => {
         document.getElementById('langMenu').classList.remove('open');
     }
 });
+
+/* ── Liaison des gestionnaires d'événements (remplace les onclick inline) ── */
+document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) themeBtn.addEventListener('click', () => {
+        if (typeof window.toggleTheme === 'function') window.toggleTheme();
+    });
+
+    const langTrigger = document.getElementById('langTrigger');
+    if (langTrigger) langTrigger.addEventListener('click', toggleLangMenu);
+
+    document.querySelectorAll('.lang-opt').forEach(btn =>
+        btn.addEventListener('click', () =>
+            setLang(btn.dataset.lang, btn.dataset.flag, btn.dataset.label)));
+
+    const accessBtn = document.getElementById('access-btn');
+    if (accessBtn) accessBtn.addEventListener('click', accessPresentation);
+
+    const importBtn = document.getElementById('import-btn');
+    if (importBtn) importBtn.addEventListener('click', importJson);
+});

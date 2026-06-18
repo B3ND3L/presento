@@ -29,19 +29,19 @@
     </div>
 
     <div class="topbar-actions">
-        <button class="theme-toggle" onclick="toggleTheme()" title="{{ _('toggle_theme') }}" aria-label="{{ _('toggle_theme') }}">
+        <button class="theme-toggle" id="themeToggle" title="{{ _('toggle_theme') }}" aria-label="{{ _('toggle_theme') }}">
             <span class="icon-moon">🌙</span><span class="icon-sun">☀️</span>
         </button>
 
         <div class="lang-dropdown" id="langDropdown">
-            <button class="lang-trigger" id="langTrigger" onclick="toggleLangMenu()">
+            <button class="lang-trigger" id="langTrigger">
                 <span id="langFlag">{{ _("emoji_language") }}</span>
                 <span id="langLabel">{{ _("language") }}</span>
                 <span class="chevron">▾</span>
             </button>
             <div class="lang-menu" id="langMenu">
-                <button class="lang-opt {% if lang == 'fr' %}active{% endif %}" onclick="setLang('fr','🇫🇷','Français')">🇫🇷 Français</button>
-                <button class="lang-opt {% if lang == 'en' %}active{% endif %}" onclick="setLang('en','🇬🇧','English')">🇬🇧 English</button>
+                <button class="lang-opt {% if lang == 'fr' %}active{% endif %}" data-lang="fr" data-flag="🇫🇷" data-label="Français">🇫🇷 Français</button>
+                <button class="lang-opt {% if lang == 'en' %}active{% endif %}" data-lang="en" data-flag="🇬🇧" data-label="English">🇬🇧 English</button>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
                 <input class="form-input" type="password" id="access-password"
                        placeholder="{{ _('password_placeholder') }}">
             </div>
-            <button type="button" class="btn btn-primary action-btn-full" onclick="accessPresentation()">
+            <button type="button" class="btn btn-primary action-btn-full" id="access-btn">
                 {{ _("access") }}
             </button>
         </div>
@@ -95,7 +95,7 @@
                 <span class="dropzone-browse">{{ _("browse") }}</span>
             </div>
 
-            <button type="button" class="btn btn-primary action-btn-full" onclick="importJson()">
+            <button type="button" class="btn btn-primary action-btn-full" id="import-btn">
                 {{ _("import_edit") }}
             </button>
         </div>

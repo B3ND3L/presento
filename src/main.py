@@ -9,7 +9,9 @@ from starlette.staticfiles import StaticFiles
 
 
 from starlette.middleware.sessions import SessionMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
+from .config import Config
 from .languageMiddleware import LanguageMiddleware
 
 from src.models import (
@@ -18,6 +20,7 @@ from src.models import (
     check_presentation_password, generate_id, collection
 )
 
+config = Config()
 app = FastAPI()
 
 app.mount("/assets", StaticFiles(directory=str(os.path.join(os.path.dirname(__file__), "assets"))), name="assets")
@@ -26,6 +29,7 @@ templates_dir = str(os.path.join(os.path.dirname(__file__), "templates"))
 templates = Jinja2Templates(directory=templates_dir)
 
 
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=config.get("trusted_hosts"))
 app.add_middleware(LanguageMiddleware, templates=templates)
 app.add_middleware(SessionMiddleware, secret_key="idkwihtp")
 

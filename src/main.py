@@ -30,6 +30,16 @@ templates = Jinja2Templates(directory=templates_dir)
 
 
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=config.get("trusted_hosts"))
+
+@app.middleware("http")
+async def set_scheme_middleware(request, call_next):
+    # On récupère le protocole envoyé par Nginx Proxy Manager
+    proto = request.headers.get("x-forwarded-proto", "http")
+    # On force le scope de la requête pour Jinja2 et url_for
+    request.scope["scheme"] = proto
+    response = await call_next(request)
+    return response
+
 app.add_middleware(LanguageMiddleware, templates=templates)
 app.add_middleware(SessionMiddleware, secret_key="idkwihtp")
 

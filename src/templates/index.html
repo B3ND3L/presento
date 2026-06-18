@@ -65,25 +65,19 @@
             <h4>{{ _("id_access") }}</h4>
             <p>{{ _("online_desc") }}</p>
 
-            {% if access_error %}
-            <div class="alert alert-error">{{ access_error }}</div>
-            {% endif %}
+            <div id="access-error" class="alert alert-error alert--hidden"></div>
 
-            <form action="/pres/access" method="post">
-                <div class="form-row">
-                    <input class="form-input" type="text" name="pres_id"
-                           placeholder="{{ _('id_placeholder') }}"
-                           value="{{ access_pres_id or '' }}"
-                           required>
-                </div>
-                <div class="form-row">
-                    <input class="form-input" type="password" name="password"
-                           placeholder="{{ _('password_placeholder') }}">
-                </div>
-                <button type="submit" class="btn btn-primary action-btn-full">
-                    {{ _("access") }}
-                </button>
-            </form>
+            <div class="form-row">
+                <input class="form-input" type="text" id="access-id"
+                       placeholder="{{ _('id_placeholder') }}">
+            </div>
+            <div class="form-row">
+                <input class="form-input" type="password" id="access-password"
+                       placeholder="{{ _('password_placeholder') }}">
+            </div>
+            <button type="button" class="btn btn-primary action-btn-full" onclick="accessPresentation()">
+                {{ _("access") }}
+            </button>
         </div>
 
         <div class="action-card">
@@ -110,38 +104,8 @@
 
     <h2 class="section-title">{{ _("my_slides") }}</h2>
 
-    {% if presentations %}
-        {% for p in presentations %}
-        <div class="card">
-            <h3>
-                {{ p.meta.title }}
-                {% if p.has_password %}
-                <span class="card-lock" title="{{ _('password_protected') }}">🔒</span>
-                {% endif %}
-            </h3>
-            <div class="card-meta">
-                {{ p.meta.theme }} • <code>{{ p.id }}</code>
-            </div>
-            <div class="card-actions">
-                <a href="/p/{{ p.id }}" target="_blank" class="btn btn-success">
-                    {{ _("view_slide") }}
-                </a>
-                <a href="/p/{{ p.id }}/edit" class="btn btn-secondary">
-                    {{ _("edit") }}
-                </a>
-                <a href="/p/{{ p.id }}?print-pdf" target="_blank" class="btn btn-secondary">
-                    {{ _("pdf") }}
-                </a>
-                <form class="card-delete-form" action="/pres/{{ p.id }}/delete" method="post"
-                      onsubmit="return confirm('{{ _('confirm_delete') }}')">
-                    <button type="submit" class="btn btn-danger">{{ _("delete") }}</button>
-                </form>
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <div class="empty">{{ _("no_slide") }}</div>
-    {% endif %}
+    <div id="my-slides"></div>
+    <div id="my-slides-empty" class="empty alert--hidden">{{ _("no_slide") }}</div>
 </div>
 
 <!-- Traductions exposées au JavaScript -->
@@ -151,7 +115,16 @@
     "invalid_json":        {{ _("invalid_json")        | tojson }},
     "unrecognized_format": {{ _("unrecognized_format") | tojson }},
     "import_error":        {{ _("import_error")        | tojson }},
-    "dropzone_hint":       {{ _("dropzone_hint")       | tojson }}
+    "dropzone_hint":       {{ _("dropzone_hint")       | tojson }},
+    "view_slide":          {{ _("view_slide")          | tojson }},
+    "edit":                {{ _("edit")                | tojson }},
+    "pdf":                 {{ _("pdf")                 | tojson }},
+    "delete":              {{ _("delete")              | tojson }},
+    "confirm_delete":      {{ _("confirm_delete")      | tojson }},
+    "password_protected":  {{ _("password_protected")  | tojson }},
+    "access_empty":        {{ _("access_empty")        | tojson }},
+    "access_not_found":    {{ _("access_not_found")    | tojson }},
+    "access_bad_password": {{ _("access_bad_password") | tojson }}
 }
 </script>
 

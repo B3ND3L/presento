@@ -899,6 +899,19 @@ document.getElementById('pres-title').addEventListener('input', e => {
     state.transition = PRESENTO_DATA.transition || 'slide';
     state.slides     = INITIAL_SLIDES.length ? INITIAL_SLIDES : [emptySlide()];
 
+    // Conserve l'ID de la présentation dans le localStorage du navigateur
+    // (couvre la création, l'import et l'accès par ID/mot de passe).
+    if (state.id) {
+        try {
+            const KEY = 'presento_ids';
+            const ids = JSON.parse(localStorage.getItem(KEY) || '[]');
+            if (Array.isArray(ids) && !ids.includes(state.id)) {
+                ids.push(state.id);
+                localStorage.setItem(KEY, JSON.stringify(ids));
+            }
+        } catch { /* localStorage indisponible */ }
+    }
+
     state.slides.forEach(s => s.elements.forEach(e => {
         const num = parseInt(e.id.replace('el_', ''));
         if (!isNaN(num) && num > elCounter) elCounter = num;

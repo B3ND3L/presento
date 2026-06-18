@@ -425,3 +425,13 @@ msgstr "Link copied!"
 msgid "passwords_no_match"
 msgstr "Passwords do not match."
 
+# ── Messages JavaScript (accès par ID) ──
+msgid "access_empty"
+msgstr "Please enter a presentation ID."
+
+msgid "access_not_found"
+msgstr "Presentation not found."
+
+msgid "access_bad_password"
+msgstr "Incorrect password."
+

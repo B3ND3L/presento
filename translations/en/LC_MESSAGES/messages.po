@@ -462,6 +462,22 @@ msgstr "Edit"
 msgid "delete"
 msgstr "Delete"
 
+#: src/templates/edit.html:0
+msgid "copy"
+msgstr "Copy"
+
+#: src/templates/edit.html:0
+msgid "cut"
+msgstr "Cut"
+
+#: src/templates/edit.html:0
+msgid "paste"
+msgstr "Paste"
+
+#: src/templates/edit.html:0
+msgid "duplicate"
+msgstr "Duplicate"
+
 #: src/templates/index.html:123
 msgid "confirm_delete"
 msgstr "Delete this presentation?"

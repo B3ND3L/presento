@@ -58,12 +58,66 @@ let state = {
 };
 
 let currentSlideIdx = 0;
-let selectedEl = null;
+let selectedEl = null;          // primary selected element (last clicked)
+let selectedEls = [];           // all selected elements (multi-selection)
 let elCounter  = 0;
 let zoom       = 1.0;
 let isDirty    = false;
 let dragState  = null;
 let resizeState = null;
+
+/* ═════════════════════════════════════════════════════
+   SHARED HELPERS
+═════════════════════════════════════════════════════ */
+
+/** Shortcut for document.getElementById. */
+const $ = id => document.getElementById(id);
+
+/** Typed shortcuts for frequently-accessed nodes. */
+const getCanvas    = () => $('slide-canvas');
+const getEmptyHint = () => $('empty-hint');
+
+/** Updates the save-status badge. */
+function setSaveStatus(cls, text) {
+    const s = $('save-status');
+    s.className = cls; s.textContent = text;
+}
+
+/** Calls fn(elData) only when selectedEl and its data both exist. */
+function withSelectedElData(fn) {
+    if (!selectedEl) return;
+    const elData = getElData(selectedEl.dataset.id);
+    if (elData) fn(elData);
+}
+
+/** Syncs the empty-hint visibility with the current slide's element count. */
+function updateEmptyHint() {
+    const slide = state.slides[currentSlideIdx];
+    getEmptyHint().style.display = (slide && slide.elements.length === 0) ? 'flex' : 'none';
+}
+
+/** Pushes el onto the current slide, mounts its DOM node, hides the
+    empty-hint, then marks dirty and refreshes the thumbnail.
+    opts.select → selects the new node after insertion.
+    opts.edit   → enters edit mode 50 ms after insertion (text elements). */
+function addElementToSlide(el, opts = {}) {
+    state.slides[currentSlideIdx].elements.push(el);
+    const node = createDomElement(el);
+    getCanvas().appendChild(node);
+    getEmptyHint().style.display = 'none';
+    markDirty();
+    renderThumb(currentSlideIdx);
+    if (opts.select) selectEl(node);
+    if (opts.edit)   setTimeout(() => startEditing(node), 50);
+    return node;
+}
+
+/** Reads a File as a data-URL and calls cb(dataUrl). */
+function readFileAsDataURL(file, cb) {
+    const reader = new FileReader();
+    reader.onload = evt => cb(evt.target.result);
+    reader.readAsDataURL(file);
+}
 
 /* ═════════════════════════════════════════════════════
    ELEMENT FACTORIES
@@ -93,7 +147,7 @@ function makeIframeEl({ src='', x=80, y=80, w=800, h=450 }) {
    RENDER ENGINE
 ═════════════════════════════════════════════════════ */
 function renderCurrentSlide() {
-    const canvas = document.getElementById('slide-canvas');
+    const canvas = getCanvas();
     const slide  = state.slides[currentSlideIdx];
     if (!slide) return;
 
@@ -101,17 +155,14 @@ function renderCurrentSlide() {
 
     const applyTheme = ({ bg, color, font }) => {
         const effectiveBg = slide.bg || bg;
-        // Use backgroundColor (not the `background` shorthand) so the optional
-        // background image set below is not wiped out.
         canvas.style.backgroundColor = effectiveBg;
         canvas.style.color           = color;
         applyCanvasBgImage(slide.bgImage);
-        // Align the editor font with the Reveal theme's (view + thumbnails)
         if (font) canvas.style.fontFamily = font;
-        document.getElementById('slide-bg-color').value   = effectiveBg;
-        document.getElementById('pp-slide-bg').value      = effectiveBg;
-        document.getElementById('slide-bg-preview').style.background = effectiveBg;
-        const bgImgInput = document.getElementById('pp-slide-bg-image');
+        $('slide-bg-color').value                  = effectiveBg;
+        $('pp-slide-bg').value                     = effectiveBg;
+        $('slide-bg-preview').style.background     = effectiveBg;
+        const bgImgInput = $('pp-slide-bg-image');
         if (bgImgInput) bgImgInput.value = slide.bgImage || '';
     };
     const cached = _themeCache[state.theme];
@@ -122,11 +173,11 @@ function renderCurrentSlide() {
         probeThemeColors(state.theme, applyTheme);
     }
 
-    document.getElementById('empty-hint').style.display =
-        slide.elements.length === 0 ? 'flex' : 'none';
+    updateEmptyHint();
 
     slide.elements.forEach(el => canvas.appendChild(createDomElement(el)));
-    selectedEl = null;
+    selectedEls = [];
+    selectedEl  = null;
     hideSelectionOverlay();
     updateFormToolbar();
 }
@@ -185,7 +236,9 @@ function createDomElement(elData) {
 
 
     node.addEventListener('mousedown', e => onElMouseDown(e, node));
-    node.addEventListener('click',     e => { e.stopPropagation(); selectEl(node); });
+    // Selection is handled on mousedown; the click only stops the canvas from
+    // deselecting. Ctrl/Cmd-click toggles multi-selection (also via mousedown).
+    node.addEventListener('click',     e => e.stopPropagation());
     return node;
 }
 
@@ -241,7 +294,7 @@ function selectionOverlay() {
         rh.className = 'resize-handle';
         rh.addEventListener('mousedown', e => { if (selectedEl) startResize(e, selectedEl); });
         _selOverlay.appendChild(rh);
-        document.getElementById('slide-canvas').appendChild(_selOverlay);
+        getCanvas().appendChild(_selOverlay);
     }
     return _selOverlay;
 }
@@ -268,25 +321,47 @@ function hideSelectionOverlay() {
     if (_selOverlay) _selOverlay.style.display = 'none';
 }
 
-function selectEl(node) {
-    if (selectedEl && selectedEl !== node) {
-        selectedEl.classList.remove('selected','editing');
-        if (selectedEl.contentEditable === 'true') stopEditing(selectedEl);
+/* Selects an element. With `additive` (Ctrl/Cmd-click) the node is toggled in
+   or out of the current multi-selection; otherwise it becomes the sole one. */
+function selectEl(node, additive = false) {
+    if (additive) {
+        const i = selectedEls.indexOf(node);
+        if (i >= 0) {
+            if (selectedEls[i].contentEditable === 'true') stopEditing(selectedEls[i]);
+            selectedEls.splice(i, 1);
+        } else {
+            selectedEls.push(node);
+        }
+    } else {
+        selectedEls.forEach(n => { if (n !== node && n.contentEditable === 'true') stopEditing(n); });
+        selectedEls = [node];
     }
-    selectedEl = node;
-    node.classList.add('selected');
-    showSelectionOverlay();
+    refreshSelection();
+}
+
+/* Recomputes selection visuals: a single selection uses the overlay (outline +
+   resize handle); a multi-selection draws an outline on each node and hides the
+   overlay (no group resize). `selectedEl` always points to the primary node. */
+function refreshSelection() {
+    document.querySelectorAll('.slide-el.selected, .slide-el.multi')
+        .forEach(n => n.classList.remove('selected', 'multi'));
+    selectedEl = selectedEls[selectedEls.length - 1] || null;
+    if (selectedEls.length === 0) {
+        hideSelectionOverlay();
+    } else if (selectedEls.length === 1) {
+        selectedEls[0].classList.add('selected');
+        showSelectionOverlay();
+    } else {
+        selectedEls.forEach(n => n.classList.add('multi'));
+        hideSelectionOverlay();
+    }
     updateFormToolbar();
 }
 
 function deselectAll() {
-    if (selectedEl) {
-        selectedEl.classList.remove('selected','editing');
-        if (selectedEl.contentEditable === 'true') stopEditing(selectedEl);
-        selectedEl = null;
-    }
-    hideSelectionOverlay();
-    updateFormToolbar();
+    selectedEls.forEach(n => { if (n.contentEditable === 'true') stopEditing(n); });
+    selectedEls = [];
+    refreshSelection();
 }
 
 function startEditing(node, selectAll = false) {
@@ -330,28 +405,63 @@ function getElData(id) {
    DRAG / RESIZE
 ═════════════════════════════════════════════════════ */
 function onElMouseDown(e, node) {
+    if (e.button !== 0) return;   // left click only (right click → context menu)
     if (e.target.classList.contains('resize-handle')) return;
     if (node.contentEditable === 'true') return;
     e.preventDefault();
-    selectEl(node);
-    const elData = getElData(node.dataset.id);
-    if (!elData) return;
-    dragState = { node, elData, startX: e.clientX, startY: e.clientY, origX: elData.x, origY: elData.y };
+    const additive = e.ctrlKey || e.metaKey;
+    if (additive) {
+        selectEl(node, true);   // toggle in/out of the multi-selection, no drag
+        return;
+    }
+    // If the node isn't already part of the selection, select it alone.
+    // Otherwise keep the current (possibly multi) selection so it can be dragged.
+    if (selectedEls.indexOf(node) === -1) selectEl(node, false);
+    startGroupDrag(e);
+}
+
+/* Starts dragging every selected element together. */
+function startGroupDrag(e) {
+    const items = selectedEls
+        .map(n => { const d = getElData(n.dataset.id); return d ? { node: n, elData: d, origX: d.x, origY: d.y } : null; })
+        .filter(Boolean);
+    if (!items.length) return;
+    // Group bounds: used to clamp the whole group at the slide edges while
+    // preserving the relative positions of the elements.
+    const minX = Math.min(...items.map(it => it.origX));
+    const minY = Math.min(...items.map(it => it.origY));
+    dragState = { items, startX: e.clientX, startY: e.clientY, minX, minY };
 }
 
 document.addEventListener('mousemove', e => {
     if (dragState) {
-        const dx = (e.clientX - dragState.startX) / zoom;
-        const dy = (e.clientY - dragState.startY) / zoom;
-        let nx = Math.max(0, Math.round(dragState.origX + dx));
-        let ny = Math.max(0, Math.round(dragState.origY + dy));
-        // Smart alignment guides + snapping (page center/edges + other elements).
-        const snap = computeAlignment(nx, ny, dragState.elData);
-        nx = snap.x; ny = snap.y;
-        showAlignGuides(snap.guides);
-        dragState.elData.x = nx; dragState.elData.y = ny;
-        dragState.node.style.left = nx + 'px';
-        dragState.node.style.top  = ny + 'px';
+        const dxRaw = (e.clientX - dragState.startX) / zoom;
+        const dyRaw = (e.clientY - dragState.startY) / zoom;
+        if (dragState.items.length === 1) {
+            // Single element: snap to alignment guides.
+            const it = dragState.items[0];
+            let nx = Math.max(0, Math.round(it.origX + dxRaw));
+            let ny = Math.max(0, Math.round(it.origY + dyRaw));
+            const snap = computeAlignment(nx, ny, it.elData);
+            nx = snap.x; ny = snap.y;
+            showAlignGuides(snap.guides);
+            it.elData.x = nx; it.elData.y = ny;
+            it.node.style.left = nx + 'px';
+            it.node.style.top  = ny + 'px';
+        } else {
+            // Multiple elements: move them together (no snapping). Clamp the
+            // group's delta so it stops at the slide edges as a whole, keeping
+            // every element's relative position intact.
+            const dx = Math.max(Math.round(dxRaw), -dragState.minX);
+            const dy = Math.max(Math.round(dyRaw), -dragState.minY);
+            dragState.items.forEach(it => {
+                it.elData.x = it.origX + dx;
+                it.elData.y = it.origY + dy;
+                it.node.style.left = it.elData.x + 'px';
+                it.node.style.top  = it.elData.y + 'px';
+            });
+            clearAlignGuides();
+        }
         updateSelectionOverlay();
     }
     if (resizeState) {
@@ -420,7 +530,7 @@ function computeAlignment(nx, ny, elData) {
 
 let _guideV = null, _guideH = null;
 function ensureGuides() {
-    const canvas = document.getElementById('slide-canvas');
+    const canvas = getCanvas();
     if (!_guideV) {
         _guideV = document.createElement('div');
         _guideV.className = 'align-guide align-guide--v';
@@ -449,6 +559,7 @@ function clearAlignGuides() {
 }
 
 function startResize(e, node) {
+    if (e.button !== 0) return;   // left click only
     e.preventDefault(); e.stopPropagation();
     const elData = getElData(node.dataset.id);
     if (!elData) return;
@@ -459,6 +570,179 @@ function onCanvasClick(e) {
     if (e.target === document.getElementById('slide-canvas') ||
         e.target.closest('#empty-hint')) deselectAll();
 }
+
+/* ═════════════════════════════════════════════════════
+   CLIPBOARD (copy / cut / paste / duplicate)
+═════════════════════════════════════════════════════ */
+let _clipboard = null;   // array of element data (supports multi-selection)
+
+function topZIndex() {
+    const slide = state.slides[currentSlideIdx];
+    if (!slide) return 1;
+    return slide.elements.reduce((m, e) => Math.max(m, e.zIndex || 1), 0) + 1;
+}
+
+/* Inserts deep copies of `sources` (array of element data) on the current
+   slide and selects them. If `pos` (canvas coords) is given, the group's
+   top-left is anchored there (relative layout preserved); otherwise each copy
+   is offset by +20px. */
+function pasteElements(sources, pos) {
+    const slide = state.slides[currentSlideIdx];
+    if (!slide || !sources || !sources.length) return;
+    const minX = Math.min(...sources.map(d => d.x || 0));
+    const minY = Math.min(...sources.map(d => d.y || 0));
+    const baseZ = topZIndex();
+    const newNodes = [];
+    sources.forEach((src, i) => {
+        const el = JSON.parse(JSON.stringify(src));
+        el.id = makeId();
+        if (pos) {
+            el.x = Math.max(0, Math.round(pos.x + ((src.x || 0) - minX)));
+            el.y = Math.max(0, Math.round(pos.y + ((src.y || 0) - minY)));
+        } else {
+            el.x = Math.max(0, (src.x || 0) + 20);
+            el.y = Math.max(0, (src.y || 0) + 20);
+        }
+        el.zIndex = baseZ + i;
+        slide.elements.push(el);
+        const node = createDomElement(el);
+        getCanvas().appendChild(node);
+        newNodes.push(node);
+    });
+    getEmptyHint().style.display = 'none';
+    selectedEls = newNodes;
+    refreshSelection();
+    markDirty();
+    renderThumb(currentSlideIdx);
+}
+
+function selectedElements() {
+    return selectedEls.map(n => getElData(n.dataset.id)).filter(Boolean);
+}
+
+function copySelected() {
+    const datas = selectedElements();
+    if (datas.length) _clipboard = datas.map(d => JSON.parse(JSON.stringify(d)));
+}
+
+function cutSelected() {
+    if (!selectedEls.length) return;
+    copySelected();
+    deleteSelected();
+}
+
+function pasteClipboard(pos) {
+    if (_clipboard && _clipboard.length) pasteElements(_clipboard, pos);
+}
+
+function duplicateSelected() {
+    const datas = selectedElements();
+    if (datas.length) pasteElements(datas, null);
+}
+
+/* Pastes at a viewport position (used by the context menu "Paste"). */
+function pasteAtClient(clientX, clientY) {
+    const rect = getCanvas().getBoundingClientRect();
+    pasteClipboard({ x: (clientX - rect.left) / zoom, y: (clientY - rect.top) / zoom });
+}
+
+/* ═════════════════════════════════════════════════════
+   CONTEXT MENU (right click)
+═════════════════════════════════════════════════════ */
+let _ctxMenu = null;
+function ensureContextMenu() {
+    if (!_ctxMenu) {
+        _ctxMenu = document.createElement('div');
+        _ctxMenu.id = 'context-menu';
+        _ctxMenu.addEventListener('contextmenu', e => e.preventDefault());
+        document.body.appendChild(_ctxMenu);
+    }
+    return _ctxMenu;
+}
+
+function hideContextMenu() {
+    if (_ctxMenu) _ctxMenu.style.display = 'none';
+}
+
+function editSelectedFromMenu() {
+    withSelectedElData(elData => {
+        if (elData.type === 'text')        startEditing(selectedEl, false);
+        else if (elData.type === 'iframe') openIframeModal(true);
+    });
+}
+
+function openContextMenu(clientX, clientY, hasEl) {
+    const menu = ensureContextMenu();
+    const items = [];
+    if (hasEl) {
+        const elData = selectedEl && getElData(selectedEl.dataset.id);
+        if (elData && (elData.type === 'text' || elData.type === 'iframe'))
+            items.push({ label: t('edit'), action: editSelectedFromMenu });
+        items.push({ label: t('copy'),      action: copySelected });
+        items.push({ label: t('cut'),       action: cutSelected });
+        items.push({ label: t('duplicate'), action: duplicateSelected });
+        if (_clipboard) items.push({ label: t('paste'), action: () => pasteClipboard() });
+        items.push({ sep: true });
+        items.push({ label: t('forward'),     action: bringForward });
+        items.push({ label: t('backward'),    action: sendBackward });
+        items.push({ label: t('progressive'), action: toggleFragment });
+        items.push({ sep: true });
+        items.push({ label: t('delete'), action: deleteSelected, danger: true });
+    } else {
+        items.push({
+            label: t('paste'),
+            action: () => pasteAtClient(clientX, clientY),
+            disabled: !_clipboard
+        });
+    }
+    renderContextMenu(menu, items);
+    positionContextMenu(menu, clientX, clientY);
+}
+
+function renderContextMenu(menu, items) {
+    menu.innerHTML = '';
+    items.forEach(it => {
+        if (it.sep) { menu.appendChild(Object.assign(document.createElement('div'), { className: 'ctx-sep' })); return; }
+        const btn = document.createElement('button');
+        btn.className = 'ctx-item' + (it.danger ? ' ctx-item--danger' : '');
+        btn.textContent = it.label;
+        btn.disabled = !!it.disabled;
+        btn.addEventListener('click', () => { hideContextMenu(); if (!it.disabled) it.action(); });
+        menu.appendChild(btn);
+    });
+}
+
+function positionContextMenu(menu, clientX, clientY) {
+    menu.style.display = 'block';
+    const rect = menu.getBoundingClientRect();
+    const x = Math.min(clientX, window.innerWidth  - rect.width  - 8);
+    const y = Math.min(clientY, window.innerHeight - rect.height - 8);
+    menu.style.left = Math.max(4, x) + 'px';
+    menu.style.top  = Math.max(4, y) + 'px';
+}
+
+document.getElementById('slide-canvas').addEventListener('contextmenu', e => {
+    e.preventDefault();
+    const elNode = e.target.closest('.slide-el');
+    if (elNode) {
+        // Keep the current multi-selection if the right-clicked node is part of
+        // it; otherwise select that single element.
+        if (selectedEls.indexOf(elNode) === -1) selectEl(elNode, false);
+        openContextMenu(e.clientX, e.clientY, true);
+    } else {
+        deselectAll();
+        openContextMenu(e.clientX, e.clientY, false);
+    }
+});
+
+/* Dismiss the context menu on any outside interaction. */
+document.addEventListener('mousedown', e => {
+    if (_ctxMenu && _ctxMenu.style.display === 'block' && !e.target.closest('#context-menu'))
+        hideContextMenu();
+});
+document.addEventListener('scroll', hideContextMenu, true);
+window.addEventListener('resize', hideContextMenu);
+window.addEventListener('blur', hideContextMenu);
 
 /* ═════════════════════════════════════════════════════
    FORMAT TOOLBAR
@@ -568,20 +852,18 @@ function applyBgColor() {
 }
 
 function applySlideBackground(hex) {
-    document.getElementById('slide-bg-preview').style.background = hex;
-    document.getElementById('slide-bg-color').value = hex;
-    document.getElementById('pp-slide-bg').value    = hex;
-    // backgroundColor (not the shorthand) to preserve any background image.
-    document.getElementById('slide-canvas').style.backgroundColor = hex;
+    $('slide-bg-preview').style.background = hex;
+    $('slide-bg-color').value = hex;
+    $('pp-slide-bg').value    = hex;
+    getCanvas().style.backgroundColor = hex;
     const slide = state.slides[currentSlideIdx];
     if (slide) slide.bg = hex;
     markDirty();
     renderThumb(currentSlideIdx);
 }
 
-/* Applies (or clears) the slide background image on the editor canvas. */
 function applyCanvasBgImage(url) {
-    const canvas = document.getElementById('slide-canvas');
+    const canvas = getCanvas();
     if (url) {
         canvas.style.backgroundImage    = `url("${url}")`;
         canvas.style.backgroundSize     = 'cover';
@@ -612,46 +894,43 @@ function triggerSlideBgUpload() { document.getElementById('slide-bg-upload').cli
 function handleSlideBgFile(e) {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => applySlideBackgroundImage(evt.target.result);
-    reader.readAsDataURL(file);
+    readFileAsDataURL(file, url => applySlideBackgroundImage(url));
     e.target.value = '';   // allow re-selecting the same file later
 }
 
 function bringForward() {
-    if (!selectedEl) return;
-    const elData = getElData(selectedEl.dataset.id);
-    if (!elData) return;
-    elData.zIndex = (elData.zIndex || 1) + 1;
-    selectedEl.style.zIndex = elData.zIndex;
-    markDirty();
+    withSelectedElData(elData => {
+        elData.zIndex = (elData.zIndex || 1) + 1;
+        selectedEl.style.zIndex = elData.zIndex;
+        markDirty();
+    });
 }
 
 function sendBackward() {
-    if (!selectedEl) return;
-    const elData = getElData(selectedEl.dataset.id);
-    if (!elData) return;
-    elData.zIndex = Math.max(1, (elData.zIndex || 1) - 1);
-    selectedEl.style.zIndex = elData.zIndex;
-    markDirty();
+    withSelectedElData(elData => {
+        elData.zIndex = Math.max(1, (elData.zIndex || 1) - 1);
+        selectedEl.style.zIndex = elData.zIndex;
+        markDirty();
+    });
 }
 
 function deleteSelected() {
-    if (!selectedEl) return;
-    const id    = selectedEl.dataset.id;
+    if (!selectedEls.length) return;
+    const ids   = selectedEls.map(n => n.dataset.id);
     const slide = state.slides[currentSlideIdx];
-    slide.elements = slide.elements.filter(e => e.id !== id);
-    selectedEl.remove();
-    selectedEl = null;
+    slide.elements = slide.elements.filter(e => !ids.includes(e.id));
+    selectedEls.forEach(n => n.remove());
+    selectedEls = [];
+    selectedEl  = null;
     hideSelectionOverlay();
-    document.getElementById('empty-hint').style.display =
-        slide.elements.length === 0 ? 'flex' : 'none';
+    updateEmptyHint();
     markDirty();
     renderThumb(currentSlideIdx);
+    updateFormToolbar();
 }
 
 function updateFormToolbar() {
-    const hasEl = !!selectedEl;
+    const hasEl = selectedEls.length > 0;
     document.querySelectorAll('.btn-action-on-el').forEach(b => {
         b.style.opacity = hasEl ? '1' : '.3';
         b.style.cursor  = hasEl ? 'pointer' : 'not-allowed';
@@ -740,7 +1019,7 @@ document.addEventListener('selectionchange', () => {
     if (selectedEl && selectedEl.contentEditable === 'true') refreshTextFormatButtons();
 });
 
-/* ═════════════════════════════════════════════════════
+/* ═════════════════���═══════════════════════════════════
    KEYBOARD
 ═════════════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
@@ -748,95 +1027,89 @@ document.addEventListener('keydown', e => {
     if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
     if (e.key === 'Delete' || e.key === 'Backspace') { deleteSelected(); return; }
     if ((e.metaKey || e.ctrlKey) && e.key === 's')  { e.preventDefault(); openSaveModal(); return; }
+    // Undo / Redo and clipboard shortcuts (only when not editing text)
+    if (e.metaKey || e.ctrlKey) {
+        const k = e.key.toLowerCase();
+        if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+        if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redo(); return; }
+        if (k === 'a') { e.preventDefault(); selectAllElements(); return; }
+        if (k === 'c') { copySelected();      return; }
+        if (k === 'x') { e.preventDefault(); cutSelected();       return; }
+        if (k === 'v') { e.preventDefault(); pasteClipboard();    return; }
+        if (k === 'd') { e.preventDefault(); duplicateSelected(); return; }
+    }
     const delta = e.shiftKey ? 10 : 1;
-    if (selectedEl && !dragState && !resizeState) {
-        const elData = getElData(selectedEl.dataset.id);
-        if (elData) {
-            if (e.key === 'ArrowLeft')  { elData.x -= delta; selectedEl.style.left = elData.x + 'px'; markDirty(); e.preventDefault(); }
-            if (e.key === 'ArrowRight') { elData.x += delta; selectedEl.style.left = elData.x + 'px'; markDirty(); e.preventDefault(); }
-            if (e.key === 'ArrowUp')    { elData.y -= delta; selectedEl.style.top  = elData.y + 'px'; markDirty(); e.preventDefault(); }
-            if (e.key === 'ArrowDown')  { elData.y += delta; selectedEl.style.top  = elData.y + 'px'; markDirty(); e.preventDefault(); }
-            updateSelectionOverlay();
-        }
+    if (selectedEls.length && !dragState && !resizeState) {
+        const datas = selectedEls.map(n => ({ n, d: getElData(n.dataset.id) })).filter(o => o.d);
+        let moved = false;
+        const move = (dx, dy) => {
+            // Clamp the group's delta so relative positions are preserved at edges.
+            if (dx < 0) dx = Math.max(dx, -Math.min(...datas.map(o => o.d.x)));
+            if (dy < 0) dy = Math.max(dy, -Math.min(...datas.map(o => o.d.y)));
+            if (!dx && !dy) return;
+            datas.forEach(({ n, d }) => {
+                d.x += dx; d.y += dy;
+                n.style.left = d.x + 'px'; n.style.top = d.y + 'px';
+            });
+            moved = true;
+        };
+        if (e.key === 'ArrowLeft')  move(-delta, 0);
+        if (e.key === 'ArrowRight') move( delta, 0);
+        if (e.key === 'ArrowUp')    move(0, -delta);
+        if (e.key === 'ArrowDown')  move(0,  delta);
+        if (moved) { markDirty(); updateSelectionOverlay(); e.preventDefault(); }
     }
 });
+
+/* Selects every element on the current slide (Ctrl/Cmd+A). */
+function selectAllElements() {
+    selectedEls = Array.from(document.querySelectorAll('#slide-canvas .slide-el'));
+    refreshSelection();
+}
 
 /* ═════════════════════════════════════════════════════
    INSERT ACTIONS
 ═════════════════════════════════════════════════════ */
 function insertText(kind) {
-    const slide = state.slides[currentSlideIdx];
-    document.getElementById('empty-hint').style.display = 'none';
     let el;
     if      (kind === 'heading') el = makeTextEl({ text: t('slide_title_placeholder'), x:80, y:80,  w:800, fontSize:48, fontWeight:'bold' });
     else if (kind === 'body')    el = makeTextEl({ text: t('slide_text_placeholder'),  x:80, y:200, w:800, fontSize:22 });
     else if (kind === 'bullet')  el = makeTextEl({ text: t('slide_list_placeholder'),  x:100,y:160, w:760, fontSize:22 });
-    slide.elements.push(el);
-    const node = createDomElement(el);
-    document.getElementById('slide-canvas').appendChild(node);
-    selectEl(node);
-    setTimeout(() => startEditing(node), 50);
-    markDirty();
-    renderThumb(currentSlideIdx);
+    addElementToSlide(el, { select: true, edit: true });
 }
 
 function insertDivider() {
-    const el    = makeShapeEl({ shape:'rect', x:80, y:260, w:800, h:4, fill:'#cccccc', stroke:'none' });
-    const slide = state.slides[currentSlideIdx];
-    slide.elements.push(el);
-    document.getElementById('slide-canvas').appendChild(createDomElement(el));
-    document.getElementById('empty-hint').style.display = 'none';
-    markDirty(); renderThumb(currentSlideIdx);
+    addElementToSlide(makeShapeEl({ shape:'rect', x:80, y:260, w:800, h:4, fill:'#cccccc', stroke:'none' }));
 }
 
 function insertShape(shape) {
     const fills = { rect:'#5b6af8', circle:'#3ecf8e', triangle:'#ecc94b' };
-    const el    = makeShapeEl({ shape, x:280, y:160, w:200, h:160, fill: fills[shape] || '#5b6af8' });
-    const slide = state.slides[currentSlideIdx];
-    slide.elements.push(el);
-    document.getElementById('slide-canvas').appendChild(createDomElement(el));
-    document.getElementById('empty-hint').style.display = 'none';
-    markDirty(); renderThumb(currentSlideIdx);
+    addElementToSlide(makeShapeEl({ shape, x:280, y:160, w:200, h:160, fill: fills[shape] || '#5b6af8' }));
 }
 
 function insertImageFromUrl() {
-    const url = document.getElementById('img-url-input').value.trim();
+    const url = $('img-url-input').value.trim();
     if (!url) return;
-    const el    = makeImageEl({ src: url, x:180, y:80, w:600, h:380 });
-    const slide = state.slides[currentSlideIdx];
-    slide.elements.push(el);
-    document.getElementById('slide-canvas').appendChild(createDomElement(el));
-    document.getElementById('empty-hint').style.display = 'none';
-    closeModal('image'); markDirty(); renderThumb(currentSlideIdx);
+    addElementToSlide(makeImageEl({ src: url, x:180, y:80, w:600, h:380 }));
+    closeModal('image');
 }
 
-function triggerImageUpload() { document.getElementById('image-upload').click(); }
+function triggerImageUpload() { $('image-upload').click(); }
 
 function handleImageFile(e) {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-        const el    = makeImageEl({ src: evt.target.result, x:180, y:80, w:600, h:380 });
-        const slide = state.slides[currentSlideIdx];
-        slide.elements.push(el);
-        document.getElementById('slide-canvas').appendChild(createDomElement(el));
-        document.getElementById('empty-hint').style.display = 'none';
-        markDirty(); renderThumb(currentSlideIdx);
-    };
-    reader.readAsDataURL(file);
+    readFileAsDataURL(file, src => addElementToSlide(makeImageEl({ src, x:180, y:80, w:600, h:380 })));
 }
 
-function onDragOver(e) { e.preventDefault(); document.getElementById('slide-canvas').classList.add('drag-over'); }
+function onDragOver(e) { e.preventDefault(); getCanvas().classList.add('drag-over'); }
 function onDrop(e) {
     e.preventDefault();
-    document.getElementById('slide-canvas').classList.remove('drag-over');
+    const canvas = getCanvas();
+    canvas.classList.remove('drag-over');
     const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
     if (url && url.match(/\.(png|jpg|jpeg|gif|webp|svg)/i)) {
-        const el = makeImageEl({ src: url, x: e.offsetX - 200, y: e.offsetY - 100, w:400, h:250 });
-        state.slides[currentSlideIdx].elements.push(el);
-        document.getElementById('slide-canvas').appendChild(createDomElement(el));
-        markDirty();
+        addElementToSlide(makeImageEl({ src: url, x: e.offsetX - 200, y: e.offsetY - 100, w:400, h:250 }));
     }
 }
 
@@ -925,12 +1198,12 @@ function buildThumbHtml(slide) {
 ═════════════════════════════════════════════════════ */
 function setZoom(pct) {
     zoom = pct / 100;
-    const canvas = document.getElementById('slide-canvas');
+    const canvas = getCanvas();
     canvas.style.transform       = `scale(${zoom})`;
     canvas.style.transformOrigin = 'top center';
-    document.getElementById('zoom-label').textContent = pct + '%';
+    $('zoom-label').textContent = pct + '%';
     const scaledH = SLIDE_H * zoom;
-    document.getElementById('canvas-area').style.paddingBottom =
+    $('canvas-area').style.paddingBottom =
         Math.max(80, (scaledH - SLIDE_H) / 2 + 80) + 'px';
 }
 
@@ -938,18 +1211,17 @@ function setZoom(pct) {
    FRAGMENTS
 ═════════════════════════════════════════════════════ */
 function toggleFragment() {
-    if (!selectedEl) return;
-    const elData = getElData(selectedEl.dataset.id);
-    if (!elData) return;
-    if (elData.fragment) {
-        elData.fragment = false; delete elData.fragmentIndex;
-    } else {
-        const slide  = state.slides[currentSlideIdx];
-        const maxIdx = slide.elements.reduce((m,e) => e.fragmentIndex!=null ? Math.max(m,e.fragmentIndex) : m, -1);
-        elData.fragment = true; elData.fragmentIndex = maxIdx + 1;
-    }
-    refreshFragmentBadge(selectedEl, elData);
-    updateFormToolbar(); markDirty(); renderThumb(currentSlideIdx);
+    withSelectedElData(elData => {
+        if (elData.fragment) {
+            elData.fragment = false; delete elData.fragmentIndex;
+        } else {
+            const slide  = state.slides[currentSlideIdx];
+            const maxIdx = slide.elements.reduce((m,e) => e.fragmentIndex!=null ? Math.max(m,e.fragmentIndex) : m, -1);
+            elData.fragment = true; elData.fragmentIndex = maxIdx + 1;
+        }
+        refreshFragmentBadge(selectedEl, elData);
+        updateFormToolbar(); markDirty(); renderThumb(currentSlideIdx);
+    });
 }
 
 function refreshFragmentBadge(node, elData) {
@@ -976,27 +1248,19 @@ function openIframeModal(editMode) {
 }
 
 function confirmIframeModal() {
-    const src = document.getElementById('iframe-url-input').value.trim();
+    const src = $('iframe-url-input').value.trim();
     if (!src) return;
     closeModal('iframe');
     if (_iframeEditMode && selectedEl) {
-        const elData = getElData(selectedEl.dataset.id);
-        if (elData) {
+        withSelectedElData(elData => {
             elData.src = src;
-            // Rebuild the element to display the live preview
             const newNode = createDomElement(elData);
             selectedEl.replaceWith(newNode);
             selectEl(newNode);
             markDirty(); renderThumb(currentSlideIdx);
-        }
+        });
     } else {
-        const el    = makeIframeEl({ src, x:80, y:80, w:800, h:450 });
-        const slide = state.slides[currentSlideIdx];
-        slide.elements.push(el);
-        const node = createDomElement(el);
-        document.getElementById('slide-canvas').appendChild(node);
-        document.getElementById('empty-hint').style.display = 'none';
-        selectEl(node); markDirty(); renderThumb(currentSlideIdx);
+        addElementToSlide(makeIframeEl({ src, x:80, y:80, w:800, h:450 }), { select: true });
     }
 }
 
@@ -1005,12 +1269,12 @@ function confirmIframeModal() {
 ═════════════════════════════════════════════════════ */
 function onThemeChange(val) {
     state.theme = val;
-    document.getElementById('theme-select').value = val;
+    $('theme-select').value = val;
     document.querySelectorAll('#pp-themes .theme-btn').forEach(b =>
         b.classList.toggle('active', b.dataset.val === val)
     );
     probeThemeColors(val, ({ bg, color, font }) => {
-        const canvas = document.getElementById('slide-canvas');
+        const canvas = getCanvas();
         const slide  = state.slides[currentSlideIdx];
         if (!slide.bg) canvas.style.background = bg;
         canvas.style.color = color;
@@ -1024,14 +1288,14 @@ function onTransitionChange(val) { state.transition = val; markDirty(); }
 
 function buildPropPanel() {
     const themes = ['white','black','beige','moon','sky','solarized','league','serif'];
-    document.getElementById('pp-themes').innerHTML = themes.map(t =>
+    $('pp-themes').innerHTML = themes.map(t =>
         `<button class="theme-btn${state.theme===t?' active':''}" data-val="${t}" onclick="onThemeChange('${t}')">${t}</button>`
     ).join('');
     const swatches = ['#ffffff','#1a1a2e','#16213e','#0f3460','#f5f0e8','#2d2d2d','#f8f9fa','#fff3e0'];
-    document.getElementById('bg-swatches').innerHTML = swatches.map(c =>
+    $('bg-swatches').innerHTML = swatches.map(c =>
         `<div class="pp-swatch" style="background:${c}" onclick="applySlideBackground('${c}')"></div>`
     ).join('');
-    document.getElementById('pp-transition').value = state.transition;
+    $('pp-transition').value = state.transition;
 }
 
 function togglePropPanel() {
@@ -1046,11 +1310,77 @@ function togglePropPanel() {
 ═════════════════════════════════════════════════════ */
 function markDirty() {
     isDirty = true;
-    const s = document.getElementById('save-status');
-    s.className   = 'unsaved';
-    s.textContent = '● ' + t('unsaved');
+    setSaveStatus('unsaved', '● ' + t('unsaved'));
     // Reflect every change in the current slide's thumbnail
     scheduleThumbRefresh();
+    // Record an undo step (debounced so rapid changes coalesce).
+    scheduleHistoryCommit();
+}
+
+/* ═════════════════════════════════════════════════════
+   UNDO / REDO (snapshot-based history)
+═════════════════════════════════════════════════════ */
+const HISTORY_LIMIT = 50;
+let _hist = { undo: [], redo: [], base: null };
+let _histTimer = null;
+
+function snapshotState() {
+    return JSON.stringify({
+        title: state.title, theme: state.theme,
+        transition: state.transition, slides: state.slides, idx: currentSlideIdx
+    });
+}
+
+function initHistory() { _hist = { undo: [], redo: [], base: snapshotState() }; }
+
+function scheduleHistoryCommit() {
+    clearTimeout(_histTimer);
+    _histTimer = setTimeout(commitHistory, 450);
+}
+
+/* Pushes the previous resting state onto the undo stack if the document changed. */
+function commitHistory() {
+    clearTimeout(_histTimer); _histTimer = null;
+    if (_hist.base === null) { _hist.base = snapshotState(); return; }
+    const cur = snapshotState();
+    if (cur === _hist.base) return;
+    _hist.undo.push(_hist.base);
+    if (_hist.undo.length > HISTORY_LIMIT) _hist.undo.shift();
+    _hist.redo = [];
+    _hist.base = cur;
+}
+
+function applyHistorySnapshot(snap) {
+    const data = JSON.parse(snap);
+    state.title      = data.title;
+    state.theme      = data.theme;
+    state.transition = data.transition;
+    state.slides     = data.slides;
+    currentSlideIdx  = Math.min(Math.max(0, data.idx || 0), state.slides.length - 1);
+    _hist.base = snap;
+    $('pres-title').value    = state.title;
+    $('theme-select').value  = state.theme;
+    $('pp-transition').value = state.transition;
+    selectedEls = []; selectedEl = null;
+    buildPropPanel();
+    renderSlideList();
+    renderCurrentSlide();
+    isDirty = true;
+    setSaveStatus('unsaved', '● ' + t('unsaved'));
+}
+
+function undo() {
+    commitHistory();               // flush any pending change first
+    if (!_hist.undo.length) return;
+    _hist.redo.push(_hist.base);
+    applyHistorySnapshot(_hist.undo.pop());
+}
+
+function redo() {
+    commitHistory();
+    if (!_hist.redo.length) return;
+    _hist.undo.push(_hist.base);
+    applyHistorySnapshot(_hist.redo.pop());
 }
 
 /* Refreshes the current slide's thumbnail, debounced to avoid rebuilding
@@ -1062,11 +1392,11 @@ function scheduleThumbRefresh() {
 }
 
 function openSaveModal() {
-    state.title = document.getElementById('pres-title').value || state.title;
-    document.getElementById('save-password').value         = '';
-    document.getElementById('save-password-confirm').value = '';
-    document.getElementById('save-online-error').style.display = 'none';
-    document.getElementById('modal-save').classList.add('open');
+    state.title = $('pres-title').value || state.title;
+    $('save-password').value         = '';
+    $('save-password-confirm').value = '';
+    $('save-online-error').style.display = 'none';
+    $('modal-save').classList.add('open');
 }
 
 function switchSaveTab(tab) {
@@ -1082,9 +1412,9 @@ function copyPresId() {
 }
 
 async function saveOnline() {
-    const pw  = document.getElementById('save-password').value;
-    const pw2 = document.getElementById('save-password-confirm').value;
-    const errEl = document.getElementById('save-online-error');
+    const pw  = $('save-password').value;
+    const pw2 = $('save-password-confirm').value;
+    const errEl = $('save-online-error');
     errEl.style.display = 'none';
     if (pw && pw !== pw2) {
         errEl.textContent   = t('passwords_no_match');
@@ -1107,9 +1437,8 @@ function saveOffline() {
 }
 
 async function savePresentation(newPassword = undefined) {
-    state.title = document.getElementById('pres-title').value || state.title;
-    const s = document.getElementById('save-status');
-    s.className = 'saving'; s.textContent = t('saving');
+    state.title = $('pres-title').value || state.title;
+    setSaveStatus('saving', t('saving'));
     const body = { title: state.title, theme: state.theme, transition: state.transition, slides: state.slides };
     if (newPassword !== undefined) body.password = newPassword;
     try {
@@ -1120,11 +1449,11 @@ async function savePresentation(newPassword = undefined) {
         });
         if (!res.ok) throw new Error();
         isDirty = false;
-        s.className = 'saved'; s.textContent = t('saved');
-        setTimeout(() => { s.className = ''; s.textContent = t('saved'); }, 2500);
+        setSaveStatus('saved', t('saved'));
+        setTimeout(() => setSaveStatus('', t('saved')), 2500);
         showToast(t('deck_saved'));
     } catch {
-        s.className = 'unsaved'; s.textContent = t('network_error');
+        setSaveStatus('unsaved', t('network_error'));
     }
 }
 
@@ -1133,9 +1462,8 @@ setInterval(() => { if (isDirty) savePresentation(); }, 45000);
 /* ═════════════════════════════════════════════════════
    MODALS / SHARE / TOAST
 ═════════════════════════════════════════════════════ */
-
-function openImageModal() { document.getElementById('modal-image').classList.add('open'); }
-function closeModal(name) { document.getElementById('modal-' + name).classList.remove('open'); }
+function openImageModal() { $('modal-image').classList.add('open'); }
+function closeModal(name) { $('modal-' + name).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(el =>
     el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); })
 );
@@ -1153,7 +1481,7 @@ function showToast(msg) {
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-document.getElementById('pres-title').addEventListener('input', e => {
+$('pres-title').addEventListener('input', e => {
     state.title = e.target.value; markDirty();
 });
 
@@ -1191,20 +1519,21 @@ document.getElementById('pres-title').addEventListener('input', e => {
         }
     }));
 
-    document.getElementById('pres-title').value    = state.title;
-    document.getElementById('theme-select').value  = state.theme;
-    document.getElementById('pp-transition').value = state.transition;
+    $('pres-title').value    = state.title;
+    $('theme-select').value  = state.theme;
+    $('pp-transition').value = state.transition;
 
     buildPropPanel();
     renderSlideList();
     renderCurrentSlide();
+    initHistory();   // baseline snapshot for undo/redo
 
     const dockW   = parseInt(getComputedStyle(document.documentElement)
                         .getPropertyValue('--dock-w'), 10) || 184;
     const availW  = window.innerWidth  - 220 - dockW - 80;
     const availH  = window.innerHeight -  52 - 44 - 80;
     const fitZoom = Math.min(availW / SLIDE_W, availH / SLIDE_H, 1) * 100;
-    document.getElementById('zoom-range').value = Math.round(fitZoom);
+    $('zoom-range').value = Math.round(fitZoom);
     setZoom(Math.round(fitZoom));
 })();
 

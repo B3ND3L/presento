@@ -203,6 +203,9 @@ body.editor {
    Without it, padding would add to the width → WYSIWYG offset. */
 .slide-el { position: absolute; box-sizing: border-box; cursor: move; user-select: none; outline: none; }
 .slide-el.editing  { cursor: text; }
+/* Outline drawn directly on each element of a multi-selection (the single
+   selection uses the overlay instead). */
+.slide-el.multi { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .el-text {
     padding: 4px 6px;
@@ -488,4 +491,25 @@ body.editor {
     z-index: 9999; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap;
 }
 #toast.show { opacity: 1; }
+
+/* ═══════════════ CONTEXT MENU (right click) ═══════════════ */
+#context-menu {
+    position: fixed; z-index: 10000; display: none;
+    min-width: 180px; padding: 5px;
+    background: var(--surface); border: 1px solid var(--border-hi);
+    border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+}
+.ctx-item {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%; padding: 7px 10px;
+    background: transparent; border: none; border-radius: var(--radius-xs);
+    color: var(--text-1); font-size: 13px; font-family: inherit; text-align: left;
+    cursor: pointer;
+}
+.ctx-item:hover { background: var(--bg-hover); }
+.ctx-item:disabled { color: var(--text-3); cursor: default; }
+.ctx-item:disabled:hover { background: transparent; }
+.ctx-item--danger { color: var(--red); }
+.ctx-item--danger:hover { background: var(--danger-bg); }
+.ctx-sep { height: 1px; margin: 5px 6px; background: var(--border); }
 

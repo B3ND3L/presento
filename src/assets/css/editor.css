@@ -9,7 +9,7 @@ body.editor {
     color: var(--text-1);
 }
 
-/* Iframe technique (sonde de couleurs de thème) — invisible */
+/* Technical iframe (theme color probe) — invisible */
 .probe-iframe {
     position: fixed; left: -9999px; top: -9999px;
     width: 1px; height: 1px; border: 0; opacity: 0;
@@ -105,7 +105,7 @@ body.editor {
 }
 #zoom-range { width: 90px; accent-color: var(--accent); flex-shrink: 0; }
 
-/* ═══════════════ SLIDE PANEL (gauche) ═══════════════ */
+/* ═══════════════ SLIDE PANEL (left) ═══════════════ */
 #slide-panel {
     position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
     width: var(--panel-left); z-index: 80;
@@ -181,13 +181,12 @@ body.editor {
 }
 #slide-canvas.drag-over { box-shadow: 0 0 0 3px var(--accent), var(--shadow-lg); }
 
-/* ── Éléments de slide ── */
-/* box-sizing: border-box pour que la taille (w×h) corresponde exactement
-   à celle de la vue présentation et des miniatures (qui utilisent border-box).
-   Sans cela, le padding s'ajoute à la largeur → décalage du WYSIWYG. */
+/* ── Slide elements ── */
+/* box-sizing: border-box so the size (w×h) matches exactly the one of the
+   presentation view and the thumbnails (which use border-box).
+   Without it, padding would add to the width → WYSIWYG offset. */
 .slide-el { position: absolute; box-sizing: border-box; cursor: move; user-select: none; outline: none; }
-.slide-el.selected { outline: 2px solid var(--accent); outline-offset: 1px; }
-.slide-el.editing  { cursor: text; outline: 2px solid var(--accent-light); outline-offset: 1px; }
+.slide-el.editing  { cursor: text; }
 
 .el-text {
     padding: 4px 6px;
@@ -200,20 +199,35 @@ body.editor {
 .el-image img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 .el-shape svg { width: 100%; height: 100%; display: block; }
 
-/* Aperçu live d'iframe (via le proxy). pointer-events:none pour que la boîte
-   reste déplaçable/sélectionnable dans l'éditeur. */
+/* Live iframe preview (via the proxy). pointer-events:none so the box
+   remains draggable/selectable in the editor. */
 .el-iframe-live {
     width: 100%; height: 100%; border: none; display: block;
     background: #fff; pointer-events: none;
 }
 
+/* Selection layer: drawn above every element so the outline and the resize
+   handle stay visible/clickable even when the element is covered, WITHOUT
+   changing the element's z-index (no "jump to front" on selection). */
+#selection-overlay {
+    position: absolute; display: none;
+    pointer-events: none;                 /* clicks pass through to the element below */
+    outline: 2px solid var(--accent); outline-offset: 1px;
+    z-index: 2147483000;
+}
+#selection-overlay.editing { outline-color: var(--accent-light); }
+
 .resize-handle {
     position: absolute; right: -5px; bottom: -5px;
     width: 10px; height: 10px; border-radius: 50%;
     background: var(--accent); border: 2px solid #fff;
-    cursor: se-resize; z-index: 10; display: none;
+    cursor: se-resize; pointer-events: auto;   /* the handle stays interactive */
 }
-.slide-el.selected .resize-handle { display: block; }
+/* Enlarged clickable area around the handle (stays clickable even if the
+   corner is partially clipped by the canvas's overflow:hidden). */
+.resize-handle::before {
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+}
 
 #empty-hint {
     position: absolute; inset: 0;
@@ -244,7 +258,7 @@ body.editor {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
 }
 
-/* ═══════════════ INSERT DOCK (barre latérale droite) ═══════════════ */
+/* ═══════════════ INSERT DOCK (right sidebar) ═══════════════ */
 #insert-dock {
     position: fixed;
     top: calc(var(--topbar-h) + var(--toolbar-h));
@@ -313,7 +327,7 @@ body.editor {
 .dock-item:hover .dock-icon { border-color: var(--border-hi); }
 .dock-label { font-weight: 500; }
 
-/* Largeur réduite : on bascule en icônes seules sous 1100px de hauteur utile */
+/* Reduced width: switch to icons only below 1100px of usable height */
 @media (max-width: 1080px) {
     :root { --dock-w: 64px; }
     .dock-header span:not(.dock-header-icon),
@@ -324,7 +338,7 @@ body.editor {
     .dock-scroll { padding: 12px 8px; }
 }
 
-/* ═══════════════ PROP PANEL (droite) ═══════════════ */
+/* ═══════════════ PROP PANEL (right) ═══════════════ */
 #prop-panel {
     position: fixed; top: calc(var(--topbar-h) + var(--toolbar-h)); right: 0; bottom: 0;
     width: 240px; z-index: 70;

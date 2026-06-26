@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ url_for('assets', path='css/base.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('assets', path='css/index.css') }}" type="text/css">
 
-    <!-- Applique le thème avant le rendu (évite tout flash) -->
+    <!-- Apply the theme before rendering (avoids any flash) -->
     <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
 </head>
 <body>
@@ -108,7 +108,7 @@
     <div id="my-slides-empty" class="empty alert--hidden">{{ _("no_slide") }}</div>
 </div>
 
-<!-- Traductions exposées au JavaScript -->
+<!-- Translations exposed to JavaScript -->
 <script id="presento-i18n" type="application/json">
 {
     "select_json_file":    {{ _("select_json_file")    | tojson }},

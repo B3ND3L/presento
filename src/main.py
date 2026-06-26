@@ -39,9 +39,9 @@ app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=config.get("trusted_hos
 
 @app.middleware("http")
 async def set_scheme_middleware(request, call_next):
-    # On récupère le protocole envoyé par Nginx Proxy Manager
+    # Retrieve the protocol forwarded by Nginx Proxy Manager
     proto = request.headers.get("x-forwarded-proto", "http")
-    # On force le scope de la requête pour Jinja2 et url_for
+    # Force the request scope for Jinja2 and url_for
     request.scope["scheme"] = proto
     response = await call_next(request)
     return response
@@ -53,8 +53,8 @@ app.add_middleware(SessionMiddleware, secret_key="idkwihtp")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    # Les présentations affichées sont déterminées côté client à partir
-    # des identifiants conservés dans le localStorage du navigateur.
+    # The displayed presentations are determined client-side from the
+    # identifiers stored in the browser's localStorage.
     return templates.TemplateResponse(request, "index.html", {})
 
 @app.post("/pres/new")
@@ -77,10 +77,10 @@ async def edit_page(request: Request, pres_id: str):
         raise HTTPException(404, "Présentation introuvable")
     return templates.TemplateResponse(request, "edit.html", {"pres": pres})
 
-# ── Proxy d'iframe (prévisualisation de sites cross-domain) ─
+# ── Iframe proxy (cross-domain site previews) ─
 
-# En-têtes envoyés par le site cible qui empêchent l'embarquement en iframe :
-# on les retire pour pouvoir afficher la prévisualisation depuis notre origine.
+# Headers sent by the target site that prevent iframe embedding:
+# we strip them so we can display the preview from our own origin.
 _FRAME_BLOCKING_HEADERS = {
     "x-frame-options",
     "content-security-policy",
@@ -89,7 +89,7 @@ _FRAME_BLOCKING_HEADERS = {
     "cross-origin-embedder-policy",
     "cross-origin-resource-policy",
 }
-# En-têtes « hop-by-hop » ou de transport à ne pas réémettre tels quels.
+# "Hop-by-hop" or transport headers that must not be re-emitted as-is.
 _SKIP_HEADERS = {
     "content-encoding", "content-length", "transfer-encoding",
     "connection", "keep-alive", "set-cookie", "strict-transport-security",
@@ -101,7 +101,7 @@ _PROXY_UA = (
 
 
 def _is_blocked_host(host: str) -> bool:
-    """Empêche le SSRF : refuse les hôtes résolvant vers une IP privée/locale."""
+    """Prevent SSRF: reject hosts that resolve to a private/local IP."""
     try:
         infos = socket.getaddrinfo(host, None)
     except OSError:
@@ -116,11 +116,11 @@ def _is_blocked_host(host: str) -> bool:
 
 @app.get("/proxy")
 async def proxy(url: str):
-    """Récupère une page distante et la ressert depuis notre origine en
-    retirant les en-têtes qui interdisent l'embarquement en iframe.
+    """Fetch a remote page and re-serve it from our origin, stripping the
+    headers that forbid iframe embedding.
 
-    Permet une prévisualisation de sites qui bloquent normalement le
-    cross-domain (X-Frame-Options / CSP frame-ancestors)."""
+    Allows previewing sites that normally block cross-domain embedding
+    (X-Frame-Options / CSP frame-ancestors)."""
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.hostname:
         raise HTTPException(400, "URL invalide")
@@ -143,8 +143,8 @@ async def proxy(url: str):
     content_type = upstream.headers.get("content-type", "application/octet-stream")
     content = upstream.content
 
-    # Injecte une balise <base> pour que les ressources relatives se résolvent
-    # par rapport à l'URL d'origine (et non par rapport à /proxy).
+    # Inject a <base> tag so that relative resources resolve against the
+    # original URL (and not against /proxy).
     if "text/html" in content_type.lower():
         base_tag = f'<base href="{url}">'
         text = content.decode(upstream.encoding or "utf-8", errors="replace")
@@ -163,7 +163,7 @@ async def proxy(url: str):
     }
     return Response(content=content, media_type=content_type, headers=headers)
 
-# ── API JSON (présentations stockées côté client) ──────────
+# ── JSON API (presentations stored client-side) ──────────
 
 class IdsPayload(BaseModel):
     ids: list[str] = []
@@ -207,7 +207,7 @@ async def api_delete(pres_id: str):
     collection.delete_one({"_id": pres_id})
     return {"ok": True}
 
-# ── API JSON (appelée par l'éditeur WYSIWYG) ───────────────
+# ── JSON API (called by the WYSIWYG editor) ───────────────
 
 class SavePayload(BaseModel):
     title: str

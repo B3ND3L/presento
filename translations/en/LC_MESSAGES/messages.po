@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-03 21:47+0200\n"
+"POT-Creation-Date: 2026-06-26 14:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -14,424 +14,464 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/templates/edit.html:496
+#: src/templates/edit.html:5
+msgid "editing"
+msgstr "Editing"
+
+#: src/templates/edit.html:28
 msgid "save_status"
 msgstr "All changes saved"
 
-#: src/templates/edit.html:499 src/templates/edit.html:648
+# ── Charter / interface ──
+#: src/templates/edit.html:31 src/templates/index.html:32
+msgid "toggle_theme"
+msgstr "Toggle theme (light / dark)"
+
+#: src/templates/edit.html:35 src/templates/edit.html:226
 msgid "theme"
 msgstr "Theme"
 
-#: src/templates/edit.html:509
+#: src/templates/edit.html:45 src/templates/edit.html:204
 msgid "slide_parameters"
 msgstr "Slide settings"
 
-#: src/templates/edit.html:510
+#: src/templates/edit.html:46
 msgid "share"
 msgstr "Share"
 
-#: src/templates/edit.html:511 src/templates/index.html:441
+#: src/templates/edit.html:47 src/templates/index.html:121
 msgid "pdf"
 msgstr "PDF"
 
-#: src/templates/edit.html:512
+#: src/templates/edit.html:48
 msgid "run"
 msgstr "Present"
 
-#: src/templates/edit.html:513 src/templates/edit.html:687
+#: src/templates/edit.html:49 src/templates/edit.html:269
 msgid "save"
 msgstr "Save"
 
-#: src/templates/edit.html:524
+#: src/templates/edit.html:60
 msgid "font"
 msgstr "Font"
 
-#: src/templates/edit.html:532
+#: src/templates/edit.html:69
 msgid "size"
 msgstr "Size"
 
-#: src/templates/edit.html:540
+#: src/templates/edit.html:79
 msgid "bold"
 msgstr "Bold"
 
-#: src/templates/edit.html:541
+#: src/templates/edit.html:80
 msgid "italic"
 msgstr "Italic"
 
-#: src/templates/edit.html:542
+#: src/templates/edit.html:81
 msgid "underline"
 msgstr "Underline"
 
-#: src/templates/edit.html:543
+#: src/templates/edit.html:82
 msgid "crossed"
 msgstr "Strikethrough"
 
-#: src/templates/edit.html:545
+#: src/templates/edit.html:84
 msgid "align_left"
 msgstr "Align left"
 
-#: src/templates/edit.html:546
+#: src/templates/edit.html:85
 msgid "center"
 msgstr "Center"
 
-#: src/templates/edit.html:547
+#: src/templates/edit.html:86
 msgid "align_right"
 msgstr "Align right"
 
-#: src/templates/edit.html:549
+#: src/templates/edit.html:88
 msgid "text_color"
 msgstr "Text color"
 
-#: src/templates/edit.html:553
+#: src/templates/edit.html:92
 msgid "element_background_color"
 msgstr "Element background color"
 
-#: src/templates/edit.html:560
+#: src/templates/edit.html:99
 msgid "background"
 msgstr "Background"
 
-#: src/templates/edit.html:561
+#: src/templates/edit.html:100 src/templates/edit.html:209
 msgid "background_color"
 msgstr "Background color"
 
-#: src/templates/edit.html:567
+#: src/templates/edit.html:106
 msgid "forward"
 msgstr "Bring forward"
 
-#: src/templates/edit.html:568
+#: src/templates/edit.html:107
 msgid "backward"
 msgstr "Send backward"
 
-#: src/templates/edit.html:571
+#: src/templates/edit.html:109
 msgid "progressive"
 msgstr "Progressive"
 
-#: src/templates/edit.html:573
+#: src/templates/edit.html:110
 msgid "iframe_url"
 msgstr "iFrame URL"
 
-#: src/templates/edit.html:575
+#: src/templates/edit.html:112
 msgid "delete_element"
 msgstr "Delete element"
 
-#: src/templates/edit.html:587 src/templates/index.html:359
+#: src/templates/edit.html:124
+msgid "slides"
+msgstr "Slides"
+
+#: src/templates/edit.html:125 src/templates/index.html:56
 msgid "add_slide"
 msgstr "➕ New Slide"
 
-#: src/templates/edit.html:599
+#: src/templates/edit.html:140
 msgid "slide_placeholder"
 msgstr "Slide name"
 
-#: src/templates/edit.html:609
-msgid "title"
-msgstr "Title"
-
-#: src/templates/index.html:351
-msgid "site_title"
-msgstr "Slide presentation for everyone."
-
-#: src/templates/edit.html:610
-msgid "text"
-msgstr "Text"
-
-#: src/templates/edit.html:611
-msgid "list"
-msgstr "List"
-
-#: src/templates/edit.html:612
-msgid "url_image"
-msgstr "Image from URL"
-
-#: src/templates/edit.html:613
-msgid "file_image"
-msgstr "Image from file"
-
-#: src/templates/edit.html:614
-msgid "iframe"
-msgstr "iFrame"
-
-#: src/templates/edit.html:615
-msgid "rectangle"
-msgstr "Rectangle"
-
-#: src/templates/edit.html:616
-msgid "circle"
-msgstr "Circle"
-
-#: src/templates/edit.html:617
-msgid "triangle"
-msgstr "Triangle"
-
-#: src/templates/edit.html:618
-msgid "line"
-msgstr "Line"
-
-#: src/templates/edit.html:639
-msgid "slide"
-msgstr "Slide"
-
-#: src/templates/edit.html:640
-msgid "fade"
-msgstr "Fade"
-
-#: src/templates/edit.html:641
-msgid "zoom"
-msgstr "Zoom"
-
-#: src/templates/edit.html:642
-msgid "convex"
-msgstr "Convex"
-
-#: src/templates/edit.html:643
-msgid "concave"
-msgstr "Concave"
-
-#: src/templates/edit.html:644
-msgid "none"
-msgstr "None"
-
-#: src/templates/edit.html:657
-msgid "insert_image"
-msgstr "Insert image"
-
-#: src/templates/edit.html:659
-msgid "image_url"
-msgstr "Image URL"
-
-#: src/templates/edit.html:663 src/templates/edit.html:678
-msgid "cancel"
-msgstr "Cancel"
-
-#: src/templates/edit.html:664 src/templates/edit.html:679
-msgid "ok"
-msgstr "OK"
-
-#: src/templates/edit.html:672
-msgid "insert_iframe"
-msgstr "Insert iFrame"
-
-#: src/templates/edit.html:674
-msgid "url_to_display"
-msgstr "URL to display"
-
-#: src/templates/edit.html:690
-msgid "online"
-msgstr "Online"
-
-#: src/templates/edit.html:691
-msgid "offline"
-msgstr "Offline"
-
-#: src/templates/edit.html:1214
-msgid "slide_title_placeholder"
-msgstr "Slide title"
-
-#: src/templates/edit.html:1216
-msgid "slide_text_placeholder"
-msgstr "Your text here"
-
-#: src/templates/edit.html:1218
-msgid "slide_list_placeholder"
-msgstr "Item 1"
-
-#: src/templates/index.html:339
-msgid "emoji_language"
-msgstr "🇬🇧"
-
-#: src/templates/index.html:340
-msgid "language"
-msgstr "English"
-
-#: src/templates/index.html:353
-msgid "slogan"
-msgstr "Create, present, inspire."
-
-#: src/templates/index.html:365
-msgid "slides_access"
-msgstr "Access a presentation"
-
-#: src/templates/index.html:370
-msgid "id_access"
-msgstr "🔑 Access by ID"
-
-#: src/templates/index.html:371
-msgid "online_desc"
-msgstr ""
-"Open an existing presentation by entering its identifier and password (if"
-" protected)."
-
-#: src/templates/index.html:380
-msgid "id_placeholder"
-msgstr "Identifier (e.g. a1b2c3d4)"
-
-#: src/templates/index.html:386
-msgid "password_placeholder"
-msgstr "Password (optional)"
-
-#: src/templates/index.html:389
-msgid "access"
-msgstr "Access →"
-
-#: src/templates/index.html:395
-msgid "import_json"
-msgstr "📂 Import JSON File"
-
-#: src/templates/index.html:396
-msgid "load_offline"
-msgstr ""
-"Upload a presentation exported in offline mode. A new identifier will be "
-"assigned."
-
-#: src/templates/index.html:405
-msgid "import_edit"
-msgstr "💼 Import and Edit"
-
-#: src/templates/index.html:410
-msgid "my_slides"
-msgstr "My Presentations"
-
-#: src/templates/index.html:430
-msgid "view_slide"
-msgstr "View"
-
-#: src/templates/index.html:435
-msgid "edit"
-msgstr "Edit"
-
-#: src/templates/index.html:445
-msgid "confirm_delete"
-msgstr "Delete this presentation?"
-
-#: src/templates/index.html:446
-msgid "delete"
-msgstr "Delete"
-
-#: src/templates/index.html:453
-msgid "no_slide"
-msgstr "No presentations yet."
-
-# ── Added keys (editor UI, save modal) ──
-msgid "transition"
-msgstr "Transition"
-
+#: src/templates/edit.html:148 src/templates/edit.html:151
 msgid "insert"
 msgstr "Insert"
 
-msgid "copy_id"
-msgstr "Copy ID"
+#: src/templates/edit.html:154 src/templates/edit.html:155
+msgid "ins_group_text"
+msgstr "Text"
 
-msgid "password_optional"
-msgstr "Password (optional)"
+#: src/templates/edit.html:156 src/templates/edit.html:157
+msgid "title"
+msgstr "Title"
 
-msgid "password_leave_empty"
-msgstr "Leave empty for no password"
+#: src/templates/edit.html:159 src/templates/edit.html:160
+msgid "text"
+msgstr "Text"
 
-msgid "confirm_password"
-msgstr "Confirm password"
+#: src/templates/edit.html:162 src/templates/edit.html:163
+msgid "list"
+msgstr "List"
 
-msgid "save_online"
-msgstr "Save online"
+#: src/templates/edit.html:167 src/templates/edit.html:168
+msgid "ins_group_media"
+msgstr "Media"
 
+#: src/templates/edit.html:169 src/templates/edit.html:170
+msgid "url_image"
+msgstr "Image from URL"
+
+#: src/templates/edit.html:172 src/templates/edit.html:173
+msgid "file_image"
+msgstr "Image from file"
+
+#: src/templates/edit.html:175 src/templates/edit.html:176
+msgid "iframe"
+msgstr "iFrame"
+
+#: src/templates/edit.html:180 src/templates/edit.html:181
+msgid "ins_group_shapes"
+msgstr "Shapes"
+
+#: src/templates/edit.html:182 src/templates/edit.html:183
+msgid "rectangle"
+msgstr "Rectangle"
+
+#: src/templates/edit.html:185 src/templates/edit.html:186
+msgid "circle"
+msgstr "Circle"
+
+#: src/templates/edit.html:188 src/templates/edit.html:189
+msgid "triangle"
+msgstr "Triangle"
+
+#: src/templates/edit.html:191 src/templates/edit.html:192
+msgid "line"
+msgstr "Line"
+
+# ── Added keys (editor UI, save modal) ──
+#: src/templates/edit.html:215
+msgid "transition"
+msgstr "Transition"
+
+#: src/templates/edit.html:217
+msgid "slide"
+msgstr "Slide"
+
+#: src/templates/edit.html:218
+msgid "fade"
+msgstr "Fade"
+
+#: src/templates/edit.html:219
+msgid "zoom"
+msgstr "Zoom"
+
+#: src/templates/edit.html:220
+msgid "convex"
+msgstr "Convex"
+
+#: src/templates/edit.html:221
+msgid "concave"
+msgstr "Concave"
+
+#: src/templates/edit.html:222
+msgid "none"
+msgstr "None"
+
+#: src/templates/edit.html:239
+msgid "insert_image"
+msgstr "Insert image"
+
+#: src/templates/edit.html:241
+msgid "image_url"
+msgstr "Image URL"
+
+#: src/templates/edit.html:245 src/templates/edit.html:260
+#: src/templates/edit.html:291 src/templates/edit.html:300
+msgid "cancel"
+msgstr "Cancel"
+
+#: src/templates/edit.html:246 src/templates/edit.html:261
+msgid "ok"
+msgstr "OK"
+
+#: src/templates/edit.html:254 src/templates/edit.html:331
+msgid "insert_iframe"
+msgstr "Insert iFrame"
+
+#: src/templates/edit.html:256
+msgid "url_to_display"
+msgstr "URL to display"
+
+#: src/templates/edit.html:271
+msgid "online"
+msgstr "Online"
+
+#: src/templates/edit.html:272
+msgid "offline"
+msgstr "Offline"
+
+#: src/templates/edit.html:276
 msgid "save_online_hint"
 msgstr ""
 "Your presentation is stored on the server and remains accessible via its "
 "identifier."
 
-msgid "save_offline_desc"
-msgstr ""
-"Download your presentation as JSON to keep it or share it offline."
+#: src/templates/edit.html:279
+msgid "copy_id"
+msgstr "Copy ID"
 
+#: src/templates/edit.html:282
+msgid "password_optional"
+msgstr "Password (optional)"
+
+#: src/templates/edit.html:283
+msgid "password_leave_empty"
+msgstr "Leave empty for no password"
+
+#: src/templates/edit.html:286
+msgid "confirm_password"
+msgstr "Confirm password"
+
+#: src/templates/edit.html:292
+msgid "save_online"
+msgstr "Save online"
+
+#: src/templates/edit.html:298
+msgid "save_offline_desc"
+msgstr "Download your presentation as JSON to keep it or share it offline."
+
+#: src/templates/edit.html:301
 msgid "download_json"
 msgstr "Download JSON"
 
-# ── Charter / interface ──
-msgid "toggle_theme"
-msgstr "Toggle theme (light / dark)"
-
-msgid "password_protected"
-msgstr "Password protected"
-
-msgid "editing"
-msgstr "Editing"
-
-msgid "slides"
-msgstr "Slides"
-
-msgid "ins_group_text"
-msgstr "Text"
-
-msgid "ins_group_media"
-msgstr "Media"
-
-msgid "ins_group_shapes"
-msgstr "Shapes"
-
-# ── JavaScript messages (index) ──
-msgid "select_json_file"
-msgstr "Please select a JSON file."
-
-msgid "invalid_json"
-msgstr "Invalid JSON file."
-
-msgid "unrecognized_format"
-msgstr "Unrecognized file format (title and slides required)."
-
-msgid "import_error"
-msgstr "Import failed. Please try again."
-
-msgid "dropzone_hint"
-msgstr "Drag & drop a JSON file here"
-
-msgid "browse"
-msgstr "Browse"
-
 # ── JavaScript messages (editor) ──
+#: src/templates/edit.html:325
 msgid "click_to_edit"
 msgstr "Click to edit…"
 
+#: src/templates/edit.html:326
+msgid "slide_title_placeholder"
+msgstr "Slide title"
+
+#: src/templates/edit.html:327
+msgid "slide_text_placeholder"
+msgstr "Your text here"
+
+#: src/templates/edit.html:328
+msgid "slide_list_placeholder"
+msgstr "Item 1"
+
+#: src/templates/edit.html:329
 msgid "url_undefined"
 msgstr "URL not set"
 
+#: src/templates/edit.html:330
 msgid "cannot_delete_last_slide"
 msgstr "Cannot delete the last slide."
 
+#: src/templates/edit.html:332
 msgid "iframe_modal_edit"
 msgstr "Edit iframe URL"
 
+#: src/templates/edit.html:333
 msgid "unsaved"
 msgstr "Unsaved"
 
+#: src/templates/edit.html:334
 msgid "saving"
 msgstr "Saving…"
 
+#: src/templates/edit.html:335
 msgid "saved"
 msgstr "Saved"
 
+#: src/templates/edit.html:336
 msgid "network_error"
 msgstr "Network error"
 
+#: src/templates/edit.html:337
 msgid "deck_saved"
 msgstr "✓ Presentation saved"
 
+#: src/templates/edit.html:338
 msgid "json_downloaded"
 msgstr "✓ JSON downloaded"
 
+#: src/templates/edit.html:339
 msgid "id_copied"
 msgstr "ID copied!"
 
+#: src/templates/edit.html:340
 msgid "link_copied"
 msgstr "Link copied!"
 
+#: src/templates/edit.html:341
 msgid "passwords_no_match"
 msgstr "Passwords do not match."
 
+#: src/templates/index.html:38
+msgid "emoji_language"
+msgstr "🇬🇧"
+
+#: src/templates/index.html:39
+msgid "language"
+msgstr "English"
+
+#: src/templates/index.html:52
+msgid "site_title"
+msgstr "Slide presentation for everyone."
+
+#: src/templates/index.html:53
+msgid "slogan"
+msgstr "Create, present, inspire."
+
+#: src/templates/index.html:61
+msgid "slides_access"
+msgstr "Access a presentation"
+
+#: src/templates/index.html:65
+msgid "id_access"
+msgstr "🔑 Access by ID"
+
+#: src/templates/index.html:66
+msgid "online_desc"
+msgstr ""
+"Open an existing presentation by entering its identifier and password (if"
+" protected)."
+
+#: src/templates/index.html:72
+msgid "id_placeholder"
+msgstr "Identifier (e.g. a1b2c3d4)"
+
+#: src/templates/index.html:76
+msgid "password_placeholder"
+msgstr "Password (optional)"
+
+#: src/templates/index.html:79
+msgid "access"
+msgstr "Access →"
+
+#: src/templates/index.html:84
+msgid "import_json"
+msgstr "📂 Import JSON File"
+
+#: src/templates/index.html:85
+msgid "load_offline"
+msgstr ""
+"Upload a presentation exported in offline mode. A new identifier will be "
+"assigned."
+
+#: src/templates/index.html:90 src/templates/index.html:94
+#: src/templates/index.html:118
+msgid "dropzone_hint"
+msgstr "Drag & drop a JSON file here"
+
+#: src/templates/index.html:95
+msgid "browse"
+msgstr "Browse"
+
+#: src/templates/index.html:99
+msgid "import_edit"
+msgstr "💼 Import and Edit"
+
+#: src/templates/index.html:105
+msgid "my_slides"
+msgstr "My Presentations"
+
+#: src/templates/index.html:108
+msgid "no_slide"
+msgstr "No presentations yet."
+
+# ── JavaScript messages (index) ──
+#: src/templates/index.html:114
+msgid "select_json_file"
+msgstr "Please select a JSON file."
+
+#: src/templates/index.html:115
+msgid "invalid_json"
+msgstr "Invalid JSON file."
+
+#: src/templates/index.html:116
+msgid "unrecognized_format"
+msgstr "Unrecognized file format (title and slides required)."
+
+#: src/templates/index.html:117
+msgid "import_error"
+msgstr "Import failed. Please try again."
+
+#: src/templates/index.html:119
+msgid "view_slide"
+msgstr "View"
+
+#: src/templates/index.html:120
+msgid "edit"
+msgstr "Edit"
+
+#: src/templates/index.html:122
+msgid "delete"
+msgstr "Delete"
+
+#: src/templates/index.html:123
+msgid "confirm_delete"
+msgstr "Delete this presentation?"
+
+#: src/templates/index.html:124
+msgid "password_protected"
+msgstr "Password protected"
+
 # ── Messages JavaScript (accès par ID) ──
+#: src/templates/index.html:125
 msgid "access_empty"
 msgstr "Please enter a presentation ID."
 
+#: src/templates/index.html:126
 msgid "access_not_found"
 msgstr "Presentation not found."
 
+#: src/templates/index.html:127
 msgid "access_bad_password"
 msgstr "Incorrect password."
 

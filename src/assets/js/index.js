@@ -1,4 +1,4 @@
-/* ── Traductions (injectées par le template) ── */
+/* ── Translations (injected by the template) ── */
 const I18N = (() => {
     try { return JSON.parse(document.getElementById('presento-i18n').textContent); }
     catch (_) { return {}; }
@@ -6,7 +6,7 @@ const I18N = (() => {
 const t = (key) => I18N[key] || key;
 
 /* ═══════════════════════════════════════════════════════════
-   STOCKAGE LOCAL : on ne conserve que les IDs des présentations
+   LOCAL STORAGE: we only keep the presentation IDs
 ═══════════════════════════════════════════════════════════ */
 const STORAGE_KEY = 'presento_ids';
 
@@ -31,7 +31,7 @@ function removeStoredId(id) {
     setStoredIds(getStoredIds().filter(x => x !== id));
 }
 
-/* ── Rendu de « Mes présentations » à partir du localStorage ── */
+/* ── Render "My presentations" from localStorage ── */
 function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, c => (
         { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -55,10 +55,10 @@ async function loadMyPresentations() {
                 body: JSON.stringify({ ids })
             });
             if (res.ok) presentations = await res.json();
-        } catch { /* hors-ligne : on n'affiche rien */ }
+        } catch { /* offline: display nothing */ }
     }
 
-    // Nettoyage des IDs qui n'existent plus sur le serveur
+    // Clean up IDs that no longer exist on the server
     if (presentations.length !== ids.length) {
         setStoredIds(presentations.map(p => p.id));
     }
@@ -93,12 +93,12 @@ async function deletePresentation(id) {
     if (!confirm(t('confirm_delete'))) return;
     try {
         await fetch('/api/p/' + encodeURIComponent(id), { method: 'DELETE' });
-    } catch { /* on retire quand même l'ID local */ }
+    } catch { /* remove the local ID anyway */ }
     removeStoredId(id);
     loadMyPresentations();
 }
 
-/* ── Accès par ID/mot de passe : on valide puis on stocke l'ID ── */
+/* ── Access by ID/password: validate then store the ID ── */
 async function accessPresentation() {
     const idEl    = document.getElementById('access-id');
     const pwEl    = document.getElementById('access-password');
@@ -136,7 +136,7 @@ async function accessPresentation() {
 
 document.addEventListener('DOMContentLoaded', loadMyPresentations);
 
-/* ── Import JSON : dropzone + glisser-déposer ── */
+/* ── JSON import: dropzone + drag & drop ── */
 let selectedFile = null;
 
 function setSelectedFile(file) {
@@ -158,9 +158,9 @@ function initImportDropzone() {
     const input = document.getElementById('import-file');
     if (!zone || !input) return;
 
-    // Clic / clavier : ouvre le sélecteur de fichier
+    // Click / keyboard: open the file picker
     zone.addEventListener('click', e => {
-        if (e.target === input) return;   // évite la récursion du click programmatique
+        if (e.target === input) return;   // avoid recursion from the programmatic click
         input.click();
     });
     zone.addEventListener('keydown', e => {
@@ -169,8 +169,8 @@ function initImportDropzone() {
 
     input.addEventListener('change', () => setSelectedFile(input.files[0] || null));
 
-    // Empêche le navigateur d'ouvrir le fichier déposé n'importe où sur la page
-    // (indispensable pour que l'événement "drop" soit délivré de façon fiable).
+    // Prevent the browser from opening the dropped file anywhere on the page
+    // (essential so the "drop" event is delivered reliably).
     ['dragover', 'drop'].forEach(ev =>
         window.addEventListener(ev, e => e.preventDefault()));
 
@@ -255,7 +255,7 @@ document.addEventListener('click', e => {
     }
 });
 
-/* ── Liaison des gestionnaires d'événements (remplace les onclick inline) ── */
+/* ── Bind event handlers (replaces inline onclick) ── */
 document.addEventListener('DOMContentLoaded', () => {
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) themeBtn.addEventListener('click', () => {

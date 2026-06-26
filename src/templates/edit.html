@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('assets', path='css/base.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('assets', path='css/editor.css') }}" type="text/css">
 
-    <!-- Applique le thème avant le rendu (évite tout flash) -->
+    <!-- Apply the theme before rendering (avoids any flash) -->
     <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
 </head>
 <body class="editor">
@@ -143,7 +143,7 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     INSERT DOCK (barre latérale droite)
+     INSERT DOCK (right sidebar)
 ══════════════════════════════════════════════ -->
 <aside id="insert-dock" aria-label="{{ _('insert') }}">
     <div class="dock-header">
@@ -308,7 +308,7 @@
 <div id="toast"></div>
 
 <!-- ══════════════════════════════════════════════
-     DATA ISLANDS (consommées par edit.js)
+     DATA ISLANDS (consumed by edit.js)
 ══════════════════════════════════════════════ -->
 <script id="presento-data" type="application/json">
 {

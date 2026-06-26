@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   PRESENTO — PAGE D'ACCUEIL (index)
+   PRESENTO — HOME PAGE (index)
 ═══════════════════════════════════════════════════════════ */
 
 .container {
@@ -34,7 +34,7 @@
     font-size: 1.4rem;
 }
 
-/* ── Cartes présentations ── */
+/* ── Presentation cards ── */
 .card {
     background: var(--surface-card);
     backdrop-filter: blur(10px);
@@ -58,10 +58,10 @@
 .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .card-delete-form { margin: 0; }
 
-/* ── Grille d'actions ── */
+/* ── Action grid ── */
 .action-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));   /* colonnes strictement égales */
+    grid-template-columns: repeat(2, minmax(0, 1fr));   /* strictly equal columns */
     gap: 16px;
 }
 @media (max-width: 640px) { .action-grid { grid-template-columns: 1fr; } }
@@ -72,26 +72,26 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: 24px;
-    /* Colonne flex : permet d'aligner les boutons d'action en bas */
+    /* Flex column: lets the action buttons align at the bottom */
     display: flex;
     flex-direction: column;
-    min-width: 0;   /* autorise le rétrécissement dans la grille (ellipse du texte) */
+    min-width: 0;   /* allows shrinking within the grid (text ellipsis) */
 }
 .action-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 700; }
 .action-card p {
     margin: 0 0 16px; color: var(--text-muted);
     font-size: .875rem; line-height: 1.5;
-    min-height: 2.6em;   /* réserve ~2 lignes pour équilibrer les descriptions */
+    min-height: 2.6em;   /* reserves ~2 lines to balance the descriptions */
 }
 
-/* Le formulaire (carte « Accès par ID ») occupe l'espace disponible */
+/* The form (the "Access by ID" card) fills the available space */
 .action-card > form {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-/* Zone centrale extensible (dropzone) puis bouton ancré en bas */
+/* Expandable central area (dropzone) then button anchored at the bottom */
 .action-card .dropzone    { flex: 1; }
 .action-btn-full { width: 100%; margin-top: auto; }
 
@@ -115,7 +115,7 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
 }
-/* Survol pendant un glisser-déposer */
+/* Hover during a drag & drop */
 .dropzone--over {
     border-color: var(--accent);
     border-style: solid;
@@ -123,7 +123,7 @@
     transform: scale(1.01);
     box-shadow: 0 0 0 3px var(--accent-glow);
 }
-/* Un fichier est sélectionné */
+/* A file is selected */
 .dropzone--has-file {
     border-style: solid;
     border-color: var(--success-border);
@@ -146,7 +146,7 @@
 }
 .dropzone:hover .dropzone-browse { border-color: var(--accent); color: var(--accent); }
 
-/* ── État vide ── */
+/* ── Empty state ── */
 .empty {
     color: var(--text-muted);
     padding: 34px; text-align: center;

@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════
-   CONSTANTES & DONNÉES INJECTÉES
+   CONSTANTS & INJECTED DATA
 ═════════════════════════════════════════════════════ */
 const SLIDE_W    = 960;
 const SLIDE_H    = 540;
@@ -8,14 +8,14 @@ const REVEAL_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0';
 const _themeCache = {};
 let   _probeIframe = null;
 
-/* ── Traductions (injectées par le template) ── */
+/* ── Translations (injected by the template) ── */
 const I18N = (() => {
     try { return JSON.parse(document.getElementById('presento-i18n').textContent); }
     catch (_) { return {}; }
 })();
 const t = (key) => I18N[key] || key;
 
-/* ── Données de la présentation (injectées par le template) ── */
+/* ── Presentation data (injected by the template) ── */
 const PRESENTO_DATA = (() => {
     try { return JSON.parse(document.getElementById('presento-data').textContent); }
     catch (_) { return { id: '', title: '', theme: 'white', transition: 'slide', slides: [] }; }
@@ -103,7 +103,7 @@ function renderCurrentSlide() {
         const effectiveBg = slide.bg || bg;
         canvas.style.background = effectiveBg;
         canvas.style.color      = color;
-        // Aligne la police de l'éditeur sur celle du thème Reveal (vue + miniatures)
+        // Align the editor font with the Reveal theme's (view + thumbnails)
         if (font) canvas.style.fontFamily = font;
         document.getElementById('slide-bg-color').value   = effectiveBg;
         document.getElementById('pp-slide-bg').value      = effectiveBg;
@@ -122,6 +122,7 @@ function renderCurrentSlide() {
 
     slide.elements.forEach(el => canvas.appendChild(createDomElement(el)));
     selectedEl = null;
+    hideSelectionOverlay();
     updateFormToolbar();
 }
 
@@ -140,7 +141,7 @@ function createDomElement(elData) {
         node.contentEditable  = 'false';
         node.dataset.placeholder = t('click_to_edit');
         applyTextStyles(node, elData);
-        node.innerHTML = elData.html || escapeToHtml(elData.text || '');
+        node.innerHTML = cleanElementHtml(elData.html) || escapeToHtml(elData.text || '');
         node.addEventListener('dblclick', () => startEditing(node));
         node.addEventListener('blur',     () => stopEditing(node));
         node.addEventListener('input',    () => { syncElDataFromDom(node); markDirty(); });
@@ -159,8 +160,8 @@ function createDomElement(elData) {
     if (elData.type === 'iframe') {
         node.classList.add('el-iframe');
         if (elData.src) {
-            // Prévisualisation live via le proxy serveur (contourne le blocage
-            // cross-domain X-Frame-Options / CSP des sites cibles).
+            // Live preview via the server proxy (bypasses the cross-domain
+            // X-Frame-Options / CSP blocking of target sites).
             const frame = document.createElement('iframe');
             frame.className = 'el-iframe-live';
             frame.src = '/proxy?url=' + encodeURIComponent(elData.src);
@@ -177,10 +178,6 @@ function createDomElement(elData) {
 
     refreshFragmentBadge(node, elData);
 
-    const rh = document.createElement('div');
-    rh.className = 'resize-handle';
-    rh.addEventListener('mousedown', e => startResize(e, node));
-    node.appendChild(rh);
 
     node.addEventListener('mousedown', e => onElMouseDown(e, node));
     node.addEventListener('click',     e => { e.stopPropagation(); selectEl(node); });
@@ -211,9 +208,61 @@ function escapeToHtml(text) {
     return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+/* Strips editor-only UI artifacts (resize handle, fragment badge) from a text
+   element's HTML. Earlier versions appended the resize handle as a child of the
+   element, so it could end up serialized into elData.html on save. This keeps
+   the stored content clean and removes any "ghost" handle still present. */
+function cleanElementHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html || '';
+    tmp.querySelectorAll('.resize-handle, .fragment-badge').forEach(n => n.remove());
+    return tmp.innerHTML;
+}
+
 /* ═════════════════════════════════════════════════════
    SELECTION & EDITING
 ═════════════════════════════════════════════════════ */
+/* Selection overlay: draws the selection outline and the resize handle in a
+   dedicated layer placed ABOVE every element, without ever changing the
+   selected element's z-index. This keeps the resize handle clickable even when
+   the element is covered by another one, while preserving the visual stacking
+   order (a selected object no longer jumps to the front). */
+let _selOverlay = null;
+function selectionOverlay() {
+    if (!_selOverlay) {
+        _selOverlay = document.createElement('div');
+        _selOverlay.id = 'selection-overlay';
+        const rh = document.createElement('div');
+        rh.className = 'resize-handle';
+        rh.addEventListener('mousedown', e => { if (selectedEl) startResize(e, selectedEl); });
+        _selOverlay.appendChild(rh);
+        document.getElementById('slide-canvas').appendChild(_selOverlay);
+    }
+    return _selOverlay;
+}
+
+function showSelectionOverlay() {
+    if (!selectedEl) { hideSelectionOverlay(); return; }
+    const elData = getElData(selectedEl.dataset.id);
+    if (!elData) { hideSelectionOverlay(); return; }
+    const ov = selectionOverlay();
+    ov.style.left    = elData.x + 'px';
+    ov.style.top     = elData.y + 'px';
+    ov.style.width   = elData.w + 'px';
+    ov.style.height  = elData.h + 'px';
+    ov.classList.toggle('editing', selectedEl.contentEditable === 'true');
+    ov.style.display = 'block';
+}
+
+/* Keeps the overlay in sync while dragging/resizing/moving the selection. */
+function updateSelectionOverlay() {
+    if (_selOverlay && _selOverlay.style.display === 'block') showSelectionOverlay();
+}
+
+function hideSelectionOverlay() {
+    if (_selOverlay) _selOverlay.style.display = 'none';
+}
+
 function selectEl(node) {
     if (selectedEl && selectedEl !== node) {
         selectedEl.classList.remove('selected','editing');
@@ -221,6 +270,7 @@ function selectEl(node) {
     }
     selectedEl = node;
     node.classList.add('selected');
+    showSelectionOverlay();
     updateFormToolbar();
 }
 
@@ -230,6 +280,7 @@ function deselectAll() {
         if (selectedEl.contentEditable === 'true') stopEditing(selectedEl);
         selectedEl = null;
     }
+    hideSelectionOverlay();
     updateFormToolbar();
 }
 
@@ -238,9 +289,10 @@ function startEditing(node, selectAll = false) {
     node.contentEditable = 'true';
     node.classList.add('editing');
     node.focus();
+    updateSelectionOverlay();
     const range = document.createRange();
     range.selectNodeContents(node);
-    if (!selectAll) range.collapse(false);   // curseur en fin de texte
+    if (!selectAll) range.collapse(false);   // cursor at the end of the text
     const sel = window.getSelection();
     sel.removeAllRanges(); sel.addRange(range);
 }
@@ -249,13 +301,18 @@ function stopEditing(node) {
     node.contentEditable = 'false';
     node.classList.remove('editing');
     syncElDataFromDom(node);
+    updateSelectionOverlay();
 }
 
 function syncElDataFromDom(node) {
     const elData = getElData(node.dataset.id);
     if (!elData) return;
-    elData.html = node.innerHTML;
-    elData.text = node.innerText;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = node.innerHTML;
+    // Never serialize editor-only UI (resize handle / fragment badge).
+    tmp.querySelectorAll('.resize-handle, .fragment-badge').forEach(n => n.remove());
+    elData.html = tmp.innerHTML;
+    elData.text = tmp.innerText;
     markDirty();
 }
 
@@ -286,6 +343,7 @@ document.addEventListener('mousemove', e => {
         dragState.elData.x = nx; dragState.elData.y = ny;
         dragState.node.style.left = nx + 'px';
         dragState.node.style.top  = ny + 'px';
+        updateSelectionOverlay();
     }
     if (resizeState) {
         const dx = (e.clientX - resizeState.startX) / zoom;
@@ -295,6 +353,7 @@ document.addEventListener('mousemove', e => {
         resizeState.elData.w = nw; resizeState.elData.h = nh;
         resizeState.node.style.width  = nw + 'px';
         resizeState.node.style.height = nh + 'px';
+        updateSelectionOverlay();
     }
 });
 
@@ -324,11 +383,11 @@ function execCmd(cmd, value) {
     if (!elData || elData.type !== 'text') return;
 
     if (selectedEl.contentEditable !== 'true') {
-        // Pas en édition : on entre en édition et on sélectionne tout le texte
-        // afin que la commande s'applique à l'ensemble de la zone.
+        // Not editing: enter edit mode and select all the text
+        // so the command applies to the whole zone.
         startEditing(selectedEl, true);
     } else {
-        // Déjà en édition : on garde le focus pour préserver la sélection.
+        // Already editing: keep focus to preserve the selection.
         selectedEl.focus();
     }
     document.execCommand(cmd, false, value || null);
@@ -407,6 +466,7 @@ function deleteSelected() {
     slide.elements = slide.elements.filter(e => e.id !== id);
     selectedEl.remove();
     selectedEl = null;
+    hideSelectionOverlay();
     document.getElementById('empty-hint').style.display =
         slide.elements.length === 0 ? 'flex' : 'none';
     markDirty();
@@ -431,10 +491,10 @@ function updateFormToolbar() {
     refreshTextFormatButtons();
 }
 
-/* Reflète l'état B / I / U / S des boutons.
-   - En édition : on lit l'état de la sélection courante (queryCommandState).
-   - Boîte simplement sélectionnée : on inspecte le contenu pour savoir si
-     l'intégralité du texte porte le style. */
+/* Reflects the B / I / U / S state of the buttons.
+   - When editing: read the current selection state (queryCommandState).
+   - Box simply selected: inspect the content to know whether the
+     entire text carries the style. */
 function refreshTextFormatButtons() {
     const map = { 'btn-bold': 'bold', 'btn-italic': 'italic', 'btn-under': 'underline', 'btn-strike': 'strikeThrough' };
     const editing = selectedEl && selectedEl.contentEditable === 'true';
@@ -458,7 +518,7 @@ function refreshTextFormatButtons() {
     }
 }
 
-/* Vrai si un ancêtre (jusqu'à root inclus) applique la décoration demandée. */
+/* True if an ancestor (up to and including root) applies the requested decoration. */
 function ancestorHasDecoration(el, kind, root) {
     let cur = el;
     while (cur) {
@@ -472,13 +532,13 @@ function ancestorHasDecoration(el, kind, root) {
     return false;
 }
 
-/* Détermine si TOUT le texte de la boîte porte chaque style. */
+/* Determines whether ALL the text in the box carries each style. */
 function detectFormatStates(node) {
     const all = { bold: true, italic: true, underline: true, strikeThrough: true };
     const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
     let any = false, tn;
     while ((tn = walker.nextNode())) {
-        if (!tn.textContent.replace(/\s/g, '')) continue;   // ignore le texte vide
+        if (!tn.textContent.replace(/\s/g, '')) continue;   // ignore empty text
         any = true;
         const el = tn.parentElement;
         const cs = getComputedStyle(el);
@@ -491,13 +551,13 @@ function detectFormatStates(node) {
     return any ? all : { bold: false, italic: false, underline: false, strikeThrough: false };
 }
 
-/* Empêche les boutons de mise en forme de voler le focus et donc de
-   détruire la sélection de texte en cours d'édition. */
+/* Prevents the formatting buttons from stealing focus and thus
+   destroying the text selection currently being edited. */
 document.getElementById('format-toolbar').addEventListener('mousedown', e => {
     if (e.target.closest('.ft-btn')) e.preventDefault();
 });
 
-/* Met à jour l'état des boutons quand la sélection change dans la zone éditée */
+/* Updates the button states when the selection changes in the edited zone */
 document.addEventListener('selectionchange', () => {
     if (selectedEl && selectedEl.contentEditable === 'true') refreshTextFormatButtons();
 });
@@ -518,6 +578,7 @@ document.addEventListener('keydown', e => {
             if (e.key === 'ArrowRight') { elData.x += delta; selectedEl.style.left = elData.x + 'px'; markDirty(); e.preventDefault(); }
             if (e.key === 'ArrowUp')    { elData.y -= delta; selectedEl.style.top  = elData.y + 'px'; markDirty(); e.preventDefault(); }
             if (e.key === 'ArrowDown')  { elData.y += delta; selectedEl.style.top  = elData.y + 'px'; markDirty(); e.preventDefault(); }
+            updateSelectionOverlay();
         }
     }
 });
@@ -741,7 +802,7 @@ function confirmIframeModal() {
         const elData = getElData(selectedEl.dataset.id);
         if (elData) {
             elData.src = src;
-            // Reconstruit l'élément pour afficher la prévisualisation live
+            // Rebuild the element to display the live preview
             const newNode = createDomElement(elData);
             selectedEl.replaceWith(newNode);
             selectEl(newNode);
@@ -807,12 +868,12 @@ function markDirty() {
     const s = document.getElementById('save-status');
     s.className   = 'unsaved';
     s.textContent = '● ' + t('unsaved');
-    // Reflète chaque modification dans la vignette de la slide courante
+    // Reflect every change in the current slide's thumbnail
     scheduleThumbRefresh();
 }
 
-/* Rafraîchit la vignette de la slide courante, débouncé pour éviter de
-   reconstruire l'iframe à chaque micro-modification (déplacement, frappe…). */
+/* Refreshes the current slide's thumbnail, debounced to avoid rebuilding
+   the iframe on every micro-change (move, typing…). */
 let _thumbRefreshTimer = null;
 function scheduleThumbRefresh() {
     clearTimeout(_thumbRefreshTimer);
@@ -926,8 +987,8 @@ document.getElementById('pres-title').addEventListener('input', e => {
     state.transition = PRESENTO_DATA.transition || 'slide';
     state.slides     = INITIAL_SLIDES.length ? INITIAL_SLIDES : [emptySlide()];
 
-    // Conserve l'ID de la présentation dans le localStorage du navigateur
-    // (couvre la création, l'import et l'accès par ID/mot de passe).
+    // Keep the presentation ID in the browser's localStorage
+    // (covers creation, import and access by ID/password).
     if (state.id) {
         try {
             const KEY = 'presento_ids';
@@ -936,12 +997,17 @@ document.getElementById('pres-title').addEventListener('input', e => {
                 ids.push(state.id);
                 localStorage.setItem(KEY, JSON.stringify(ids));
             }
-        } catch { /* localStorage indisponible */ }
+        } catch { /* localStorage unavailable */ }
     }
 
     state.slides.forEach(s => s.elements.forEach(e => {
         const num = parseInt(e.id.replace('el_', ''));
         if (!isNaN(num) && num > elCounter) elCounter = num;
+        // Purge any editor-only UI (resize handle / fragment badge) that older
+        // versions may have serialized into the stored text HTML.
+        if (e.type === 'text' && e.html && /resize-handle|fragment-badge/.test(e.html)) {
+            e.html = cleanElementHtml(e.html);
+        }
     }));
 
     document.getElementById('pres-title').value    = state.title;

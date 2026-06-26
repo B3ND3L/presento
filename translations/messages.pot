@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-17 18:12+0200\n"
+"POT-Creation-Date: 2026-06-26 14:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,11 +29,11 @@ msgstr ""
 msgid "toggle_theme"
 msgstr ""
 
-#: src/templates/edit.html:35 src/templates/edit.html:190
+#: src/templates/edit.html:35 src/templates/edit.html:226
 msgid "theme"
 msgstr ""
 
-#: src/templates/edit.html:45 src/templates/edit.html:168
+#: src/templates/edit.html:45 src/templates/edit.html:204
 msgid "slide_parameters"
 msgstr ""
 
@@ -41,7 +41,7 @@ msgstr ""
 msgid "share"
 msgstr ""
 
-#: src/templates/edit.html:47 src/templates/index.html:128
+#: src/templates/edit.html:47 src/templates/index.html:121
 msgid "pdf"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "run"
 msgstr ""
 
-#: src/templates/edit.html:49 src/templates/edit.html:233
+#: src/templates/edit.html:49 src/templates/edit.html:269
 msgid "save"
 msgstr ""
 
@@ -101,7 +101,7 @@ msgstr ""
 msgid "background"
 msgstr ""
 
-#: src/templates/edit.html:100 src/templates/edit.html:173
+#: src/templates/edit.html:100 src/templates/edit.html:209
 msgid "background_color"
 msgstr ""
 
@@ -137,204 +137,216 @@ msgstr ""
 msgid "slide_placeholder"
 msgstr ""
 
-#: src/templates/edit.html:148
+#: src/templates/edit.html:148 src/templates/edit.html:151
 msgid "insert"
 msgstr ""
 
-#: src/templates/edit.html:150
+#: src/templates/edit.html:154 src/templates/edit.html:155
+msgid "ins_group_text"
+msgstr ""
+
+#: src/templates/edit.html:156 src/templates/edit.html:157
 msgid "title"
 msgstr ""
 
-#: src/templates/edit.html:151
+#: src/templates/edit.html:159 src/templates/edit.html:160
 msgid "text"
 msgstr ""
 
-#: src/templates/edit.html:152
+#: src/templates/edit.html:162 src/templates/edit.html:163
 msgid "list"
 msgstr ""
 
-#: src/templates/edit.html:153
+#: src/templates/edit.html:167 src/templates/edit.html:168
+msgid "ins_group_media"
+msgstr ""
+
+#: src/templates/edit.html:169 src/templates/edit.html:170
 msgid "url_image"
 msgstr ""
 
-#: src/templates/edit.html:154
+#: src/templates/edit.html:172 src/templates/edit.html:173
 msgid "file_image"
 msgstr ""
 
-#: src/templates/edit.html:155
+#: src/templates/edit.html:175 src/templates/edit.html:176
 msgid "iframe"
 msgstr ""
 
-#: src/templates/edit.html:156
+#: src/templates/edit.html:180 src/templates/edit.html:181
+msgid "ins_group_shapes"
+msgstr ""
+
+#: src/templates/edit.html:182 src/templates/edit.html:183
 msgid "rectangle"
 msgstr ""
 
-#: src/templates/edit.html:157
+#: src/templates/edit.html:185 src/templates/edit.html:186
 msgid "circle"
 msgstr ""
 
-#: src/templates/edit.html:158
+#: src/templates/edit.html:188 src/templates/edit.html:189
 msgid "triangle"
 msgstr ""
 
-#: src/templates/edit.html:159
+#: src/templates/edit.html:191 src/templates/edit.html:192
 msgid "line"
 msgstr ""
 
-#: src/templates/edit.html:179
+#: src/templates/edit.html:215
 msgid "transition"
 msgstr ""
 
-#: src/templates/edit.html:181
+#: src/templates/edit.html:217
 msgid "slide"
 msgstr ""
 
-#: src/templates/edit.html:182
+#: src/templates/edit.html:218
 msgid "fade"
 msgstr ""
 
-#: src/templates/edit.html:183
+#: src/templates/edit.html:219
 msgid "zoom"
 msgstr ""
 
-#: src/templates/edit.html:184
+#: src/templates/edit.html:220
 msgid "convex"
 msgstr ""
 
-#: src/templates/edit.html:185
+#: src/templates/edit.html:221
 msgid "concave"
 msgstr ""
 
-#: src/templates/edit.html:186
+#: src/templates/edit.html:222
 msgid "none"
 msgstr ""
 
-#: src/templates/edit.html:203
+#: src/templates/edit.html:239
 msgid "insert_image"
 msgstr ""
 
-#: src/templates/edit.html:205
+#: src/templates/edit.html:241
 msgid "image_url"
 msgstr ""
 
-#: src/templates/edit.html:209 src/templates/edit.html:224
-#: src/templates/edit.html:255 src/templates/edit.html:264
+#: src/templates/edit.html:245 src/templates/edit.html:260
+#: src/templates/edit.html:291 src/templates/edit.html:300
 msgid "cancel"
 msgstr ""
 
-#: src/templates/edit.html:210 src/templates/edit.html:225
+#: src/templates/edit.html:246 src/templates/edit.html:261
 msgid "ok"
 msgstr ""
 
-#: src/templates/edit.html:218 src/templates/edit.html:295
+#: src/templates/edit.html:254 src/templates/edit.html:331
 msgid "insert_iframe"
 msgstr ""
 
-#: src/templates/edit.html:220
+#: src/templates/edit.html:256
 msgid "url_to_display"
 msgstr ""
 
-#: src/templates/edit.html:235
+#: src/templates/edit.html:271
 msgid "online"
 msgstr ""
 
-#: src/templates/edit.html:236
+#: src/templates/edit.html:272
 msgid "offline"
 msgstr ""
 
-#: src/templates/edit.html:240
+#: src/templates/edit.html:276
 msgid "save_online_hint"
 msgstr ""
 
-#: src/templates/edit.html:243
+#: src/templates/edit.html:279
 msgid "copy_id"
 msgstr ""
 
-#: src/templates/edit.html:246
+#: src/templates/edit.html:282
 msgid "password_optional"
 msgstr ""
 
-#: src/templates/edit.html:247
+#: src/templates/edit.html:283
 msgid "password_leave_empty"
 msgstr ""
 
-#: src/templates/edit.html:250
+#: src/templates/edit.html:286
 msgid "confirm_password"
 msgstr ""
 
-#: src/templates/edit.html:256
+#: src/templates/edit.html:292
 msgid "save_online"
 msgstr ""
 
-#: src/templates/edit.html:262
+#: src/templates/edit.html:298
 msgid "save_offline_desc"
 msgstr ""
 
-#: src/templates/edit.html:265
+#: src/templates/edit.html:301
 msgid "download_json"
 msgstr ""
 
-#: src/templates/edit.html:289
+#: src/templates/edit.html:325
 msgid "click_to_edit"
 msgstr ""
 
-#: src/templates/edit.html:290
+#: src/templates/edit.html:326
 msgid "slide_title_placeholder"
 msgstr ""
 
-#: src/templates/edit.html:291
+#: src/templates/edit.html:327
 msgid "slide_text_placeholder"
 msgstr ""
 
-#: src/templates/edit.html:292
+#: src/templates/edit.html:328
 msgid "slide_list_placeholder"
 msgstr ""
 
-#: src/templates/edit.html:293
+#: src/templates/edit.html:329
 msgid "url_undefined"
 msgstr ""
 
-#: src/templates/edit.html:294
+#: src/templates/edit.html:330
 msgid "cannot_delete_last_slide"
 msgstr ""
 
-#: src/templates/edit.html:296
+#: src/templates/edit.html:332
 msgid "iframe_modal_edit"
 msgstr ""
 
-#: src/templates/edit.html:297
+#: src/templates/edit.html:333
 msgid "unsaved"
 msgstr ""
 
-#: src/templates/edit.html:298
+#: src/templates/edit.html:334
 msgid "saving"
 msgstr ""
 
-#: src/templates/edit.html:299
+#: src/templates/edit.html:335
 msgid "saved"
 msgstr ""
 
-#: src/templates/edit.html:300
+#: src/templates/edit.html:336
 msgid "network_error"
 msgstr ""
 
-#: src/templates/edit.html:301
+#: src/templates/edit.html:337
 msgid "deck_saved"
 msgstr ""
 
-#: src/templates/edit.html:302
+#: src/templates/edit.html:338
 msgid "json_downloaded"
 msgstr ""
 
-#: src/templates/edit.html:303
+#: src/templates/edit.html:339
 msgid "id_copied"
 msgstr ""
 
-#: src/templates/edit.html:304
+#: src/templates/edit.html:340
 msgid "link_copied"
 msgstr ""
 
-#: src/templates/edit.html:305
+#: src/templates/edit.html:341
 msgid "passwords_no_match"
 msgstr ""
 
@@ -366,71 +378,92 @@ msgstr ""
 msgid "online_desc"
 msgstr ""
 
-#: src/templates/index.html:75
+#: src/templates/index.html:72
 msgid "id_placeholder"
 msgstr ""
 
-#: src/templates/index.html:81
+#: src/templates/index.html:76
 msgid "password_placeholder"
 msgstr ""
 
-#: src/templates/index.html:84
+#: src/templates/index.html:79
 msgid "access"
 msgstr ""
 
-#: src/templates/index.html:90
+#: src/templates/index.html:84
 msgid "import_json"
 msgstr ""
 
-#: src/templates/index.html:91
+#: src/templates/index.html:85
 msgid "load_offline"
 msgstr ""
 
-#: src/templates/index.html:100
+#: src/templates/index.html:90 src/templates/index.html:94
+#: src/templates/index.html:118
+msgid "dropzone_hint"
+msgstr ""
+
+#: src/templates/index.html:95
+msgid "browse"
+msgstr ""
+
+#: src/templates/index.html:99
 msgid "import_edit"
 msgstr ""
 
-#: src/templates/index.html:106
+#: src/templates/index.html:105
 msgid "my_slides"
 msgstr ""
 
-#: src/templates/index.html:114
-msgid "password_protected"
-msgstr ""
-
-#: src/templates/index.html:122
-msgid "view_slide"
-msgstr ""
-
-#: src/templates/index.html:125
-msgid "edit"
-msgstr ""
-
-#: src/templates/index.html:131
-msgid "confirm_delete"
-msgstr ""
-
-#: src/templates/index.html:132
-msgid "delete"
-msgstr ""
-
-#: src/templates/index.html:138
+#: src/templates/index.html:108
 msgid "no_slide"
 msgstr ""
 
-#: src/templates/index.html:145
+#: src/templates/index.html:114
 msgid "select_json_file"
 msgstr ""
 
-#: src/templates/index.html:146
+#: src/templates/index.html:115
 msgid "invalid_json"
 msgstr ""
 
-#: src/templates/index.html:147
+#: src/templates/index.html:116
 msgid "unrecognized_format"
 msgstr ""
 
-#: src/templates/index.html:148
+#: src/templates/index.html:117
 msgid "import_error"
+msgstr ""
+
+#: src/templates/index.html:119
+msgid "view_slide"
+msgstr ""
+
+#: src/templates/index.html:120
+msgid "edit"
+msgstr ""
+
+#: src/templates/index.html:122
+msgid "delete"
+msgstr ""
+
+#: src/templates/index.html:123
+msgid "confirm_delete"
+msgstr ""
+
+#: src/templates/index.html:124
+msgid "password_protected"
+msgstr ""
+
+#: src/templates/index.html:125
+msgid "access_empty"
+msgstr ""
+
+#: src/templates/index.html:126
+msgid "access_not_found"
+msgstr ""
+
+#: src/templates/index.html:127
+msgid "access_bad_password"
 msgstr ""
 

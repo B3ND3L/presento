@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-06-03 21:47+0200\n"
+"POT-Creation-Date: 2026-06-26 14:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -14,425 +14,466 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/templates/edit.html:496
+#: src/templates/edit.html:5
+msgid "editing"
+msgstr "Éditer"
+
+#: src/templates/edit.html:28
 msgid "save_status"
 msgstr "Modifications enregistrées"
 
-#: src/templates/edit.html:499 src/templates/edit.html:648
+# ── Charte / interface ──
+#: src/templates/edit.html:31 src/templates/index.html:32
+msgid "toggle_theme"
+msgstr "Changer de thème (clair / sombre)"
+
+#: src/templates/edit.html:35 src/templates/edit.html:226
 msgid "theme"
 msgstr "Thème"
 
-#: src/templates/edit.html:509
+#: src/templates/edit.html:45 src/templates/edit.html:204
 msgid "slide_parameters"
 msgstr "Paramètres de la diapositive"
 
-#: src/templates/edit.html:510
+#: src/templates/edit.html:46
 msgid "share"
 msgstr "Partager"
 
-#: src/templates/edit.html:511 src/templates/index.html:441
+#: src/templates/edit.html:47 src/templates/index.html:121
 msgid "pdf"
 msgstr "PDF"
 
-#: src/templates/edit.html:512
+#: src/templates/edit.html:48
 msgid "run"
 msgstr "Présenter"
 
-#: src/templates/edit.html:513 src/templates/edit.html:687
+#: src/templates/edit.html:49 src/templates/edit.html:269
 msgid "save"
 msgstr "Enregistrer"
 
-#: src/templates/edit.html:524
+#: src/templates/edit.html:60
 msgid "font"
 msgstr "Police"
 
-#: src/templates/edit.html:532
+#: src/templates/edit.html:69
 msgid "size"
 msgstr "Taille"
 
-#: src/templates/edit.html:540
+#: src/templates/edit.html:79
 msgid "bold"
 msgstr "Gras"
 
-#: src/templates/edit.html:541
+#: src/templates/edit.html:80
 msgid "italic"
 msgstr "Italique"
 
-#: src/templates/edit.html:542
+#: src/templates/edit.html:81
 msgid "underline"
 msgstr "Souligné"
 
-#: src/templates/edit.html:543
+#: src/templates/edit.html:82
 msgid "crossed"
 msgstr "Barré"
 
-#: src/templates/edit.html:545
+#: src/templates/edit.html:84
 msgid "align_left"
 msgstr "Aligner à gauche"
 
-#: src/templates/edit.html:546
+#: src/templates/edit.html:85
 msgid "center"
 msgstr "Centrer"
 
-#: src/templates/edit.html:547
+#: src/templates/edit.html:86
 msgid "align_right"
 msgstr "Aligner à droite"
 
-#: src/templates/edit.html:549
+#: src/templates/edit.html:88
 msgid "text_color"
 msgstr "Couleur du texte"
 
-#: src/templates/edit.html:553
+#: src/templates/edit.html:92
 msgid "element_background_color"
 msgstr "Couleur de fond de l'élément"
 
-#: src/templates/edit.html:560
+#: src/templates/edit.html:99
 msgid "background"
 msgstr "Arrière-plan"
 
-#: src/templates/edit.html:561
+#: src/templates/edit.html:100 src/templates/edit.html:209
 msgid "background_color"
 msgstr "Couleur d'arrière-plan"
 
-#: src/templates/edit.html:567
+#: src/templates/edit.html:106
 msgid "forward"
 msgstr "Avancer"
 
-#: src/templates/edit.html:568
+#: src/templates/edit.html:107
 msgid "backward"
 msgstr "Reculer"
 
-#: src/templates/edit.html:571
+#: src/templates/edit.html:109
 msgid "progressive"
 msgstr "Progressif"
 
-#: src/templates/edit.html:573
+#: src/templates/edit.html:110
 msgid "iframe_url"
 msgstr "URL de l'iframe"
 
-#: src/templates/edit.html:575
+#: src/templates/edit.html:112
 msgid "delete_element"
 msgstr "Supprimer l'élément"
 
-#: src/templates/edit.html:587 src/templates/index.html:359
+#: src/templates/edit.html:124
+msgid "slides"
+msgstr "Diapositives"
+
+#: src/templates/edit.html:125 src/templates/index.html:56
 msgid "add_slide"
 msgstr "➕ Nouvelle diapositive"
 
-#: src/templates/edit.html:599
+#: src/templates/edit.html:140
 msgid "slide_placeholder"
 msgstr "Nom de la diapositive"
 
-#: src/templates/edit.html:609
-msgid "title"
-msgstr "Titre"
-
-#: src/templates/index.html:351
-msgid "site_title"
-msgstr "Présentation de diapositives pour tous."
-
-#: src/templates/edit.html:610
-msgid "text"
-msgstr "Texte"
-
-#: src/templates/edit.html:611
-msgid "list"
-msgstr "Liste"
-
-#: src/templates/edit.html:612
-msgid "url_image"
-msgstr "Image depuis une URL"
-
-#: src/templates/edit.html:613
-msgid "file_image"
-msgstr "Image depuis un fichier"
-
-#: src/templates/edit.html:614
-msgid "iframe"
-msgstr "iFrame"
-
-#: src/templates/edit.html:615
-msgid "rectangle"
-msgstr "Rectangle"
-
-#: src/templates/edit.html:616
-msgid "circle"
-msgstr "Cercle"
-
-#: src/templates/edit.html:617
-msgid "triangle"
-msgstr "Triangle"
-
-#: src/templates/edit.html:618
-msgid "line"
-msgstr "Ligne"
-
-#: src/templates/edit.html:639
-msgid "slide"
-msgstr "Glissement"
-
-#: src/templates/edit.html:640
-msgid "fade"
-msgstr "Fondu"
-
-#: src/templates/edit.html:641
-msgid "zoom"
-msgstr "Zoom"
-
-#: src/templates/edit.html:642
-msgid "convex"
-msgstr "Convexe"
-
-#: src/templates/edit.html:643
-msgid "concave"
-msgstr "Concave"
-
-#: src/templates/edit.html:644
-msgid "none"
-msgstr "Aucune"
-
-#: src/templates/edit.html:657
-msgid "insert_image"
-msgstr "Insérer une image"
-
-#: src/templates/edit.html:659
-msgid "image_url"
-msgstr "URL de l'image"
-
-#: src/templates/edit.html:663 src/templates/edit.html:678
-msgid "cancel"
-msgstr "Annuler"
-
-#: src/templates/edit.html:664 src/templates/edit.html:679
-msgid "ok"
-msgstr "OK"
-
-#: src/templates/edit.html:672
-msgid "insert_iframe"
-msgstr "Insérer une iframe"
-
-#: src/templates/edit.html:674
-msgid "url_to_display"
-msgstr "URL à afficher"
-
-#: src/templates/edit.html:690
-msgid "online"
-msgstr "En ligne"
-
-#: src/templates/edit.html:691
-msgid "offline"
-msgstr "Hors ligne"
-
-#: src/templates/edit.html:1214
-msgid "slide_title_placeholder"
-msgstr "Titre de la diapositive"
-
-#: src/templates/edit.html:1216
-msgid "slide_text_placeholder"
-msgstr "Votre texte ici"
-
-#: src/templates/edit.html:1218
-msgid "slide_list_placeholder"
-msgstr "Élément 1"
-
-#: src/templates/index.html:339
-msgid "emoji_language"
-msgstr "🇫🇷"
-
-#: src/templates/index.html:340
-msgid "language"
-msgstr "Français"
-
-#: src/templates/index.html:353
-msgid "slogan"
-msgstr "Créer, présenter, inspirer."
-
-#: src/templates/index.html:365
-msgid "slides_access"
-msgstr "Accéder à une présentation"
-
-#: src/templates/index.html:370
-msgid "id_access"
-msgstr "🔑 Accès par ID"
-
-#: src/templates/index.html:371
-msgid "online_desc"
-msgstr ""
-"Retrouvez une présentation existante en saisissant son identifiant et son"
-" mot de passe (si protégée)."
-
-#: src/templates/index.html:380
-msgid "id_placeholder"
-msgstr "Identifiant (ex : a1b2c3d4)"
-
-#: src/templates/index.html:386
-msgid "password_placeholder"
-msgstr "Mot de passe (facultatif)"
-
-#: src/templates/index.html:389
-msgid "access"
-msgstr "Accéder →"
-
-#: src/templates/index.html:395
-msgid "import_json"
-msgstr "📂 Importer un fichier JSON"
-
-#: src/templates/index.html:396
-msgid "load_offline"
-msgstr ""
-"Chargez une présentation exportée en mode hors-ligne. Un nouvel "
-"identifiant lui sera attribué."
-
-#: src/templates/index.html:405
-msgid "import_edit"
-msgstr "💼 Importer et éditer"
-
-#: src/templates/index.html:410
-msgid "my_slides"
-msgstr "Mes présentations"
-
-#: src/templates/index.html:430
-msgid "view_slide"
-msgstr "Voir"
-
-#: src/templates/index.html:435
-msgid "edit"
-msgstr "Éditer"
-
-#: src/templates/index.html:445
-msgid "confirm_delete"
-msgstr "Supprimer cette présentation ?"
-
-#: src/templates/index.html:446
-msgid "delete"
-msgstr "Supprimer"
-
-#: src/templates/index.html:453
-msgid "no_slide"
-msgstr "Aucune présentation pour le moment."
-
-# ── Clés ajoutées (UI éditeur, modale d'enregistrement) ──
-msgid "transition"
-msgstr "Transition"
-
+#: src/templates/edit.html:148 src/templates/edit.html:151
 msgid "insert"
 msgstr "Insérer"
 
+#: src/templates/edit.html:154 src/templates/edit.html:155
+msgid "ins_group_text"
+msgstr "Texte"
+
+#: src/templates/edit.html:156 src/templates/edit.html:157
+msgid "title"
+msgstr "Titre"
+
+#: src/templates/edit.html:159 src/templates/edit.html:160
+msgid "text"
+msgstr "Texte"
+
+#: src/templates/edit.html:162 src/templates/edit.html:163
+msgid "list"
+msgstr "Liste"
+
+#: src/templates/edit.html:167 src/templates/edit.html:168
+msgid "ins_group_media"
+msgstr "Média"
+
+#: src/templates/edit.html:169 src/templates/edit.html:170
+msgid "url_image"
+msgstr "Image depuis une URL"
+
+#: src/templates/edit.html:172 src/templates/edit.html:173
+msgid "file_image"
+msgstr "Image depuis un fichier"
+
+#: src/templates/edit.html:175 src/templates/edit.html:176
+msgid "iframe"
+msgstr "iFrame"
+
+#: src/templates/edit.html:180 src/templates/edit.html:181
+msgid "ins_group_shapes"
+msgstr "Formes"
+
+#: src/templates/edit.html:182 src/templates/edit.html:183
+msgid "rectangle"
+msgstr "Rectangle"
+
+#: src/templates/edit.html:185 src/templates/edit.html:186
+msgid "circle"
+msgstr "Cercle"
+
+#: src/templates/edit.html:188 src/templates/edit.html:189
+msgid "triangle"
+msgstr "Triangle"
+
+#: src/templates/edit.html:191 src/templates/edit.html:192
+msgid "line"
+msgstr "Ligne"
+
+# ── Clés ajoutées (UI éditeur, modale d'enregistrement) ──
+#: src/templates/edit.html:215
+msgid "transition"
+msgstr "Transition"
+
+#: src/templates/edit.html:217
+msgid "slide"
+msgstr "Glissement"
+
+#: src/templates/edit.html:218
+msgid "fade"
+msgstr "Fondu"
+
+#: src/templates/edit.html:219
+msgid "zoom"
+msgstr "Zoom"
+
+#: src/templates/edit.html:220
+msgid "convex"
+msgstr "Convexe"
+
+#: src/templates/edit.html:221
+msgid "concave"
+msgstr "Concave"
+
+#: src/templates/edit.html:222
+msgid "none"
+msgstr "Aucune"
+
+#: src/templates/edit.html:239
+msgid "insert_image"
+msgstr "Insérer une image"
+
+#: src/templates/edit.html:241
+msgid "image_url"
+msgstr "URL de l'image"
+
+#: src/templates/edit.html:245 src/templates/edit.html:260
+#: src/templates/edit.html:291 src/templates/edit.html:300
+msgid "cancel"
+msgstr "Annuler"
+
+#: src/templates/edit.html:246 src/templates/edit.html:261
+msgid "ok"
+msgstr "OK"
+
+#: src/templates/edit.html:254 src/templates/edit.html:331
+msgid "insert_iframe"
+msgstr "Insérer une iframe"
+
+#: src/templates/edit.html:256
+msgid "url_to_display"
+msgstr "URL à afficher"
+
+#: src/templates/edit.html:271
+msgid "online"
+msgstr "En ligne"
+
+#: src/templates/edit.html:272
+msgid "offline"
+msgstr "Hors ligne"
+
+#: src/templates/edit.html:276
+msgid "save_online_hint"
+msgstr ""
+"Votre présentation est enregistrée sur le serveur et reste accessible via"
+" son identifiant."
+
+#: src/templates/edit.html:279
 msgid "copy_id"
 msgstr "Copier l'identifiant"
 
+#: src/templates/edit.html:282
 msgid "password_optional"
 msgstr "Mot de passe (facultatif)"
 
+#: src/templates/edit.html:283
 msgid "password_leave_empty"
 msgstr "Laisser vide pour aucun mot de passe"
 
+#: src/templates/edit.html:286
 msgid "confirm_password"
 msgstr "Confirmer le mot de passe"
 
+#: src/templates/edit.html:292
 msgid "save_online"
 msgstr "Enregistrer en ligne"
 
-msgid "save_online_hint"
-msgstr ""
-"Votre présentation est enregistrée sur le serveur et reste accessible via "
-"son identifiant."
-
+#: src/templates/edit.html:298
 msgid "save_offline_desc"
 msgstr ""
 "Téléchargez votre présentation au format JSON pour la conserver ou la "
 "partager hors-ligne."
 
+#: src/templates/edit.html:301
 msgid "download_json"
 msgstr "Télécharger le JSON"
 
-# ── Charte / interface ──
-msgid "toggle_theme"
-msgstr "Changer de thème (clair / sombre)"
-
-msgid "password_protected"
-msgstr "Protégée par mot de passe"
-
-msgid "editing"
-msgstr "Éditer"
-
-msgid "slides"
-msgstr "Diapositives"
-
-msgid "ins_group_text"
-msgstr "Texte"
-
-msgid "ins_group_media"
-msgstr "Média"
-
-msgid "ins_group_shapes"
-msgstr "Formes"
-
-# ── Messages JavaScript (index) ──
-msgid "select_json_file"
-msgstr "Veuillez sélectionner un fichier JSON."
-
-msgid "invalid_json"
-msgstr "Fichier JSON invalide."
-
-msgid "unrecognized_format"
-msgstr "Format de fichier non reconnu (title et slides requis)."
-
-msgid "import_error"
-msgstr "Erreur lors de l'import. Veuillez réessayer."
-
-msgid "dropzone_hint"
-msgstr "Glissez-déposez un fichier JSON ici"
-
-msgid "browse"
-msgstr "Parcourir"
-
 # ── Messages JavaScript (éditeur) ──
+#: src/templates/edit.html:325
 msgid "click_to_edit"
 msgstr "Cliquez pour éditer…"
 
+#: src/templates/edit.html:326
+msgid "slide_title_placeholder"
+msgstr "Titre de la diapositive"
+
+#: src/templates/edit.html:327
+msgid "slide_text_placeholder"
+msgstr "Votre texte ici"
+
+#: src/templates/edit.html:328
+msgid "slide_list_placeholder"
+msgstr "Élément 1"
+
+#: src/templates/edit.html:329
 msgid "url_undefined"
 msgstr "URL non définie"
 
+#: src/templates/edit.html:330
 msgid "cannot_delete_last_slide"
 msgstr "Impossible de supprimer la dernière diapositive."
 
+#: src/templates/edit.html:332
 msgid "iframe_modal_edit"
 msgstr "Modifier l'URL de l'iframe"
 
+#: src/templates/edit.html:333
 msgid "unsaved"
 msgstr "Non sauvegardé"
 
+#: src/templates/edit.html:334
 msgid "saving"
 msgstr "Enregistrement…"
 
+#: src/templates/edit.html:335
 msgid "saved"
 msgstr "Enregistré"
 
+#: src/templates/edit.html:336
 msgid "network_error"
 msgstr "Erreur réseau"
 
+#: src/templates/edit.html:337
 msgid "deck_saved"
 msgstr "✓ Présentation enregistrée"
 
+#: src/templates/edit.html:338
 msgid "json_downloaded"
 msgstr "✓ JSON téléchargé"
 
+#: src/templates/edit.html:339
 msgid "id_copied"
 msgstr "Identifiant copié !"
 
+#: src/templates/edit.html:340
 msgid "link_copied"
 msgstr "Lien copié !"
 
+#: src/templates/edit.html:341
 msgid "passwords_no_match"
 msgstr "Les mots de passe ne correspondent pas."
 
+#: src/templates/index.html:38
+msgid "emoji_language"
+msgstr "🇫🇷"
+
+#: src/templates/index.html:39
+msgid "language"
+msgstr "Français"
+
+#: src/templates/index.html:52
+msgid "site_title"
+msgstr "Présentation de diapositives pour tous."
+
+#: src/templates/index.html:53
+msgid "slogan"
+msgstr "Créer, présenter, inspirer."
+
+#: src/templates/index.html:61
+msgid "slides_access"
+msgstr "Accéder à une présentation"
+
+#: src/templates/index.html:65
+msgid "id_access"
+msgstr "🔑 Accès par ID"
+
+#: src/templates/index.html:66
+msgid "online_desc"
+msgstr ""
+"Retrouvez une présentation existante en saisissant son identifiant et son"
+" mot de passe (si protégée)."
+
+#: src/templates/index.html:72
+msgid "id_placeholder"
+msgstr "Identifiant (ex : a1b2c3d4)"
+
+#: src/templates/index.html:76
+msgid "password_placeholder"
+msgstr "Mot de passe (facultatif)"
+
+#: src/templates/index.html:79
+msgid "access"
+msgstr "Accéder →"
+
+#: src/templates/index.html:84
+msgid "import_json"
+msgstr "📂 Importer un fichier JSON"
+
+#: src/templates/index.html:85
+msgid "load_offline"
+msgstr ""
+"Chargez une présentation exportée en mode hors-ligne. Un nouvel "
+"identifiant lui sera attribué."
+
+#: src/templates/index.html:90 src/templates/index.html:94
+#: src/templates/index.html:118
+msgid "dropzone_hint"
+msgstr "Glissez-déposez un fichier JSON ici"
+
+#: src/templates/index.html:95
+msgid "browse"
+msgstr "Parcourir"
+
+#: src/templates/index.html:99
+msgid "import_edit"
+msgstr "💼 Importer et éditer"
+
+#: src/templates/index.html:105
+msgid "my_slides"
+msgstr "Mes présentations"
+
+#: src/templates/index.html:108
+msgid "no_slide"
+msgstr "Aucune présentation pour le moment."
+
+# ── Messages JavaScript (index) ──
+#: src/templates/index.html:114
+msgid "select_json_file"
+msgstr "Veuillez sélectionner un fichier JSON."
+
+#: src/templates/index.html:115
+msgid "invalid_json"
+msgstr "Fichier JSON invalide."
+
+#: src/templates/index.html:116
+msgid "unrecognized_format"
+msgstr "Format de fichier non reconnu (title et slides requis)."
+
+#: src/templates/index.html:117
+msgid "import_error"
+msgstr "Erreur lors de l'import. Veuillez réessayer."
+
+#: src/templates/index.html:119
+msgid "view_slide"
+msgstr "Voir"
+
+#: src/templates/index.html:120
+msgid "edit"
+msgstr "Éditer"
+
+#: src/templates/index.html:122
+msgid "delete"
+msgstr "Supprimer"
+
+#: src/templates/index.html:123
+msgid "confirm_delete"
+msgstr "Supprimer cette présentation ?"
+
+#: src/templates/index.html:124
+msgid "password_protected"
+msgstr "Protégée par mot de passe"
+
 # ── Messages JavaScript (accès par ID) ──
+#: src/templates/index.html:125
 msgid "access_empty"
 msgstr "Veuillez saisir un identifiant de présentation."
 
+#: src/templates/index.html:126
 msgid "access_not_found"
 msgstr "Présentation introuvable."
 
+#: src/templates/index.html:127
 msgid "access_bad_password"
 msgstr "Mot de passe incorrect."
 

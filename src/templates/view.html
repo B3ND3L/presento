@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<!-- Écran de chargement (charte Presento) -->
+<!-- Loading screen (Presento style) -->
 <div id="presento-loader">
     <div class="presento-loader-mark">
         <img src="{{ url_for('assets', path='presento_logo.png') }}" alt="Presento">
@@ -102,7 +102,7 @@
     </div>
 </div>
 
-<!-- Configuration Reveal exposée au JavaScript -->
+<!-- Reveal configuration exposed to JavaScript -->
 <script id="presento-view-config" type="application/json">
 {
     "transition": {{ pres.meta.transition | tojson }}

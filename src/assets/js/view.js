@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   PRESENTO — Initialisation de la vue présentation (Reveal.js)
+   PRESENTO — Presentation view initialization (Reveal.js)
 ═══════════════════════════════════════════════════════════ */
 (function () {
     function readConfig() {
@@ -24,13 +24,18 @@
         hash:       true,
         width:      960,
         height:     540,
-        margin:     0,        // pas de marge : mappe 960×540 exactement comme le canvas éditeur
-        center:     false,    // pas de centrage vertical : origine en haut-à-gauche, comme le WYSIWYG
+        margin:     0,        // no margin: maps 960×540 exactly like the editor canvas
+        center:     false,    // no vertical centering: origin at top-left, like the WYSIWYG
+        // Uniform scaling that preserves element ratios. maxScale is raised
+        // (default 2.0) so the slide fills large / Hi-DPI screens instead of
+        // staying small and anchored top-left.
+        minScale:   0.1,
+        maxScale:   8,
         transition: cfg.transition || 'slide',
         plugins:    [RevealHighlight, RevealNotes]
     }).then(hideLoader);
 
-    // Filet de sécurité : on masque le loader même si Reveal tarde
+    // Safety net: hide the loader even if Reveal is slow
     window.addEventListener('load', () => setTimeout(hideLoader, 1200));
 })();
 

@@ -30,4 +30,4 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64
         push: true
-        tags: ghcr.io/b3nd3l/presento:latest, ghcr.io/b3nd3l/presento:pre-alpha, ghcr.io/b3nd3l/presento:unstable
+        tags: ghcr.io/b3nd3l/presento:latest, ghcr.io/b3nd3l/presento:beta, ghcr.io/b3nd3l/presento:unstable

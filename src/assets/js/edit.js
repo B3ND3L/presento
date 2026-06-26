@@ -1026,7 +1026,7 @@ document.addEventListener('keydown', e => {
     if (e.target.contentEditable === 'true') return;
     if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
     if (e.key === 'Delete' || e.key === 'Backspace') { deleteSelected(); return; }
-    if ((e.metaKey || e.ctrlKey) && e.key === 's')  { e.preventDefault(); openSaveModal(); return; }
+    if ((e.metaKey || e.ctrlKey) && e.key === 's')  { e.preventDefault(); quickSave(); return; }
     // Undo / Redo and clipboard shortcuts (only when not editing text)
     if (e.metaKey || e.ctrlKey) {
         const k = e.key.toLowerCase();
@@ -1422,6 +1422,7 @@ async function saveOnline() {
         return;
     }
     closeModal('save');
+    setSavePref('online');
     await savePresentation(pw || null);
 }
 
@@ -1433,6 +1434,7 @@ function saveOffline() {
     a.click();
     URL.revokeObjectURL(url);
     closeModal('save');
+    setSavePref('offline');
     showToast(t('json_downloaded'));
 }
 
@@ -1458,6 +1460,61 @@ async function savePresentation(newPassword = undefined) {
 }
 
 setInterval(() => { if (isDirty) savePresentation(); }, 45000);
+
+/* ═════════════════════════════════════════════════════
+   SPLIT SAVE BUTTON (quick save + dropdown)
+═════════════════════════════════════════════════════ */
+const SAVE_PREF_KEY = 'presento_save_pref';
+
+function getSavePref() {
+    try { return localStorage.getItem(SAVE_PREF_KEY) || 'online'; } catch { return 'online'; }
+}
+function setSavePref(mode) {
+    try { localStorage.setItem(SAVE_PREF_KEY, mode); } catch { /* noop */ }
+}
+
+/** Main save button action: repeats last chosen method without modal. */
+function quickSave() {
+    state.title = $('pres-title').value || state.title;
+    const pref = getSavePref();
+    if (pref === 'offline') {
+        saveOffline();
+    } else {
+        // Online save directly (no modal)
+        savePresentation();
+    }
+}
+
+/** Toggle the small dropdown next to the save button. */
+function toggleSaveMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = $('save-menu');
+    menu.classList.toggle('open');
+}
+
+function hideSaveMenu() {
+    const menu = $('save-menu');
+    if (menu) menu.classList.remove('open');
+}
+
+/** Dropdown action: save online (opens the modal for password option). */
+function saveMenuOnline() {
+    hideSaveMenu();
+    openSaveModal();
+}
+
+/** Dropdown action: save offline directly. */
+function saveMenuOffline() {
+    hideSaveMenu();
+    state.title = $('pres-title').value || state.title;
+    setSavePref('offline');
+    saveOffline();
+}
+
+/* Dismiss the save menu on any outside click. */
+document.addEventListener('mousedown', e => {
+    if (!e.target.closest('.save-split')) hideSaveMenu();
+});
 
 /* ═════════════════════════════════════════════════════
    MODALS / SHARE / TOAST

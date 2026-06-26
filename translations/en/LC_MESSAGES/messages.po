@@ -499,3 +499,10 @@ msgstr "Presentation not found."
 msgid "access_bad_password"
 msgstr "Incorrect password."
 
+# ── Split save button ──
+msgid "save_local"
+msgstr "Save locally"
+
+msgid "save_online_menu"
+msgstr "Save online…"
+

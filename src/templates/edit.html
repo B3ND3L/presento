@@ -46,7 +46,14 @@
         <button class="btn btn-stroke" onclick="copyShareLink()">{{ _("share") }}</button>
         <a href="/p/{{ pres.id }}?print-pdf" target="_blank" class="btn btn-stroke">{{ _("pdf") }}</a>
         <a href="/p/{{ pres.id }}" target="_blank" class="btn btn-stroke">{{ _("run") }}</a>
-        <button class="btn btn-accent" onclick="openSaveModal()">{{ _("save") }}</button>
+        <div class="save-split">
+            <button class="btn btn-accent save-split__main" onclick="quickSave()">{{ _("save") }}</button>
+            <button class="btn btn-accent save-split__arrow" onclick="toggleSaveMenu(event)" aria-label="Save options">▾</button>
+            <div class="save-split__menu" id="save-menu">
+                <button class="save-split__item" onclick="saveMenuOnline()">{{ _("save_online_menu") }}</button>
+                <button class="save-split__item" onclick="saveMenuOffline()">{{ _("save_local") }}</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -360,7 +367,9 @@
     "forward":                  {{ _("forward")                  | tojson }},
     "backward":                 {{ _("backward")                 | tojson }},
     "progressive":              {{ _("progressive")              | tojson }},
-    "delete":                   {{ _("delete")                   | tojson }}
+    "delete":                   {{ _("delete")                   | tojson }},
+    "save_local":               {{ _("save_local")               | tojson }},
+    "save_online_menu":         {{ _("save_online_menu")         | tojson }}
 }
 </script>
 

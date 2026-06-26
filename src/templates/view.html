@@ -33,7 +33,8 @@
 <div class="reveal">
     <div class="slides">
         {% for slide in pres.slides %}
-        <section {% if slide.get('bg') %}data-background-color="{{ slide.bg }}"{% endif %}>
+        <section {% if slide.get('bg') %}data-background-color="{{ slide.bg }}"{% endif %}
+                 {% if slide.get('bgImage') %}data-background-image="{{ slide.bgImage }}" data-background-size="cover" data-background-position="center"{% endif %}>
             <div class="slide-root">
 
                 {% for el in slide.get('elements', []) %}

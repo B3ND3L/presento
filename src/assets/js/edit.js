@@ -68,7 +68,7 @@ let resizeState = null;
 /* ═════════════════════════════════════════════════════
    ELEMENT FACTORIES
 ═════════════════════════════════════════════════════ */
-function emptySlide() { return { bg: '', elements: [] }; }
+function emptySlide() { return { bg: '', bgImage: '', elements: [] }; }
 function makeId()     { return 'el_' + (++elCounter); }
 
 function makeTextEl({ text='', x=100, y=100, w=400, h=null, fontSize=24, fontWeight='normal', color='' }) {
@@ -101,13 +101,18 @@ function renderCurrentSlide() {
 
     const applyTheme = ({ bg, color, font }) => {
         const effectiveBg = slide.bg || bg;
-        canvas.style.background = effectiveBg;
-        canvas.style.color      = color;
+        // Use backgroundColor (not the `background` shorthand) so the optional
+        // background image set below is not wiped out.
+        canvas.style.backgroundColor = effectiveBg;
+        canvas.style.color           = color;
+        applyCanvasBgImage(slide.bgImage);
         // Align the editor font with the Reveal theme's (view + thumbnails)
         if (font) canvas.style.fontFamily = font;
         document.getElementById('slide-bg-color').value   = effectiveBg;
         document.getElementById('pp-slide-bg').value      = effectiveBg;
         document.getElementById('slide-bg-preview').style.background = effectiveBg;
+        const bgImgInput = document.getElementById('pp-slide-bg-image');
+        if (bgImgInput) bgImgInput.value = slide.bgImage || '';
     };
     const cached = _themeCache[state.theme];
     if (cached) {
@@ -421,12 +426,63 @@ function applyTextColor(hex) {
     markDirty();
 }
 
-function applyBgColor(hex) {
-    document.getElementById('bg-color-preview').style.background = hex;
+/* Converts a #rgb / #rrggbb string to {r,g,b}. */
+function hexToRgb(hex) {
+    hex = String(hex || '').replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const n = parseInt(hex || '0', 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+/* Parses a stored background value ('' | 'transparent' | #hex | rgb()/rgba())
+   into { hex, alpha } where alpha is 0..100, to feed the toolbar controls. */
+function parseColorAlpha(val) {
+    if (!val || val === 'transparent') return { hex: '#ffffff', alpha: 0 };
+    const m = val.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/i);
+    if (m) {
+        const hex = '#' + [m[1], m[2], m[3]].map(x => (+x).toString(16).padStart(2, '0')).join('');
+        const a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+        return { hex, alpha: Math.round(a * 100) };
+    }
+    return { hex: val, alpha: 100 };   // assume opaque hex
+}
+
+/* Shows a color (possibly semi-transparent) layered over the checkerboard
+   of the element-background preview swatch. */
+function setBgPreview(css) {
+    const el = document.getElementById('bg-color-preview');
+    if (!el) return;
+    const fill = css || 'transparent';
+    el.style.backgroundImage =
+        `linear-gradient(${fill}, ${fill}),` +
+        'linear-gradient(45deg,#bbb 25%,transparent 25%,transparent 75%,#bbb 75%),' +
+        'linear-gradient(45deg,#bbb 25%,transparent 25%,transparent 75%,#bbb 75%)';
+    el.style.backgroundSize     = '100% 100%, 8px 8px, 8px 8px';
+    el.style.backgroundPosition = '0 0, 0 0, 4px 4px';
+}
+
+/* Reflects the selected element's background into the color + alpha controls. */
+function syncBgControls(elData) {
+    const { hex, alpha } = parseColorAlpha(elData && elData.bg);
+    const colorInput = document.getElementById('bg-color');
+    const alphaInput = document.getElementById('bg-alpha');
+    if (colorInput) colorInput.value = hex;
+    if (alphaInput) alphaInput.value = alpha;
+    setBgPreview(elData && elData.bg ? elData.bg : 'transparent');
+}
+
+/* Applies the element background from the color picker + alpha slider,
+   storing it as rgba() so transparency is preserved. */
+function applyBgColor() {
     if (!selectedEl) return;
-    selectedEl.style.background = hex;
+    const hex   = document.getElementById('bg-color').value;
+    const alpha = parseInt(document.getElementById('bg-alpha').value, 10) / 100;
+    const { r, g, b } = hexToRgb(hex);
+    const css = alpha >= 1 ? hex : `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    setBgPreview(css);
+    selectedEl.style.background = css;
     const elData = getElData(selectedEl.dataset.id);
-    if (elData) elData.bg = hex;
+    if (elData) elData.bg = css;
     markDirty();
 }
 
@@ -434,11 +490,51 @@ function applySlideBackground(hex) {
     document.getElementById('slide-bg-preview').style.background = hex;
     document.getElementById('slide-bg-color').value = hex;
     document.getElementById('pp-slide-bg').value    = hex;
-    document.getElementById('slide-canvas').style.background = hex;
+    // backgroundColor (not the shorthand) to preserve any background image.
+    document.getElementById('slide-canvas').style.backgroundColor = hex;
     const slide = state.slides[currentSlideIdx];
     if (slide) slide.bg = hex;
     markDirty();
     renderThumb(currentSlideIdx);
+}
+
+/* Applies (or clears) the slide background image on the editor canvas. */
+function applyCanvasBgImage(url) {
+    const canvas = document.getElementById('slide-canvas');
+    if (url) {
+        canvas.style.backgroundImage    = `url("${url}")`;
+        canvas.style.backgroundSize     = 'cover';
+        canvas.style.backgroundPosition = 'center';
+        canvas.style.backgroundRepeat   = 'no-repeat';
+    } else {
+        canvas.style.backgroundImage = 'none';
+    }
+}
+
+function applySlideBackgroundImage(url) {
+    const slide = state.slides[currentSlideIdx];
+    if (!slide) return;
+    slide.bgImage = (url || '').trim();
+    applyCanvasBgImage(slide.bgImage);
+    const input = document.getElementById('pp-slide-bg-image');
+    if (input) input.value = slide.bgImage;
+    markDirty();
+    renderThumb(currentSlideIdx);
+}
+
+function removeSlideBackgroundImage() {
+    applySlideBackgroundImage('');
+}
+
+function triggerSlideBgUpload() { document.getElementById('slide-bg-upload').click(); }
+
+function handleSlideBgFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => applySlideBackgroundImage(evt.target.result);
+    reader.readAsDataURL(file);
+    e.target.value = '';   // allow re-selecting the same file later
 }
 
 function bringForward() {
@@ -484,6 +580,7 @@ function updateFormToolbar() {
         document.getElementById('btn-fragment').classList.toggle('active', !!(elData && elData.fragment));
         document.getElementById('btn-edit-iframe').style.display =
             (elData && elData.type === 'iframe') ? 'inline-flex' : 'none';
+        syncBgControls(elData);
     } else {
         document.getElementById('btn-fragment').classList.remove('active');
         document.getElementById('btn-edit-iframe').style.display = 'none';
@@ -733,9 +830,12 @@ function buildThumbHtml(slide) {
         return '';
     }).join('');
     const explicitBg = slide.bg ? `background:${slide.bg};` : '';
+    const bgImage = slide.bgImage
+        ? `background-image:url('${slide.bgImage}');background-size:cover;background-position:center;background-repeat:no-repeat;`
+        : '';
     return `<!DOCTYPE html><html><head>
         <link rel="stylesheet" href="${REVEAL_CDN}/theme/${state.theme}.min.css">
-        <style>html{color-scheme:normal;}html,body{margin:0;padding:0;width:${SLIDE_W}px;height:${SLIDE_H}px;overflow:hidden;font-family:var(--r-main-font,sans-serif);background:var(--r-background-color,#fff);color:var(--r-main-color,#000);${explicitBg}}body{position:relative;}</style>
+        <style>html{color-scheme:normal;}html,body{margin:0;padding:0;width:${SLIDE_W}px;height:${SLIDE_H}px;overflow:hidden;font-family:var(--r-main-font,sans-serif);background:var(--r-background-color,#fff);color:var(--r-main-color,#000);${explicitBg}${bgImage}}body{position:relative;}</style>
     </head><body>${elements}</body></html>`;
 }
 

@@ -103,6 +103,14 @@ msgstr "Background"
 msgid "background_color"
 msgstr "Background color"
 
+#: src/templates/edit.html:215
+msgid "background_image"
+msgstr "Background image"
+
+#: src/templates/edit.html:95
+msgid "opacity"
+msgstr "Opacity"
+
 #: src/templates/edit.html:106
 msgid "forward"
 msgstr "Bring forward"

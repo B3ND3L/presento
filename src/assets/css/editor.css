@@ -92,7 +92,23 @@ body.editor {
     width: 16px; height: 16px; border-radius: 3px;
     border: 1.5px solid var(--border-hi); pointer-events: none;
 }
-.ft-color-preview--dashed { border-style: dashed; background: transparent; }
+/* Checkerboard so a semi-transparent element background is visible.
+   The chosen color is layered on top by JS (setBgPreview). */
+.ft-color-preview--dashed {
+    border-style: dashed;
+    background-color: #fff;
+    background-image:
+        linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%),
+        linear-gradient(45deg, #bbb 25%, transparent 25%, transparent 75%, #bbb 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+}
+
+/* Element background opacity (alpha) slider next to the bg color button. */
+.ft-alpha {
+    width: 64px; accent-color: var(--accent);
+    flex-shrink: 0; cursor: pointer;
+}
 
 .ft-label { font-size: 11px; color: var(--text-2); white-space: nowrap; flex-shrink: 0; }
 .ft-section { display: flex; align-items: center; gap: 2px; }
@@ -374,6 +390,10 @@ body.editor {
     border: 2px solid transparent; transition: all .12s;
 }
 .pp-swatch:hover, .pp-swatch.active { border-color: var(--accent); }
+
+/* Background-image actions (upload / remove) under the URL field */
+.pp-bg-actions { display: flex; gap: 6px; margin-top: 6px; }
+.pp-bg-actions .btn { flex: 1; padding: 7px 8px; font-size: 12px; }
 
 .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .theme-btn {

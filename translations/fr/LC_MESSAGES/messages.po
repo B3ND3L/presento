@@ -103,6 +103,14 @@ msgstr "Arrière-plan"
 msgid "background_color"
 msgstr "Couleur d'arrière-plan"
 
+#: src/templates/edit.html:215
+msgid "background_image"
+msgstr "Image d'arrière-plan"
+
+#: src/templates/edit.html:95
+msgid "opacity"
+msgstr "Opacité"
+
 #: src/templates/edit.html:106
 msgid "forward"
 msgstr "Avancer"

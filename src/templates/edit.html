@@ -91,8 +91,10 @@
         </div>
         <div class="ft-color-btn" title="{{ _('element_background_color') }}">
             <div class="ft-color-preview ft-color-preview--dashed" id="bg-color-preview"></div>
-            <input type="color" id="bg-color" value="#ffffff" oninput="applyBgColor(this.value)">
+            <input type="color" id="bg-color" value="#ffffff" oninput="applyBgColor()">
         </div>
+        <input type="range" id="bg-alpha" class="ft-alpha" min="0" max="100" value="100"
+               title="{{ _('opacity') }}" oninput="applyBgColor()">
     </div>
     <div class="ft-sep"></div>
 
@@ -210,6 +212,17 @@
             <input type="color" id="pp-slide-bg" class="pp-color" value="#ffffff"
                    oninput="applySlideBackground(this.value)">
             <div class="pp-swatches" id="bg-swatches"></div>
+        </div>
+        <div class="pp-group">
+            <label>{{ _("background_image") }}</label>
+            <input type="text" id="pp-slide-bg-image" class="pp-input" placeholder="https://..."
+                   onchange="applySlideBackgroundImage(this.value)">
+            <div class="pp-bg-actions">
+                <button class="btn btn-stroke" type="button" onclick="triggerSlideBgUpload()">{{ _("file_image") }}</button>
+                <button class="btn btn-ghost" type="button" onclick="removeSlideBackgroundImage()">{{ _("delete") }}</button>
+            </div>
+            <input type="file" id="slide-bg-upload" accept="image/*" class="input-hidden"
+                   onchange="handleSlideBgFile(event)">
         </div>
         <div class="pp-group">
             <label>{{ _("transition") }}</label>

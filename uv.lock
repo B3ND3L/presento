@@ -353,11 +353,12 @@ wheels = [
 
 [[package]]
 name = "presento"
-version = "0.0.1"
+version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "babel" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "itsdangerous" },
     { name = "jinja2" },
     { name = "pymongo" },
@@ -375,10 +376,11 @@ lint = [
 requires-dist = [
     { name = "babel", specifier = ">=2.18.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.3" },
+    { name = "httpx", specifier = ">=0.27.0" },
     { name = "itsdangerous", specifier = ">=2.2.0" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pymongo", specifier = ">=4.17.0" },
-    { name = "python-multipart", specifier = ">=0.0.30" },
+    { name = "python-multipart", specifier = ">=0.0.31" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "uvicorn", specifier = ">=0.48.0" },
 ]

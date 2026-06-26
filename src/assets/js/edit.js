@@ -343,8 +343,12 @@ document.addEventListener('mousemove', e => {
     if (dragState) {
         const dx = (e.clientX - dragState.startX) / zoom;
         const dy = (e.clientY - dragState.startY) / zoom;
-        const nx = Math.max(0, Math.round(dragState.origX + dx));
-        const ny = Math.max(0, Math.round(dragState.origY + dy));
+        let nx = Math.max(0, Math.round(dragState.origX + dx));
+        let ny = Math.max(0, Math.round(dragState.origY + dy));
+        // Smart alignment guides + snapping (page center/edges + other elements).
+        const snap = computeAlignment(nx, ny, dragState.elData);
+        nx = snap.x; ny = snap.y;
+        showAlignGuides(snap.guides);
         dragState.elData.x = nx; dragState.elData.y = ny;
         dragState.node.style.left = nx + 'px';
         dragState.node.style.top  = ny + 'px';
@@ -363,9 +367,86 @@ document.addEventListener('mousemove', e => {
 });
 
 document.addEventListener('mouseup', () => {
-    if (dragState)   { markDirty(); dragState   = null; }
+    if (dragState)   { markDirty(); dragState   = null; clearAlignGuides(); }
     if (resizeState) { markDirty(); resizeState = null; }
 });
+
+/* ═════════════════════════════════════════════════════
+   SMART ALIGNMENT GUIDES (shown only while dragging)
+═════════════════════════════════════════════════════ */
+const SNAP_THRESHOLD = 6;   // slide-px tolerance for snapping
+
+/* Given a candidate position (nx, ny) for the dragged element, returns the
+   snapped position and the alignment guides to display. Guides are computed
+   against the page (center + edges) and every other element on the slide
+   (their left/center/right and top/center/bottom). */
+function computeAlignment(nx, ny, elData) {
+    const slide  = state.slides[currentSlideIdx];
+    const others = slide ? slide.elements.filter(e => e.id !== elData.id) : [];
+    const w = elData.w, h = elData.h;
+
+    const xTargets = [0, SLIDE_W / 2, SLIDE_W];
+    const yTargets = [0, SLIDE_H / 2, SLIDE_H];
+    others.forEach(o => {
+        xTargets.push(o.x, o.x + o.w / 2, o.x + o.w);
+        yTargets.push(o.y, o.y + o.h / 2, o.y + o.h);
+    });
+
+    // Moving element key positions, with the offset from its left/top.
+    const xKeys = [{ p: nx, off: 0 }, { p: nx + w / 2, off: w / 2 }, { p: nx + w, off: w }];
+    const yKeys = [{ p: ny, off: 0 }, { p: ny + h / 2, off: h / 2 }, { p: ny + h, off: h }];
+
+    const guides = [];
+    const best = (targets, keys) => {
+        let chosen = null;
+        for (const t of targets) {
+            for (const k of keys) {
+                const d = Math.abs(t - k.p);
+                if (d <= SNAP_THRESHOLD && (!chosen || d < chosen.d)) {
+                    chosen = { d, line: t, off: k.off };
+                }
+            }
+        }
+        return chosen;
+    };
+
+    const bx = best(xTargets, xKeys);
+    if (bx) { nx = Math.round(bx.line - bx.off); guides.push({ axis: 'v', pos: bx.line }); }
+    const by = best(yTargets, yKeys);
+    if (by) { ny = Math.round(by.line - by.off); guides.push({ axis: 'h', pos: by.line }); }
+
+    return { x: Math.max(0, nx), y: Math.max(0, ny), guides };
+}
+
+let _guideV = null, _guideH = null;
+function ensureGuides() {
+    const canvas = document.getElementById('slide-canvas');
+    if (!_guideV) {
+        _guideV = document.createElement('div');
+        _guideV.className = 'align-guide align-guide--v';
+        canvas.appendChild(_guideV);
+    }
+    if (!_guideH) {
+        _guideH = document.createElement('div');
+        _guideH.className = 'align-guide align-guide--h';
+        canvas.appendChild(_guideH);
+    }
+}
+
+function showAlignGuides(guides) {
+    ensureGuides();
+    _guideV.style.display = 'none';
+    _guideH.style.display = 'none';
+    guides.forEach(g => {
+        if (g.axis === 'v') { _guideV.style.left = g.pos + 'px'; _guideV.style.display = 'block'; }
+        if (g.axis === 'h') { _guideH.style.top  = g.pos + 'px'; _guideH.style.display = 'block'; }
+    });
+}
+
+function clearAlignGuides() {
+    if (_guideV) _guideV.style.display = 'none';
+    if (_guideH) _guideH.style.display = 'none';
+}
 
 function startResize(e, node) {
     e.preventDefault(); e.stopPropagation();

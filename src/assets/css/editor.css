@@ -286,6 +286,38 @@ body.editor {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
 }
 
+/* ═══════════════ NOTES DOCK (bottom) ═══════════════ */
+#notes-dock {
+    position: fixed; left: var(--panel-left); right: var(--dock-w); bottom: 0;
+    z-index: 75; height: 200px;
+    background: var(--bg-panel); border-top: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform .2s ease;
+    box-shadow: 0 -6px 24px rgba(0,0,0,.12);
+}
+#notes-dock.open { transform: translateY(0); }
+#notes-dock.panel-open { right: 240px; }
+
+.notes-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.notes-header span {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--text-2);
+}
+.notes-close { background: none; border: none; cursor: pointer; color: var(--text-2); font-size: 14px; padding: 2px; }
+.notes-close:hover { color: var(--text-1); }
+
+.notes-input {
+    flex: 1; width: 100%; resize: none; border: none; outline: none;
+    padding: 12px 14px; background: transparent;
+    color: var(--text-1); font-family: inherit; font-size: 14px; line-height: 1.6;
+}
+.notes-input::placeholder { color: var(--text-3); }
+
+#notes-toggle.active { background: var(--accent-soft); color: var(--accent); }
+
 /* ═══════════════ INSERT DOCK (right sidebar) ═══════════════ */
 #insert-dock {
     position: fixed;

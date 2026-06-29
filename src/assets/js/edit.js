@@ -122,7 +122,7 @@ function readFileAsDataURL(file, cb) {
 /* ═════════════════════════════════════════════════════
    ELEMENT FACTORIES
 ═════════════════════════════════════════════════════ */
-function emptySlide() { return { bg: '', bgImage: '', elements: [] }; }
+function emptySlide() { return { bg: '', bgImage: '', elements: [], notes: '' }; }
 function makeId()     { return 'el_' + (++elCounter); }
 
 function makeTextEl({ text='', x=100, y=100, w=400, h=null, fontSize=24, fontWeight='normal', color='' }) {
@@ -180,6 +180,7 @@ function renderCurrentSlide() {
     selectedEl  = null;
     hideSelectionOverlay();
     updateFormToolbar();
+    syncNotesField();
 }
 
 function createDomElement(elData) {
@@ -1114,6 +1115,39 @@ function onDrop(e) {
 }
 
 /* ═════════════════════════════════════════════════════
+   SPEAKER NOTES (per-slide)
+═════════════════════════════════════════════════════ */
+/* Reflects the current slide's notes into the notes textarea. */
+function syncNotesField() {
+    const input = $('notes-input');
+    if (!input) return;
+    const slide = state.slides[currentSlideIdx];
+    input.value = (slide && slide.notes) || '';
+}
+
+/* Stores the edited notes onto the current slide and marks the deck dirty. */
+function onNotesInput(val) {
+    const slide = state.slides[currentSlideIdx];
+    if (!slide) return;
+    slide.notes = val;
+    markDirty();
+}
+
+/* Shows / hides the bottom notes dock. */
+function toggleNotes() {
+    const dock = $('notes-dock');
+    if (!dock) return;
+    const open = dock.classList.toggle('open');
+    const panelOpen = document.getElementById('prop-panel').classList.contains('open');
+    dock.classList.toggle('panel-open', panelOpen);
+    $('notes-toggle').classList.toggle('active', open);
+    if (open) {
+        syncNotesField();
+        setTimeout(() => $('notes-input').focus(), 60);
+    }
+}
+
+/* ═════════════════════════════════════════════════════
    SLIDE MANAGEMENT
 ═════════════════════════════════════════════════════ */
 function switchToSlide(idx) { currentSlideIdx = idx; renderCurrentSlide(); renderSlideList(); }
@@ -1303,6 +1337,7 @@ function togglePropPanel() {
     panel.classList.toggle('open');
     document.getElementById('canvas-area').classList.toggle('panel-open', panel.classList.contains('open'));
     document.getElementById('format-toolbar').classList.toggle('panel-open', panel.classList.contains('open'));
+    document.getElementById('notes-dock').classList.toggle('panel-open', panel.classList.contains('open'));
 }
 
 /* ═════════════════════════════════════════════════════

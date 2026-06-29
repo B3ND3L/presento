@@ -508,3 +508,13 @@ msgstr "Enregistrer en local"
 msgid "save_online_menu"
 msgstr "Enregistrer en ligne…"
 
+# ── Speaker notes ──
+msgid "speaker_notes"
+msgstr "Notes du présentateur"
+
+msgid "notes_placeholder"
+msgstr "Écrivez ici les notes de cette diapositive… (visibles en mode présentateur, touche « S »)"
+
+msgid "close"
+msgstr "Fermer"
+

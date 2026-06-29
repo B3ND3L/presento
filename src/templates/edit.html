@@ -42,6 +42,7 @@
             <option value="league">League</option>
             <option value="serif">Serif</option>
         </select>
+        <button class="btn btn-ghost" onclick="toggleNotes()" id="notes-toggle" title="{{ _('speaker_notes') }}">📝</button>
         <button class="btn btn-ghost" onclick="togglePropPanel()" title="{{ _('slide_parameters') }}">⚙</button>
         <button class="btn btn-stroke" onclick="copyShareLink()">{{ _("share") }}</button>
         <a href="/p/{{ pres.id }}?print-pdf" target="_blank" class="btn btn-stroke">{{ _("pdf") }}</a>
@@ -149,6 +150,19 @@
             <p>{{ _("slide_placeholder") }}</p>
         </div>
     </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     NOTES DOCK (bottom)
+══════════════════════════════════════════════ -->
+<div id="notes-dock">
+    <div class="notes-header">
+        <span>📝 {{ _("speaker_notes") }}</span>
+        <button class="notes-close" onclick="toggleNotes()" title="{{ _('close') }}">✕</button>
+    </div>
+    <textarea id="notes-input" class="notes-input"
+              placeholder="{{ _('notes_placeholder') }}"
+              oninput="onNotesInput(this.value)"></textarea>
 </div>
 
 <!-- ══════════════════════════════════════════════

@@ -506,3 +506,13 @@ msgstr "Save locally"
 msgid "save_online_menu"
 msgstr "Save online…"
 
+# ── Speaker notes ──
+msgid "speaker_notes"
+msgstr "Speaker notes"
+
+msgid "notes_placeholder"
+msgstr "Write the notes for this slide here… (shown in speaker view, press “S”)"
+
+msgid "close"
+msgstr "Close"
+

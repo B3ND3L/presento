@@ -98,6 +98,9 @@
                 {% endfor %}
 
             </div>
+            {% if slide.get('notes') %}
+            <aside class="notes">{{ slide.notes | e | replace('\n', '<br>') | safe }}</aside>
+            {% endif %}
         </section>
         {% endfor %}
     </div>

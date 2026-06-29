@@ -48,6 +48,11 @@ def check_presentation_password(pres_id: str, password: str) -> bool:
     stored = doc.get("password_hash", "")
     return verify_password(password, stored)
 
+def presentation_has_password(pres_id: str) -> bool:
+    """Lightweight check: does the presentation require a password?"""
+    doc = collection.find_one({"_id": pres_id}, {"password_hash": 1})
+    return bool(doc and doc.get("password_hash", ""))
+
 # ── CRUD ───────────────────────────────────────────────────────────────────────
 def save_presentation(pres_id: str, data: dict, new_password: str | None = None) -> None:
     """data = { title, theme, transition, slides }

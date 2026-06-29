@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _("password_required") }} — {{ pres.meta.title }}</title>
+    <link rel="icon" href="{{ url_for('assets', path='/favicon.ico') }}" type="image/x-icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/tokens.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('assets', path='css/base.css') }}" type="text/css">
+
+    <!-- Apply the theme before rendering (avoids any flash) -->
+    <script src="{{ url_for('assets', path='js/theme.js') }}"></script>
+
+    <style>
+        .unlock-wrap {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        .unlock-card {
+            width: 100%; max-width: 380px;
+            background: var(--bg-panel, #fff);
+            border: 1px solid var(--border, #e3e3e3);
+            border-radius: var(--radius-lg, 16px);
+            box-shadow: var(--shadow-lg, 0 20px 60px rgba(0,0,0,.15));
+            padding: 32px 28px;
+            text-align: center;
+        }
+        .unlock-icon { font-size: 44px; line-height: 1; margin-bottom: 14px; }
+        .unlock-card h1 {
+            font-size: 19px; font-weight: 700; margin: 0 0 6px;
+            color: var(--text-1, #1a1a1a);
+        }
+        .unlock-sub {
+            font-size: 13px; color: var(--text-2, #777);
+            margin: 0 0 20px; word-break: break-word;
+        }
+        .unlock-card .form-row { margin-bottom: 12px; text-align: left; }
+        .unlock-card .alert { margin-bottom: 14px; text-align: left; }
+        .unlock-back {
+            display: inline-block; margin-top: 18px;
+            font-size: 13px; color: var(--text-2, #777); text-decoration: none;
+        }
+        .unlock-back:hover { color: var(--text-1, #1a1a1a); }
+    </style>
+</head>
+<body>
+    <div class="unlock-wrap">
+        <div class="unlock-card">
+            <div class="unlock-icon">🔒</div>
+            <h1>{{ _("protected_presentation") }}</h1>
+            <p class="unlock-sub">{{ pres.meta.title }}</p>
+
+            {% if error %}
+            <div class="alert alert-error">{{ _("access_bad_password") }}</div>
+            {% endif %}
+
+            <form method="post" action="/p/{{ pres.id }}/unlock">
+                <input type="hidden" name="next" value="{{ next_url }}">
+                <div class="form-row">
+                    <input class="form-input" type="password" name="password"
+                           autofocus autocomplete="current-password"
+                           placeholder="{{ _('password_placeholder') }}">
+                </div>
+                <button type="submit" class="btn btn-primary action-btn-full">
+                    {{ _("access") }}
+                </button>
+            </form>
+
+            <a class="unlock-back" href="/">← {{ _("back_home") }}</a>
+        </div>
+    </div>
+</body>
+</html>
+

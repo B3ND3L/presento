@@ -518,3 +518,13 @@ msgstr "Écrivez ici les notes de cette diapositive… (visibles en mode présen
 msgid "close"
 msgstr "Fermer"
 
+# ── Page de déverrouillage (présentation protégée) ──
+msgid "password_required"
+msgstr "Mot de passe requis"
+
+msgid "protected_presentation"
+msgstr "Présentation protégée"
+
+msgid "back_home"
+msgstr "Retour à l'accueil"
+

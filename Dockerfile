@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:0.11-trixie-slim as builder
+FROM ghcr.io/astral-sh/uv:0.12-trixie-slim as builder
 
 COPY src ./src
 COPY translations ./translations
